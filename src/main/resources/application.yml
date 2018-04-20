@@ -65,3 +65,10 @@ pagehelper:
     reasonable: true
     supportMethodsArguments: true
     params: count=countSql
+
+test:
+    id: 1
+    age: 18
+    address: 湖南
+
+Logback: logback-spring.xml

@@ -1,6 +1,7 @@
 package com.wml.springboot.controller;
 
 import com.wml.springboot.config.RedisConfig;
+import com.wml.springboot.config.TestConfig;
 import com.wml.springboot.entity.User;
 import com.wml.springboot.services.UserService;
 import com.wml.springboot.util.RedisService;
@@ -22,13 +23,10 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    
-    /**
-     * 测试提交
-     */
-    public void test() {
 
-    }
+    @Autowired
+    private TestConfig testConfig;
+
     @RequestMapping(value = "/get/{id}", produces = {"application/json;charset=UTF-8"})
     //@ResponseBody
     public User findAllUser(@PathVariable("id") Integer id) throws Exception {
@@ -36,9 +34,11 @@ public class UserController {
         redisService.set("userId", id.toString());
         System.out.println("redis开始取值...");
         System.out.println("value:" + redisService.get("userId"));
-        if(true) {
+
+        System.out.println("测试获取配置文件参数：" + testConfig.toString());
+        /*if(true) {
             throw new Exception("发生错误");
-        }
+        }*/
         return userService.findAllUser(id);
     }
 }

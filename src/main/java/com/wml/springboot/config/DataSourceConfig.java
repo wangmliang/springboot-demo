@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
@@ -21,7 +23,7 @@ import javax.sql.DataSource;
  * Created by wangml on 2018/4/20.
  */
 @Configuration
-@MapperScan("com.wml.springboot.mapper")
+@MapperScan("com.wml.springboot.mapper")  // 指定Mapper目录，Mapper文件不需要重新设置@Mapper
 @EnableTransactionManagement
 public class DataSourceConfig {
 
@@ -29,7 +31,6 @@ public class DataSourceConfig {
 
     @Autowired
     private Environment env;
-
 
     @Bean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
@@ -39,4 +40,5 @@ public class DataSourceConfig {
         fb.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(env.getProperty("mybatis.mapper-locations")));
         return fb.getObject();
     }
+
 }

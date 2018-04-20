@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1>Error Handler</h1>
-<div th:text="${url}"></div>
-<div th:text="${exception.message}"></div>
+<div th:text="'请求地址:' +${url}"></div>
+<div th:text="'详细错误信息：' + ${exception}"></div>
 </body>
 </html>

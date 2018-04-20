@@ -22,7 +22,13 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    
+    /**
+     * 测试提交
+     */
+    public void test() {
 
+    }
     @RequestMapping(value = "/get/{id}", produces = {"application/json;charset=UTF-8"})
     //@ResponseBody
     public User findAllUser(@PathVariable("id") Integer id) throws Exception {

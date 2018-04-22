@@ -21,7 +21,6 @@ public class TestJob {
      */
     /*@Scheduled(fixedRate = 5000)*/
     @Scheduled(fixedRate = 5000)
->>>>>>> origin/master
     public void reportCurrentTime() {
         System.out.println("现在时间：" + dateFormat.format(new Date()));
     }

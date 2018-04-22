@@ -8,9 +8,9 @@ server:
 spring:
     datasource:
         name: springboot_test
-        url: jdbc:mysql://115.28.157.64:3306/weixin_db?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
+        url: jdbc:mysql://127.0.0.1:3306/springboot_test?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
         username: root
-        password: wangml`19941108
+        password:
         # 使用druid数据源
         type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.jdbc.Driver
@@ -28,7 +28,6 @@ spring:
         poolPreparedStatements: true
         maxOpenPreparedStatements: 20
         maxPoolPreparedStatementPerConnectionSize: 100
-
     # redis配置
     redis:
         # Redis数据库索引（默认为0）
@@ -66,13 +65,3 @@ pagehelper:
     reasonable: true
     supportMethodsArguments: true
     params: count=countSql
-
-# 读取配置文件信息  @Value("${test.id}")
-test:
-    id: 1
-    age: 18
-    address: 湖南
-
-# 日志文件
-logging:
-  config: classpath:logback.xml

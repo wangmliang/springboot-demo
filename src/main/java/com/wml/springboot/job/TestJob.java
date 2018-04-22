@@ -20,6 +20,8 @@ public class TestJob {
      @Scheduled(cron="5 * * * * *") ：通过cron表达式定义规则
      */
     /*@Scheduled(fixedRate = 5000)*/
+    @Scheduled(fixedRate = 5000)
+>>>>>>> origin/master
     public void reportCurrentTime() {
         System.out.println("现在时间：" + dateFormat.format(new Date()));
     }

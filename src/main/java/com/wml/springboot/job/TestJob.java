@@ -7,7 +7,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by wangml on 2018/4/20.
+ * 任务调度实例
+ * <pre>
+ * <b>Title：</b>JdbcController.java<br/>
+ * <b>@author：</b>WML<br/>
+ * <b>@date：</b>2018/4/23 - 10:57<br/>
+ * <b>@version V1.0</b></br/>
+ * <b>Copyright (c) 2018 ASPire Tech.</b>
+ * </pre>
  */
 @Component
 public class TestJob {
@@ -20,7 +27,6 @@ public class TestJob {
      @Scheduled(cron="5 * * * * *") ：通过cron表达式定义规则
      */
     /*@Scheduled(fixedRate = 5000)*/
-    @Scheduled(fixedRate = 5000)
     public void reportCurrentTime() {
         System.out.println("现在时间：" + dateFormat.format(new Date()));
     }

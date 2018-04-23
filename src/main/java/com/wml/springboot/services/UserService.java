@@ -5,12 +5,19 @@ import com.wml.springboot.entity.User;
 import com.wml.springboot.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
- * interface
- * Created by wangml on 2018/4/20.
+ * 普通Service实例
+ * <pre>
+ * <b>Title：</b>UsersRepository.java<br/>
+ * <b>@author：</b>WML<br/>
+ * <b>@date：</b>2018/4/23 - 11:32<br/>
+ * <b>@version V1.0</b></br/>
+ * <b>Copyright (c) 2018 ASPire Tech.</b>
+ * </pre>
  */
 @Service
 public class UserService {
@@ -30,4 +37,12 @@ public class UserService {
         //将参数传给这个方法就可以实现物理分页了，非常简单。
         return userMapper.selectByPrimaryKey(id);
     };
+
+    @Transactional  // 事物回滚测试
+    //@Transactional(noRollbackFor = {Exception.class}) // 事物不回滚测试
+    public int insert(User record) {
+        int row = userMapper.insert(record);
+        int i = 5/ 0;
+        return row;
+    }
 }

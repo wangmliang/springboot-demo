@@ -18,7 +18,14 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by wangml on 2018/4/20.
+ * Redis操作Service工具类
+ * <pre>
+ * <b>Title：</b>UsersRepository.java<br/>
+ * <b>@author：</b>WML<br/>
+ * <b>@date：</b>2018/4/23 - 11:32<br/>
+ * <b>@version V1.0</b></br/>
+ * <b>Copyright (c) 2018 ASPire Tech.</b>
+ * </pre>
  */
 @Service
 public class RedisService<T> {

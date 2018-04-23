@@ -108,6 +108,12 @@
       <optional>true</optional>
       <scope>true</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/ch.ethz.ganymed/ganymed-ssh2 -->
+    <dependency>
+      <groupId>ch.ethz.ganymed</groupId>
+      <artifactId>ganymed-ssh2</artifactId>
+      <version>build210</version>
+    </dependency>
   </dependencies>
 
   <build>

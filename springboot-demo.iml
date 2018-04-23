@@ -120,5 +120,14 @@
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-autoconfigure:2.0.1.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-devtools:2.0.1.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot:2.0.1.RELEASE" level="project" />
+    <orderEntry type="module-library">
+      <library name="Maven: ganymed:ganymed-ssh2:build210">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/ganymed-ssh2-build210.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

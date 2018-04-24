@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Jdbc操作数据库实例
  * <pre>
@@ -62,5 +64,10 @@ public class UserServiceImpl implements UserMapper {
     @Override
     public int updateByPrimaryKey(User record) {
         return jdbcTemplate.update("update t_user set phone = ? where user_id = ?", record.getPhone(), record.getUserId());
+    }
+
+    @Override
+    public List<User> getAll() {
+        return null;
     }
 }

@@ -3,6 +3,8 @@ package com.wml.springboot.mapper;
 import com.wml.springboot.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 普通Mapper接口实例
  * <pre>
@@ -25,4 +27,6 @@ public interface UserMapper {
     int updateByPrimaryKeySelective(User record);
 
     int updateByPrimaryKey(User record);
+
+    List<User> getAll();
 }

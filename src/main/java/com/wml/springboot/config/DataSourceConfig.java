@@ -1,5 +1,7 @@
 package com.wml.springboot.config;
 
+import com.github.pagehelper.PageInterceptor;
+import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -18,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.util.Properties;
 
 /**
  * Created by wangml on 2018/4/20.
@@ -38,6 +41,16 @@ public class DataSourceConfig {
         fb.setDataSource(dataSource);
         fb.setTypeAliasesPackage(env.getProperty("mybatis.type-aliases-package"));
         fb.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(env.getProperty("mybatis.mapper-locations")));
+
+        // pagehelper分页插件
+        Properties properties = new Properties();
+        properties.setProperty("helperDialect", "mysql");
+        properties.setProperty("offsetAsPageNum", "true");
+        properties.setProperty("rowBoundsWithCount", "true");
+        properties.setProperty("reasonable", "true");
+        Interceptor interceptor = new PageInterceptor();
+        interceptor.setProperties(properties);
+        fb.setPlugins(new Interceptor[]{interceptor});
         return fb.getObject();
     }
 

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 普通操作实例
  * <pre>
@@ -59,5 +61,11 @@ public class UserController {
         record.setPassword("666666");
         userService.insert(record);
         return userService.findAllUser(id);
+    }
+
+    @RequestMapping("/list")
+    @ResponseBody
+    public List<User> getAll(int pageNumber, int pageSize) {
+        return userService.getAll(pageNumber, pageSize).getList();
     }
 }

@@ -1,6 +1,7 @@
 package com.wml.springboot.services;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.wml.springboot.entity.User;
 import com.wml.springboot.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,5 +45,10 @@ public class UserService {
         int row = userMapper.insert(record);
         int i = 5/ 0;
         return row;
+    }
+
+    public PageInfo<User> getAll(int pageNumber, int pageSize) {
+        PageHelper.startPage(pageNumber, pageSize);
+        return new PageInfo<User>(userMapper.getAll());
     }
 }

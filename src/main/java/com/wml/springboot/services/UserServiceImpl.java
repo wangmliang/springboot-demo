@@ -70,4 +70,9 @@ public class UserServiceImpl implements UserMapper {
     public List<User> getAll() {
         return null;
     }
+
+    @Override
+    public User getUserByName(String userName) {
+        return null;
+    }
 }

@@ -51,4 +51,8 @@ public class UserService {
         PageHelper.startPage(pageNumber, pageSize);
         return new PageInfo<User>(userMapper.getAll());
     }
+
+    public User getUserByName(String userName) {
+        return userMapper.getUserByName(userName);
+    }
 }

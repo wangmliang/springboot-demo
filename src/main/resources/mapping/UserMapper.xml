@@ -83,4 +83,8 @@
   <select id="getAll" resultMap="BaseResultMap">
     select * from t_user
   </select>
+
+  <select id="getUserByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from t_user where user_name = #{userName}
+  </select>
 </mapper>

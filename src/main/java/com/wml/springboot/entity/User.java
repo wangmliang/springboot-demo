@@ -1,5 +1,7 @@
 package com.wml.springboot.entity;
 
+import java.util.List;
+
 public class User {
     private Integer userId;
 
@@ -8,6 +10,8 @@ public class User {
     private String password;
 
     private String phone;
+
+    private List<SysRole> roleList;
 
     public Integer getUserId() {
         return userId;
@@ -39,5 +43,13 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone == null ? null : phone.trim();
+    }
+
+    public List<SysRole> getRoleList() {
+        return roleList;
+    }
+
+    public void setRoleList(List<SysRole> roleList) {
+        this.roleList = roleList;
     }
 }

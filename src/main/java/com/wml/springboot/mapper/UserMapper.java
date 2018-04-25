@@ -29,4 +29,6 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
     List<User> getAll();
+
+    User getUserByName(String userName);
 }

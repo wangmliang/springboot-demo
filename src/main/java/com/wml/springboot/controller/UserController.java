@@ -1,6 +1,5 @@
 package com.wml.springboot.controller;
 
-import com.wml.springboot.config.RedisConfig;
 import com.wml.springboot.entity.User;
 import com.wml.springboot.services.UserService;
 import com.wml.springboot.util.RedisService;

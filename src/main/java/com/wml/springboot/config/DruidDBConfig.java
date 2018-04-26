@@ -11,9 +11,6 @@ import org.springframework.context.annotation.Primary;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
-/**
- * Created by wangml on 2018/4/20.
- */
 @Configuration
 public class DruidDBConfig {
 

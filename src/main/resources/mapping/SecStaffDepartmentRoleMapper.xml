@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wml.springboot.mapper.SecStaffDepartmentRoleMapper">
+	<!-- 实体映射 -->
+	<resultMap type="com.wml.springboot.entity.SecStaffDepartmentRole" id="BaseResultMap">
+		<!-- 成员ID -->
+		<id column="STAFF_ID" property="staffId" jdbcType="BIGINT"/>
+		<!-- 组织ID -->
+		<result column="DEPARTMENT_ID" property="departmentId" jdbcType="BIGINT"/>
+		<!-- 角色ID -->
+		<result column="ROLE_ID" property="roleId" jdbcType="BIGINT"/>
+
+	</resultMap>
+
+	<!-- 字段属性 -->
+	<sql id="Base_Column_List">
+		STAFF_ID,  DEPARTMENT_ID,  ROLE_ID
+	</sql>
+
+	<!-- 分页列表查询  -->
+	<select id="getPageList" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sec_staff_department_role
+		where 1 = 1
+		order by STAFF_ID desc
+	</select>
+
+	<!-- 根据主键STAFF_ID查询对应数据  -->
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="Long">
+		select
+		<include refid="Base_Column_List" />
+		from sec_staff_department_role
+		where STAFF_ID = #{staffId, jdbcType=BIGINT}
+	</select>
+
+	<!-- 查询sec_staff_department_role对象的数据集合 -->
+	<select id="selectAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sec_staff_department_role
+	</select>
+
+	<!-- 根据主键 STAFF_ID删除对应数据 -->
+	<delete id="deleteByPrimaryKey" parameterType="Long">
+		delete from sec_staff_department_role
+		where STAFF_ID = #{staffId, jdbcType=BIGINT}
+	</delete>
+
+	<!-- 批量删除 -->
+	<delete id="batchDelete" parameterType="java.util.Map">
+		delete from sec_staff_department_role where 1 = 1
+		<if test="list != null">
+			and STAFF_ID in
+			<foreach item="tag" index="index" collection="list" open="(" separator="," close=")">
+				#{tag}
+			</foreach>
+		</if>
+	</delete>
+
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.wml.springboot.entity.SecStaffDepartmentRole" useGeneratedKeys="true" keyProperty="staffId">
+		insert into sec_staff_department_role(STAFF_ID, DEPARTMENT_ID, ROLE_ID )
+		values (#{staffId, jdbcType=BIGINT}, #{departmentId, jdbcType=BIGINT}, #{roleId, jdbcType=BIGINT} )
+	</insert>
+
+	<!-- 新增 -->
+	<insert id="insertSelective" parameterType="com.wml.springboot.entity.SecStaffDepartmentRole" useGeneratedKeys="true" keyProperty="staffId">
+		insert into sec_staff_department_role
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="staffId != null" >
+				STAFF_ID,
+			</if>
+			<if test="departmentId != null" >
+				DEPARTMENT_ID,
+			</if>
+			<if test="roleId != null" >
+				ROLE_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="staffId != null" >
+				#{staffId, jdbcType=BIGINT},
+			</if>
+			<if test="departmentId != null" >
+				#{departmentId, jdbcType=BIGINT},
+			</if>
+			<if test="roleId != null" >
+				#{roleId, jdbcType=BIGINT},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 修改 -->
+	<update id="updateByPrimaryKey" parameterType="com.wml.springboot.entity.SecStaffDepartmentRole">
+		update sec_staff_department_role set
+		STAFF_ID = #{staffId, jdbcType=BIGINT},
+		DEPARTMENT_ID = #{departmentId, jdbcType=BIGINT},
+		ROLE_ID = #{roleId, jdbcType=BIGINT}
+		where STAFF_ID = #{staffId, jdbcType=BIGINT}
+	</update>
+
+	<!-- 修改 -->
+	<update id="updateByPrimaryKeySelective" parameterType="com.wml.springboot.entity.SecStaffDepartmentRole">
+		update sec_staff_department_role
+		<set>
+			<if test="staffId != null" >
+				STAFF_ID = #{staffId, jdbcType=BIGINT},
+			</if>
+			<if test="departmentId != null" >
+				DEPARTMENT_ID = #{departmentId, jdbcType=BIGINT},
+			</if>
+			<if test="roleId != null" >
+				ROLE_ID = #{roleId, jdbcType=BIGINT},
+			</if>
+		</set>
+		where STAFF_ID = #{staffId, jdbcType=BIGINT}
+	</update>
+
+</mapper>

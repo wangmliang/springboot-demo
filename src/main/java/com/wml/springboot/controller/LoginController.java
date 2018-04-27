@@ -34,7 +34,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public String login(@Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
+        /*if (bindingResult.hasErrors()) {
             return "login";
         }
         String loginName = user.getUserName();
@@ -73,7 +73,8 @@ public class LoginController {
         } else {
             token.clear();
             return "redirect:/login";
-        }
+        }*/
+        return "redirect:/index";
     }
 
     @GetMapping("/logout")
@@ -89,4 +90,8 @@ public class LoginController {
         return "index";
     }
 
+    @RequestMapping("/main.html")
+    public String main() {
+        return "main";
+    }
 }

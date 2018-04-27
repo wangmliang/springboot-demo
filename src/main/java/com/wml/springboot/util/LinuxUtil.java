@@ -1,9 +1,9 @@
 /*
  * LinuxUtil.java
- * ÉîÛÚÊĞ»¥ÀÂÖÚÁª¿Æ¼¼ÓĞÏŞ¹«Ë¾
+ * æ·±åœ³å¸‚äº’ç¼†ä¼—è”ç§‘æŠ€æœ‰é™å…¬å¸
  * All rights reserved.
  * -----------------------------------------------
- * 2018Äê4ÔÂ19ÈÕ ÏÂÎç4:24:48 Created
+ * 2018å¹´4æœˆ19æ—¥ ä¸‹åˆ4:24:48 Created
  */
 package com.wml.springboot.util;
 
@@ -22,12 +22,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * LinuxÔ¶³Ì²Ù×÷¹¤¾ßÀà
+ * Linuxè¿œç¨‹æ“ä½œå·¥å…·ç±»
  * <pre>
- * <b>@ClassName£º</b>LinuxUtil.java<br/>
- * <b>@author£º</b>Miles<br/>
- * <b>@E-mail£º</b>miles@lan360.com<br/>
- * <b>@date£º</b>2018Äê4ÔÂ19ÈÕ - ÏÂÎç4:24:48<br/>  
+ * <b>@ClassNameï¼š</b>LinuxUtil.java<br/>
+ * <b>@authorï¼š</b>Miles<br/>
+ * <b>@E-mailï¼š</b>miles@lan360.com<br/>
+ * <b>@dateï¼š</b>2018å¹´4æœˆ19æ—¥ - ä¸‹åˆ4:24:48<br/>  
  * <b>@version V1.0</b></br/>
  * <b>Copyright (c) 2018 ASPire Tech.</b>
  * </pre>
@@ -36,46 +36,46 @@ public class LinuxUtil {
 
 	private static Logger logger = LoggerFactory.getLogger(LinuxUtil.class);
 
-	// Ä¬ÈÏÎÄ¼şÃû³Æ
+	// é»˜è®¤æ–‡ä»¶åç§°
 	public static final String SSR_FILE_NAME = "shadowsocks.json";
-	// Ä¬ÈÏÎÄ¼ş´æ´¢Ä¿Â¼
+	// é»˜è®¤æ–‡ä»¶å­˜å‚¨ç›®å½•
 	public static final String LINUX_FINT_DIRECTORY = "/etc/" + SSR_FILE_NAME;
-	// Ä¬ÈÏÌí¼ÓÕËºÅ´æ´¢Î»ÖÃ(ÔÚÕâ¸öÕËºÅÇ°Ãæ)
+	// é»˜è®¤æ·»åŠ è´¦å·å­˜å‚¨ä½ç½®(åœ¨è¿™ä¸ªè´¦å·å‰é¢)
 	public static final String DEFAULT_ACCOUNT_INFO = "\t\t\"-999\": \"wml_test\"";
 
 	/**
-	 * ÅäÖÃÎÄ¼şÂ·¾¶£º/etc/shadowsocks.json
-	 * ÈÕÖ¾ÎÄ¼şÂ·¾¶£º/var/log/shadowsocks.log
+	 * é…ç½®æ–‡ä»¶è·¯å¾„ï¼š/etc/shadowsocks.json
+	 * æ—¥å¿—æ–‡ä»¶è·¯å¾„ï¼š/var/log/shadowsocks.log
 	 */
-	/** Æô¶¯ */
+	/** å¯åŠ¨ */
 	public static final String START_SERVICE = "/etc/init.d/shadowsocks start";
-	/** Í£Ö¹ */
+	/** åœæ­¢ */
 	public static final String STOP_SERVICE = "/etc/init.d/shadowsocks stop";
-	/** ÖØÆô */
+	/** é‡å¯ */
 	public static final String RESTART_SERVICE = "/etc/init.d/shadowsocks restart";
-	/** ×´Ì¬ */
+	/** çŠ¶æ€ */
 	public static final String STATUS_SERVICE = "/etc/init.d/shadowsocks status";
 
-	// ×Ö·û±àÂëÄ¬ÈÏÊÇutf-8
+	// å­—ç¬¦ç¼–ç é»˜è®¤æ˜¯utf-8
 	private static String DEFAULTCHART = "UTF-8";
 
 	/**
-	 * Á¬½Ó¶ÔÏó
+	 * è¿æ¥å¯¹è±¡
 	 */
 	private Connection conn;
 
 	/**
-	 * IPµØÖ·
+	 * IPåœ°å€
 	 */
 	private String ip;
 
 	/**
-	 * ÓÃ»§Ãû
+	 * ç”¨æˆ·å
 	 */
 	private String userName;
 
 	/**
-	 * µÇÂ¼ÃÜÂë
+	 * ç™»å½•å¯†ç 
 	 */
 	private String userPwd;
 
@@ -126,39 +126,39 @@ public class LinuxUtil {
 	}
 
 	/**
-	 * Ô¶³ÌµÇÂ¼linuxµÄÖ÷»ú
+	 * è¿œç¨‹ç™»å½•linuxçš„ä¸»æœº
 	 * @author wml
 	 * @since V0.1
-	 * @return µÇÂ¼³É¹¦·µ»Øtrue£¬·ñÔò·µ»Øfalse
+	 * @return ç™»å½•æˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›false
 	 */
 	public Boolean login() {
 		boolean flg = false;
 		try {
-			// Á¬½Ó»á»°Îªnull±êÊ¶Ã»ÓĞ½¨Á¢Á¬½Ó
+			// è¿æ¥ä¼šè¯ä¸ºnullæ ‡è¯†æ²¡æœ‰å»ºç«‹è¿æ¥
 			conn = new Connection(ip);
-			conn.connect();// Á¬½Ó
-			flg = conn.authenticateWithPassword(userName, userPwd);// ÈÏÖ¤
+			conn.connect();// è¿æ¥
+			flg = conn.authenticateWithPassword(userName, userPwd);// è®¤è¯
 		} catch (IOException e) {
-			logger.error("Ô¶³ÌµÇÂ¼·şÎñÆ÷Ê§°Ü£º" + e.getMessage(), e);
+			logger.error("è¿œç¨‹ç™»å½•æœåŠ¡å™¨å¤±è´¥ï¼š" + e.getMessage(), e);
 		}
 		return flg;
 	}
 
 	/**
-	 * Ô¶³ÌÖ´ĞĞshll½Å±¾»òÕßÃüÁî
+	 * è¿œç¨‹æ‰§è¡Œshllè„šæœ¬æˆ–è€…å‘½ä»¤
 	 * @author Wml
-	 * @param cmd ¼´½«Ö´ĞĞµÄÃüÁî
-	 * @return ÃüÁîÖ´ĞĞÍêºó·µ»ØµÄ½á¹ûÖµ
+	 * @param cmd å³å°†æ‰§è¡Œçš„å‘½ä»¤
+	 * @return å‘½ä»¤æ‰§è¡Œå®Œåè¿”å›çš„ç»“æœå€¼
 	 * @since V0.1
 	 */
 	public String execute(String cmd) {
 		String result = "";
 		try {
 			if (login()) {
-				Session session = conn.openSession();// ´ò¿ªÒ»¸ö»á»°
-				session.execCommand(cmd);// Ö´ĞĞÃüÁî
+				Session session = conn.openSession();// æ‰“å¼€ä¸€ä¸ªä¼šè¯
+				session.execCommand(cmd);// æ‰§è¡Œå‘½ä»¤
 				result = processStdout(session.getStdout(), DEFAULTCHART);
-				// Èç¹ûÎªµÃµ½±ê×¼Êä³öÎª¿Õ£¬ËµÃ÷½Å±¾Ö´ĞĞ³ö´íÁË
+				// å¦‚æœä¸ºå¾—åˆ°æ ‡å‡†è¾“å‡ºä¸ºç©ºï¼Œè¯´æ˜è„šæœ¬æ‰§è¡Œå‡ºé”™äº†
 				if (StringUtils.isBlank(result)) {
 					result = processStdout(session.getStderr(), DEFAULTCHART);
 				}
@@ -172,18 +172,18 @@ public class LinuxUtil {
 	}
 
 	/**
-	 * Ô¶³ÌÖ´ĞĞshll½Å±¾»òÕßÃüÁî
+	 * è¿œç¨‹æ‰§è¡Œshllè„šæœ¬æˆ–è€…å‘½ä»¤
 	 * @author Wml
-	 * @param cmd ¼´½«Ö´ĞĞµÄÃüÁî
-	 * @return ÃüÁîÖ´ĞĞ³É¹¦ºó·µ»ØµÄ½á¹ûÖµ£¬Èç¹ûÃüÁîÖ´ĞĞÊ§°Ü£¬·µ»Ø¿Õ×Ö·û´®£¬²»ÊÇnull
+	 * @param cmd å³å°†æ‰§è¡Œçš„å‘½ä»¤
+	 * @return å‘½ä»¤æ‰§è¡ŒæˆåŠŸåè¿”å›çš„ç»“æœå€¼ï¼Œå¦‚æœå‘½ä»¤æ‰§è¡Œå¤±è´¥ï¼Œè¿”å›ç©ºå­—ç¬¦ä¸²ï¼Œä¸æ˜¯null
 	 * @since V0.1
 	 */
 	public String executeSuccess(String cmd) {
 		String result = "";
 		try {
 			if (login()) {
-				Session session = conn.openSession();// ´ò¿ªÒ»¸ö»á»°
-				session.execCommand(cmd);// Ö´ĞĞÃüÁî
+				Session session = conn.openSession();// æ‰“å¼€ä¸€ä¸ªä¼šè¯
+				session.execCommand(cmd);// æ‰§è¡Œå‘½ä»¤
 				result = processStdout(session.getStdout(), DEFAULTCHART);
 				conn.close();
 				session.close();
@@ -195,12 +195,12 @@ public class LinuxUtil {
 	}
 
 	/**
-	 * ½âÎö½Å±¾Ö´ĞĞ·µ»ØµÄ½á¹û¼¯
+	 * è§£æè„šæœ¬æ‰§è¡Œè¿”å›çš„ç»“æœé›†
 	 * @author Wml
-	 * @param in ÊäÈëÁ÷¶ÔÏó
-	 * @param charset ±àÂë
+	 * @param in è¾“å…¥æµå¯¹è±¡
+	 * @param charset ç¼–ç 
 	 * @since V0.1
-	 * @return ÒÔ´¿ÎÄ±¾µÄ¸ñÊ½·µ»Ø
+	 * @return ä»¥çº¯æ–‡æœ¬çš„æ ¼å¼è¿”å›
 	 */
 	private String processStdout(InputStream in, String charset) {
 		InputStream stdout = new StreamGobbler(in);
@@ -228,9 +228,9 @@ public class LinuxUtil {
 	}
 
 	/**
-	 * Ô¶³Ì»ñÈ¡·şÎñÆ÷ÎÄ¼ş
-	 * @param remoteFile	·şÎñÆ÷ÎÄ¼şÄ¿Â¼
-	 * @param localTargetDirectory ±¾µØ´æ·ÅÄ¿Â¼(ĞèÒªÏÈ´´½¨)
+	 * è¿œç¨‹è·å–æœåŠ¡å™¨æ–‡ä»¶
+	 * @param remoteFile	æœåŠ¡å™¨æ–‡ä»¶ç›®å½•
+	 * @param localTargetDirectory æœ¬åœ°å­˜æ”¾ç›®å½•(éœ€è¦å…ˆåˆ›å»º)
 	 */
 	public void getFile(String remoteFile, String localTargetDirectory) {
 		try {
@@ -240,14 +240,14 @@ public class LinuxUtil {
 				conn.close();
 			}
 		} catch (IOException e) {
-			logger.error("Ô¶³Ì¶ÁÈ¡ÎÄ¼şÒì³££º" + e.getMessage(), e);
+			logger.error("è¿œç¨‹è¯»å–æ–‡ä»¶å¼‚å¸¸ï¼š" + e.getMessage(), e);
 		}
 	}
 
 	/**
-	 * ÉÏ´«ÎÄ¼ş
-	 * @param localFile	±¾µØÎÄ¼ş
-	 * @param remoteTargetDirectory	·şÎñÆ÷Ä¿Â¼
+	 * ä¸Šä¼ æ–‡ä»¶
+	 * @param localFile	æœ¬åœ°æ–‡ä»¶
+	 * @param remoteTargetDirectory	æœåŠ¡å™¨ç›®å½•
 	 */
 	public void putFile(String localFile, String remoteTargetDirectory) {
 		try {
@@ -257,16 +257,16 @@ public class LinuxUtil {
 				conn.close();
 			}
 		} catch (IOException e) {
-			logger.error("Ô¶³ÌÉÏ´«ÎÄ¼şÒì³££º" + e.getMessage(), e);
+			logger.error("è¿œç¨‹ä¸Šä¼ æ–‡ä»¶å¼‚å¸¸ï¼š" + e.getMessage(), e);
 		}
 	}
 
 
 	/**
-	 * ÉÏ´«ÎÄ¼ş
-	 * @param localFile	±¾µØÎÄ¼ş
-	 * @param remoteFileName	´ı¸üĞÂÎÄ¼şÃû
-	 * @param remoteTargetDirectory	·şÎñÆ÷Ä¿Â¼
+	 * ä¸Šä¼ æ–‡ä»¶
+	 * @param localFile	æœ¬åœ°æ–‡ä»¶
+	 * @param remoteFileName	å¾…æ›´æ–°æ–‡ä»¶å
+	 * @param remoteTargetDirectory	æœåŠ¡å™¨ç›®å½•
 	 * @param mode
 	 */
 	public void putFile(String localFile, String remoteFileName,String remoteTargetDirectory,String mode) {
@@ -278,47 +278,47 @@ public class LinuxUtil {
 				}
 				client.put(localFile, remoteFileName, remoteTargetDirectory, mode);
 
-				//ÖØÃüÃû
+				//é‡å‘½å
 				ch.ethz.ssh2.Session sess = conn.openSession();
 				String tmpPathName = remoteTargetDirectory + File.separator + remoteFileName;
 				String newPathName = tmpPathName.substring(0, tmpPathName.lastIndexOf("."));
-				sess.execCommand("mv " + remoteFileName + " " + newPathName);//ÖØÃüÃû»ØÀ´
+				sess.execCommand("mv " + remoteFileName + " " + newPathName);//é‡å‘½åå›æ¥
 
 				conn.close();
 			}
 		} catch (IOException e) {
-			logger.error("Ô¶³ÌÉÏ´«ÎÄ¼şÒì³££º" + e.getMessage(), e);
+			logger.error("è¿œç¨‹ä¸Šä¼ æ–‡ä»¶å¼‚å¸¸ï¼š" + e.getMessage(), e);
 		}
 	}
 
 	/**
-	 * ¶ÁĞ´ÎÄ¼ş
-	 * @param file		ÎÄ¼şÄ¿Â¼
-	 * @param newStr	´ıÌí¼ÓÕËºÅĞÅÏ¢
+	 * è¯»å†™æ–‡ä»¶
+	 * @param file		æ–‡ä»¶ç›®å½•
+	 * @param newStr	å¾…æ·»åŠ è´¦å·ä¿¡æ¯
 	 * @return
 	 */
 	public static boolean modifyFileContent(String file, String newStr) {
 		try {
-			/* ¶ÁÈëTXTÎÄ¼ş */
-			FileReader reader = new FileReader(file);//¶¨ÒåÒ»¸öfileReader¶ÔÏó£¬ÓÃÀ´³õÊ¼»¯BufferedReader
-			BufferedReader bReader = new BufferedReader(reader);//newÒ»¸öBufferedReader¶ÔÏó£¬½«ÎÄ¼şÄÚÈİ¶ÁÈ¡µ½»º´æ
-			StringBuilder sb = new StringBuilder();//¶¨ÒåÒ»¸ö×Ö·û´®»º´æ£¬½«×Ö·û´®´æ·Å»º´æÖĞ
+			/* è¯»å…¥TXTæ–‡ä»¶ */
+			FileReader reader = new FileReader(file);//å®šä¹‰ä¸€ä¸ªfileReaderå¯¹è±¡ï¼Œç”¨æ¥åˆå§‹åŒ–BufferedReader
+			BufferedReader bReader = new BufferedReader(reader);//newä¸€ä¸ªBufferedReaderå¯¹è±¡ï¼Œå°†æ–‡ä»¶å†…å®¹è¯»å–åˆ°ç¼“å­˜
+			StringBuilder sb = new StringBuilder();//å®šä¹‰ä¸€ä¸ªå­—ç¬¦ä¸²ç¼“å­˜ï¼Œå°†å­—ç¬¦ä¸²å­˜æ”¾ç¼“å­˜ä¸­
 			String s = "";
-			while ((s =bReader.readLine()) != null) {//ÖğĞĞ¶ÁÈ¡ÎÄ¼şÄÚÈİ£¬²»¶ÁÈ¡»»ĞĞ·ûºÍÄ©Î²µÄ¿Õ¸ñ
-				sb.append(s + "\n");//½«¶ÁÈ¡µÄ×Ö·û´®Ìí¼Ó»»ĞĞ·ûºóÀÛ¼Ó´æ·ÅÔÚ»º´æÖĞ
+			while ((s =bReader.readLine()) != null) {//é€è¡Œè¯»å–æ–‡ä»¶å†…å®¹ï¼Œä¸è¯»å–æ¢è¡Œç¬¦å’Œæœ«å°¾çš„ç©ºæ ¼
+				sb.append(s + "\n");//å°†è¯»å–çš„å­—ç¬¦ä¸²æ·»åŠ æ¢è¡Œç¬¦åç´¯åŠ å­˜æ”¾åœ¨ç¼“å­˜ä¸­
 			}
 			bReader.close();
-			// Ìæ»»ÎÄ±¾£¬Ìí¼ÓÕËºÅ
+			// æ›¿æ¢æ–‡æœ¬ï¼Œæ·»åŠ è´¦å·
 			String configTxt = sb.toString();
 			configTxt = configTxt.replace(DEFAULT_ACCOUNT_INFO, newStr);
 
-			/* Ğ´ÈëTxtÎÄ¼ş*/
-			File writename = new File(file); // Ïà¶ÔÂ·¾¶£¬Èç¹ûÃ»ÓĞÔòÒª½¨Á¢Ò»¸öĞÂµÄoutput¡£txtÎÄ¼ş
-			// writename.createNewFile(); // ´´½¨ĞÂÎÄ¼ş
+			/* å†™å…¥Txtæ–‡ä»¶*/
+			File writename = new File(file); // ç›¸å¯¹è·¯å¾„ï¼Œå¦‚æœæ²¡æœ‰åˆ™è¦å»ºç«‹ä¸€ä¸ªæ–°çš„outputã€‚txtæ–‡ä»¶
+			// writename.createNewFile(); // åˆ›å»ºæ–°æ–‡ä»¶
 			BufferedWriter out = new BufferedWriter(new FileWriter(writename));
-			out.write(configTxt); // \r\n¼´Îª»»ĞĞ
-			out.flush(); // °Ñ»º´æÇøÄÚÈİÑ¹ÈëÎÄ¼ş
-			out.close(); // ×îºó¼ÇµÃ¹Ø±ÕÎÄ¼ş
+			out.write(configTxt); // \r\nå³ä¸ºæ¢è¡Œ
+			out.flush(); // æŠŠç¼“å­˜åŒºå†…å®¹å‹å…¥æ–‡ä»¶
+			out.close(); // æœ€åè®°å¾—å…³é—­æ–‡ä»¶
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -330,7 +330,7 @@ public class LinuxUtil {
 	}
 
 	/**
-	 * ¶ÁÈ¡ÎÄ¼şÄ¿Â¼¼ĞÁĞ±í
+	 * è¯»å–æ–‡ä»¶ç›®å½•å¤¹åˆ—è¡¨
 	 * @param dir
 	 * @return
 	 */
@@ -349,12 +349,12 @@ public class LinuxUtil {
 	public static int number = 0;
 
 	/**
-	 * SSR²Ù×÷·äÃÛ
-	 * @param ip	·şÎñÆ÷Id
-	 * @param userName	·şÎñÆ÷ÓÃ»§Ãû
-	 * @param password	·şÎñÆ÷ÃÜÂë
-	 * @param ssrPort		SSR¶Ë¿Ú
-	 * @param ssrPassword	SSRÃÜÂë
+	 * SSRæ“ä½œèœ‚èœœ
+	 * @param ip	æœåŠ¡å™¨Id
+	 * @param userName	æœåŠ¡å™¨ç”¨æˆ·å
+	 * @param password	æœåŠ¡å™¨å¯†ç 
+	 * @param ssrPort		SSRç«¯å£
+	 * @param ssrPassword	SSRå¯†ç 
 	 */
 	public static void ssrOperating(String ip, String userName, String password, String ssrPort, String ssrPassword) {
 		boolean flag = false;
@@ -366,37 +366,37 @@ public class LinuxUtil {
 			rec = new LinuxUtil(ip, userName, password);
 			backFileName = "/shadowsocks_" + getTime(2) + ".json";
 
-			// ´´½¨±¸·İÎÄ¼ş±¨´íÄ¿Â¼(²»´æÔÚÔò´´½¨)
+			// åˆ›å»ºå¤‡ä»½æ–‡ä»¶æŠ¥é”™ç›®å½•(ä¸å­˜åœ¨åˆ™åˆ›å»º)
 			rec.execute("mkdir " + backDir);
-			// ±¸·İ²Ù×÷Ç°ÅäÖÃÎÄ¼ş
+			// å¤‡ä»½æ“ä½œå‰é…ç½®æ–‡ä»¶
 			rec.executeSuccess("cp /etc/shadowsocks.json " + backDir + backFileName);
 
-			//Ö´ĞĞÃüÁî
+			//æ‰§è¡Œå‘½ä»¤
 			rec.getFile("/etc/shadowsocks.json", "C://wml");
 
 			String str = "\t\t\"" + ssrPort + "\": \"" + ssrPassword + "\",\n" + DEFAULT_ACCOUNT_INFO;
 			modifyFileContent("c://wml/" + SSR_FILE_NAME, str);
 
-			// ÖØĞÂÉÏ´«ÅäÖÃÎÄ¼ş
+			// é‡æ–°ä¸Šä¼ é…ç½®æ–‡ä»¶
 			rec.putFile("c://wml/" + SSR_FILE_NAME, "/etc");
 			number++;
 
-			// ÖØÆôSSR·şÎñ
+			// é‡å¯SSRæœåŠ¡
 			rec.execute(RESTART_SERVICE);
 		} catch(Exception e) {
 			flag = true;
 			logger.error(e.getMessage(), e);
 		} finally {
-			// ·¢ÉúÒì³£»Ø¹öµ±Ç°²Ù×÷Ïî
+			// å‘ç”Ÿå¼‚å¸¸å›æ»šå½“å‰æ“ä½œé¡¹
 			if(flag && number >= 1) {
-				// »Ø¹öµ±Ç°SSRÅäÖÃ
+				// å›æ»šå½“å‰SSRé…ç½®
 				callbackSSR(backFileName, backDir, rec);
 			}
 		}
 	}
 
 	/**
-	 * »Ø¹öµ±Ç°²Ù×÷Ïî
+	 * å›æ»šå½“å‰æ“ä½œé¡¹
 	 * @param backFileName
 	 * @param backDir
 	 * @param linuxUtil
@@ -405,18 +405,18 @@ public class LinuxUtil {
 		if(null == linuxUtil)
 			return;
 
-		// É¾³ıµ±Ç°ÅäÖÃÎÄ¼ş
+		// åˆ é™¤å½“å‰é…ç½®æ–‡ä»¶
 		linuxUtil.executeSuccess("rm -f /etc/shadowsocks.json");
 
-		// »¹Ô­ConfigÎÄ¼ş
+		// è¿˜åŸConfigæ–‡ä»¶
 		linuxUtil.executeSuccess("cp " + (StringUtils.isBlank(backDir) ? backFileName : backDir  + backFileName) + " /etc/shadowsocks.json");
 
-		// ÖØÆô·şÎñ
+		// é‡å¯æœåŠ¡
 		linuxUtil.execute(RESTART_SERVICE);
 	}
 
 	/**
-	 * Ö¸¶¨°æ±¾»¹Ô­SRÅäÖÃ
+	 * æŒ‡å®šç‰ˆæœ¬è¿˜åŸSRé…ç½®
 	 * @param version
 	 */
 	public void reductionSSR(String version) {
@@ -424,7 +424,7 @@ public class LinuxUtil {
 	}
 
 	/**
-	 * »ñÈ¡ÏµÍ³Ê±¼ä
+	 * è·å–ç³»ç»Ÿæ—¶é—´
 	 * @return
 	 */
 	public static String getTime(Integer type) {

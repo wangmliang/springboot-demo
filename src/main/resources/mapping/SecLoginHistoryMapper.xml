@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wml.springboot.mapper.SecLoginHistoryMapper">
+	<!-- 实体映射 -->
+	<resultMap type="com.wml.springboot.entity.SecLoginHistory" id="BaseResultMap">
+		<!-- 成员ID -->
+		<id column="STAFF_ID" property="staffId" jdbcType="BIGINT"/>
+		<!-- 登录时间 -->
+		<result column="LOGIN_TIME" property="loginTime" jdbcType="TIMESTAMP"/>
+		<!-- LOGOUT：注销；SUCCESS：登录成功；FAIL：登录失败；TIMEOUT：用户超时；UNLOCK：解锁；AUTOLOCK：密码尝试过多被锁 -->
+		<result column="LOGIN_FLAG" property="loginFlag" jdbcType="VARCHAR"/>
+		<!-- 备注，现在用来记录用户登录密码尝试过多被锁前的用户状态 -->
+		<result column="DESCRIPTION" property="description" jdbcType="VARCHAR"/>
+
+	</resultMap>
+
+	<!-- 字段属性 -->
+	<sql id="Base_Column_List">
+		STAFF_ID,  LOGIN_TIME,  LOGIN_FLAG,  DESCRIPTION
+	</sql>
+
+	<!-- 分页列表查询  -->
+	<select id="getPageList" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sec_login_history
+		where 1 = 1
+		order by STAFF_ID desc
+	</select>
+
+	<!-- 根据主键STAFF_ID查询对应数据  -->
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="Long">
+		select
+		<include refid="Base_Column_List" />
+		from sec_login_history
+		where STAFF_ID = #{staffId, jdbcType=BIGINT}
+	</select>
+
+	<!-- 查询sec_login_history对象的数据集合 -->
+	<select id="selectAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sec_login_history
+	</select>
+
+	<!-- 根据主键 STAFF_ID删除对应数据 -->
+	<delete id="deleteByPrimaryKey" parameterType="Long">
+		delete from sec_login_history
+		where STAFF_ID = #{staffId, jdbcType=BIGINT}
+	</delete>
+
+	<!-- 批量删除 -->
+	<delete id="batchDelete" parameterType="java.util.Map">
+		delete from sec_login_history where 1 = 1
+		<if test="list != null">
+			and STAFF_ID in
+			<foreach item="tag" index="index" collection="list" open="(" separator="," close=")">
+				#{tag}
+			</foreach>
+		</if>
+	</delete>
+
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.wml.springboot.entity.SecLoginHistory" useGeneratedKeys="true" keyProperty="staffId">
+		insert into sec_login_history(STAFF_ID, LOGIN_TIME, LOGIN_FLAG, DESCRIPTION
+		)
+		values (#{staffId, jdbcType=BIGINT}, #{loginTime, jdbcType=TIMESTAMP}, #{loginFlag, jdbcType=VARCHAR}, #{description, jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<!-- 新增 -->
+	<insert id="insertSelective" parameterType="com.wml.springboot.entity.SecLoginHistory" useGeneratedKeys="true" keyProperty="staffId">
+		insert into sec_login_history
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="staffId != null" >
+				STAFF_ID,
+			</if>
+			<if test="loginTime != null" >
+				LOGIN_TIME,
+			</if>
+			<if test="loginFlag != null" >
+				LOGIN_FLAG,
+			</if>
+			<if test="description != null" >
+				DESCRIPTION,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="staffId != null" >
+				#{staffId, jdbcType=BIGINT},
+			</if>
+			<if test="loginTime != null" >
+				#{loginTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="loginFlag != null" >
+				#{loginFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="description != null" >
+				#{description, jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 修改 -->
+	<update id="updateByPrimaryKey" parameterType="com.wml.springboot.entity.SecLoginHistory">
+		update sec_login_history set
+		STAFF_ID = #{staffId, jdbcType=BIGINT},
+		LOGIN_TIME = #{loginTime, jdbcType=TIMESTAMP},
+		LOGIN_FLAG = #{loginFlag, jdbcType=VARCHAR},
+		DESCRIPTION = #{description, jdbcType=VARCHAR}
+		where STAFF_ID = #{staffId, jdbcType=BIGINT}
+	</update>
+
+	<!-- 修改 -->
+	<update id="updateByPrimaryKeySelective" parameterType="com.wml.springboot.entity.SecLoginHistory">
+		update sec_login_history
+		<set>
+			<if test="staffId != null" >
+				STAFF_ID = #{staffId, jdbcType=BIGINT},
+			</if>
+			<if test="loginTime != null" >
+				LOGIN_TIME = #{loginTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="loginFlag != null" >
+				LOGIN_FLAG = #{loginFlag, jdbcType=VARCHAR},
+			</if>
+			<if test="description != null" >
+				DESCRIPTION = #{description, jdbcType=VARCHAR},
+			</if>
+		</set>
+		where STAFF_ID = #{staffId, jdbcType=BIGINT}
+	</update>
+
+</mapper>

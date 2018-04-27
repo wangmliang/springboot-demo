@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wml.springboot.mapper.SecRoleResourceOperationMapper">
+	<!-- 实体映射 -->
+	<resultMap type="com.wml.springboot.entity.SecRoleResourceOperation" id="BaseResultMap">
+		<!-- 角色ID -->
+		<id column="ROLE_ID" property="roleId" jdbcType="BIGINT"/>
+		<!-- 资源ID -->
+		<result column="RESOURCE_ID" property="resourceId" jdbcType="BIGINT"/>
+		<!-- 资源操作关键字 -->
+		<result column="OPERATION_KEY" property="operationKey" jdbcType="VARCHAR"/>
+
+		<association property="secOperation"
+					 javaType="com.wml.springboot.entity.SecOperation"
+					 column="RESOURCE_ID"
+					 select="com.wml.springboot.mapper.SecOperationMapper.selectByPrimaryKey">
+		</association>
+		<association property="secRole"
+					 javaType="com.wml.springboot.entity.SecRole"
+					 column="ROLE_ID"
+					 select="com.wml.springboot.mapper.SecRoleMapper.selectByPrimaryKey">
+		</association>
+	</resultMap>
+
+	<!-- 字段属性 -->
+	<sql id="Base_Column_List">
+		ROLE_ID,  RESOURCE_ID,  OPERATION_KEY
+	</sql>
+
+	<!-- 分页列表查询  -->
+	<select id="getPageList" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sec_role_resource_operation
+		where 1 = 1
+		order by ROLE_ID desc
+	</select>
+
+	<!-- 根据主键ROLE_ID查询对应数据  -->
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="Long">
+		select
+		<include refid="Base_Column_List" />
+		from sec_role_resource_operation
+		where ROLE_ID = #{roleId, jdbcType=BIGINT}
+	</select>
+
+	<!-- 查询sec_role_resource_operation对象的数据集合 -->
+	<select id="selectAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sec_role_resource_operation
+	</select>
+
+	<!-- 根据主键 ROLE_ID删除对应数据 -->
+	<delete id="deleteByPrimaryKey" parameterType="Long">
+		delete from sec_role_resource_operation
+		where ROLE_ID = #{roleId, jdbcType=BIGINT}
+	</delete>
+
+	<!-- 批量删除 -->
+	<delete id="batchDelete" parameterType="java.util.Map">
+		delete from sec_role_resource_operation where 1 = 1
+		<if test="list != null">
+			and ROLE_ID in
+			<foreach item="tag" index="index" collection="list" open="(" separator="," close=")">
+				#{tag}
+			</foreach>
+		</if>
+	</delete>
+
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.wml.springboot.entity.SecRoleResourceOperation" useGeneratedKeys="true" keyProperty="roleId">
+		insert into sec_role_resource_operation(ROLE_ID, RESOURCE_ID, OPERATION_KEY )
+		values (#{roleId, jdbcType=BIGINT}, #{resourceId, jdbcType=BIGINT}, #{operationKey, jdbcType=VARCHAR} )
+	</insert>
+
+	<!-- 新增 -->
+	<insert id="insertSelective" parameterType="com.wml.springboot.entity.SecRoleResourceOperation" useGeneratedKeys="true" keyProperty="roleId">
+		insert into sec_role_resource_operation
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="roleId != null" >
+				ROLE_ID,
+			</if>
+			<if test="resourceId != null" >
+				RESOURCE_ID,
+			</if>
+			<if test="operationKey != null" >
+				OPERATION_KEY,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="roleId != null" >
+				#{roleId, jdbcType=BIGINT},
+			</if>
+			<if test="resourceId != null" >
+				#{resourceId, jdbcType=BIGINT},
+			</if>
+			<if test="operationKey != null" >
+				#{operationKey, jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 修改 -->
+	<update id="updateByPrimaryKey" parameterType="com.wml.springboot.entity.SecRoleResourceOperation">
+		update sec_role_resource_operation set
+		ROLE_ID = #{roleId, jdbcType=BIGINT},
+		RESOURCE_ID = #{resourceId, jdbcType=BIGINT},
+		OPERATION_KEY = #{operationKey, jdbcType=VARCHAR}
+		where ROLE_ID = #{roleId, jdbcType=BIGINT}
+	</update>
+
+	<!-- 修改 -->
+	<update id="updateByPrimaryKeySelective" parameterType="com.wml.springboot.entity.SecRoleResourceOperation">
+		update sec_role_resource_operation
+		<set>
+			<if test="roleId != null" >
+				ROLE_ID = #{roleId, jdbcType=BIGINT},
+			</if>
+			<if test="resourceId != null" >
+				RESOURCE_ID = #{resourceId, jdbcType=BIGINT},
+			</if>
+			<if test="operationKey != null" >
+				OPERATION_KEY = #{operationKey, jdbcType=VARCHAR},
+			</if>
+		</set>
+		where ROLE_ID = #{roleId, jdbcType=BIGINT}
+	</update>
+
+</mapper>

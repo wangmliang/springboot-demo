@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>组织结构树</title>
+    <link rel="stylesheet" th:href="@{/plugins/layui/css/layui.css}" media="all" />
+    <link rel="stylesheet" th:href="@{/plugins/font-awesome/css/font-awesome.min.css}" media="all" />
+    <link rel="stylesheet" th:href="@{/src/css/app.css}" media="all" />
+    <link rel="stylesheet" th:href="@{/src/css/themes/default.css}" media="all" id="skin" kit-skin />
+    <link rel="stylesheet" th:href="@{/js/zTree/zTreeStyle/zTreeStyle.css}" media="all" id="skin" kit-skin />
+</head>
+<body class="layui-layout-body">
+<ul id="treeDemo" class="ztree"></ul>
+
+<script th:src="@{/plugins/layui/layui.js}"></script>
+<script th:src="@{/js/jquery-1.9.1.min.js}"></script>
+<script th:src="@{/js/zTree/jquery.ztree.core.js}"></script>
+<script th:src="@{/js/zTree/jquery.ztree.excheck.js}"></script>
+<script>
+
+    var setting = {
+        check: {
+            enable: true
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        }
+    };
+
+    var zNodes =[
+        { id:1, pId:0, name:"随意勾选 1", open:true},
+        { id:11, pId:1, name:"随意勾选 1-1", open:true},
+        { id:111, pId:11, name:"随意勾选 1-1-1"},
+        { id:112, pId:11, name:"随意勾选 1-1-2"},
+        { id:12, pId:1, name:"随意勾选 1-2", open:true},
+        { id:121, pId:12, name:"随意勾选 1-2-1"},
+        { id:122, pId:12, name:"随意勾选 1-2-2"},
+        { id:2, pId:0, name:"随意勾选 2", checked:true, open:true},
+        { id:21, pId:2, name:"随意勾选 2-1"},
+        { id:22, pId:2, name:"随意勾选 2-2", open:true},
+        { id:221, pId:22, name:"随意勾选 2-2-1", checked:true},
+        { id:222, pId:22, name:"随意勾选 2-2-2"},
+        { id:23, pId:2, name:"随意勾选 2-3"}
+    ];
+
+    layui.config({
+        base: '../src/js/',
+        version: '1.0.1'
+    }).use([ 'layer'], function() {
+        var $ = layui.jquery;
+        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+    });
+
+    var setting = {
+        check: {
+            enable: true
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        }
+    };
+
+    var zNodes =[
+        { id:1, pId:0, name:"随意勾选 1", open:true},
+        { id:11, pId:1, name:"随意勾选 1-1", open:true},
+        { id:111, pId:11, name:"随意勾选 1-1-1"},
+        { id:112, pId:11, name:"随意勾选 1-1-2"},
+        { id:12, pId:1, name:"随意勾选 1-2", open:true},
+        { id:121, pId:12, name:"随意勾选 1-2-1"},
+        { id:122, pId:12, name:"随意勾选 1-2-2"},
+        { id:2, pId:0, name:"随意勾选 2", checked:true, open:true},
+        { id:21, pId:2, name:"随意勾选 2-1"},
+        { id:22, pId:2, name:"随意勾选 2-2", open:true},
+        { id:221, pId:22, name:"随意勾选 2-2-1", checked:true},
+        { id:222, pId:22, name:"随意勾选 2-2-2"},
+        { id:23, pId:2, name:"随意勾选 2-3"}
+    ];
+
+    $(document).ready(function () {
+       // $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+    })
+
+</script>
+</body>
+</html>

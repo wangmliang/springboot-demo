@@ -47,11 +47,29 @@ spring:
             max-idle: 8
             # 连接池中的最小空闲连接
             min-idle: 0
+
+    # jpa配置
     jpa:
         properties:
             hibernate:
                 hbm2ddl: auto=create-drop
 
+    # thymeleaf配置
+    thymeleaf:
+        prefix: classpath:/templates/
+        suffix: .html
+        mode: HTML5
+        encoding: UTF-8
+        content-type: text/html
+        cache: false
+    resources:
+        chain:
+            strategy:
+                content:
+                    enabled: true
+                    paths: /**
+        # 修改默认的静态资源存放目录
+        static-locations: classpath:/static/
 # mybatis配置
 mybatis:
   mapper-locations: classpath:mapping/*.xml

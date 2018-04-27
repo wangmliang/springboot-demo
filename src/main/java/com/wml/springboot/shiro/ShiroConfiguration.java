@@ -31,7 +31,7 @@ import java.util.Map;
  * <b>Copyright (c) 2018 ASPire Tech.</b>
  * </pre>
  */
-@Configuration
+// @Configuration
 public class ShiroConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(ShiroConfiguration.class);
 
@@ -63,6 +63,8 @@ public class ShiroConfiguration {
         // <!-- 过滤链定义，从上向下顺序执行，一般将 /**放在最为下边 -->:这是一个坑呢，一不小心代码就不好使了;
         // <!-- authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
         filterChainDefinitionMap.put("/login", "anon");//anon 可以理解为不拦截
+        filterChainDefinitionMap.put("/static/*", "anon");//anon 可以理解为不拦截
+        filterChainDefinitionMap.put("/src/*", "anon");//anon 可以理解为不拦截
         // 除了数据库配置这里还需要配置，太麻烦了0.0
         // filterChainDefinitionMap.put("/user/list", "roles[admin]");
         // filterChainDefinitionMap.put("/user/delete", "roles[test]");

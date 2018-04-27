@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wml.springboot.mapper.SecRoleMapper">
+	<!-- 实体映射 -->
+	<resultMap type="com.wml.springboot.entity.SecRole" id="BaseResultMap">
+		<!-- 角色ID -->
+		<id column="ROLE_ID" property="roleId" jdbcType="BIGINT"/>
+		<!-- 角色名称 -->
+		<result column="ROLE_NAME" property="roleName" jdbcType="VARCHAR"/>
+		<!-- 角色描述 -->
+		<result column="ROLE_DESC" property="roleDesc" jdbcType="VARCHAR"/>
+		<!-- 角色创建者 -->
+		<result column="CREATE_USER" property="createUser" jdbcType="VARCHAR"/>
+		<!-- 角色创建时间 -->
+		<result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP"/>
+		<!-- 是否允许修改 1：允许 0: 不充许 缺省=1 -->
+		<result column="CAN_MODIFY" property="canModify" jdbcType="INTEGER"/>
+		<!-- 角色最后修改时间 -->
+		<result column="LAST_UPDATE_DATE" property="lastUpdateDate" jdbcType="TIMESTAMP"/>
+		<!-- 角色外码 -->
+		<result column="ROLE_KEY" property="roleKey" jdbcType="VARCHAR"/>
+		<!-- 自动分配(0:不自动分配；1：自动分配给所有注册成员) -->
+		<result column="AUTO_ASSIGN" property="autoAssign" jdbcType="INTEGER"/>
+		<!-- 是否在界面上可见(0：不可见；1：可见) -->
+		<result column="visible" property="visible" jdbcType="INTEGER"/>
+
+	</resultMap>
+
+	<!-- 字段属性 -->
+	<sql id="Base_Column_List">
+		ROLE_ID,  ROLE_NAME,  ROLE_DESC,  CREATE_USER,  CREATE_DATE,  CAN_MODIFY,
+		LAST_UPDATE_DATE,  ROLE_KEY,  AUTO_ASSIGN,  visible
+	</sql>
+
+	<!-- 分页列表查询  -->
+	<select id="getPageList" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sec_role
+		where 1 = 1
+		order by ROLE_ID desc
+	</select>
+
+	<!-- 根据主键ROLE_ID查询对应数据  -->
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="Long">
+		select
+		<include refid="Base_Column_List" />
+		from sec_role
+		where ROLE_ID = #{roleId, jdbcType=BIGINT}
+	</select>
+
+	<!-- 查询sec_role对象的数据集合 -->
+	<select id="selectAll" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sec_role
+	</select>
+
+	<!-- 根据主键 ROLE_ID删除对应数据 -->
+	<delete id="deleteByPrimaryKey" parameterType="Long">
+		delete from sec_role
+		where ROLE_ID = #{roleId, jdbcType=BIGINT}
+	</delete>
+
+	<!-- 批量删除 -->
+	<delete id="batchDelete" parameterType="java.util.Map">
+		delete from sec_role where 1 = 1
+		<if test="list != null">
+			and ROLE_ID in
+			<foreach item="tag" index="index" collection="list" open="(" separator="," close=")">
+				#{tag}
+			</foreach>
+		</if>
+	</delete>
+
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.wml.springboot.entity.SecRole" useGeneratedKeys="true" keyProperty="roleId">
+		insert into sec_role(ROLE_ID, ROLE_NAME, ROLE_DESC, CREATE_USER,
+		CREATE_DATE, CAN_MODIFY, LAST_UPDATE_DATE,
+		ROLE_KEY, AUTO_ASSIGN, visible
+		)
+		values (#{roleId, jdbcType=BIGINT}, #{roleName, jdbcType=VARCHAR}, #{roleDesc, jdbcType=VARCHAR}, #{createUser, jdbcType=VARCHAR},
+		#{createDate, jdbcType=TIMESTAMP}, #{canModify, jdbcType=INTEGER}, #{lastUpdateDate, jdbcType=TIMESTAMP},
+		#{roleKey, jdbcType=VARCHAR}, #{autoAssign, jdbcType=INTEGER}, #{visible, jdbcType=INTEGER}
+		)
+	</insert>
+
+	<!-- 新增 -->
+	<insert id="insertSelective" parameterType="com.wml.springboot.entity.SecRole" useGeneratedKeys="true" keyProperty="roleId">
+		insert into sec_role
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="roleId != null" >
+				ROLE_ID,
+			</if>
+			<if test="roleName != null" >
+				ROLE_NAME,
+			</if>
+			<if test="roleDesc != null" >
+				ROLE_DESC,
+			</if>
+			<if test="createUser != null" >
+				CREATE_USER,
+			</if>
+			<if test="createDate != null" >
+				CREATE_DATE,
+			</if>
+			<if test="canModify != null" >
+				CAN_MODIFY,
+			</if>
+			<if test="lastUpdateDate != null" >
+				LAST_UPDATE_DATE,
+			</if>
+			<if test="roleKey != null" >
+				ROLE_KEY,
+			</if>
+			<if test="autoAssign != null" >
+				AUTO_ASSIGN,
+			</if>
+			<if test="visible != null" >
+				visible,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="roleId != null" >
+				#{roleId, jdbcType=BIGINT},
+			</if>
+			<if test="roleName != null" >
+				#{roleName, jdbcType=VARCHAR},
+			</if>
+			<if test="roleDesc != null" >
+				#{roleDesc, jdbcType=VARCHAR},
+			</if>
+			<if test="createUser != null" >
+				#{createUser, jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null" >
+				#{createDate, jdbcType=TIMESTAMP},
+			</if>
+			<if test="canModify != null" >
+				#{canModify, jdbcType=INTEGER},
+			</if>
+			<if test="lastUpdateDate != null" >
+				#{lastUpdateDate, jdbcType=TIMESTAMP},
+			</if>
+			<if test="roleKey != null" >
+				#{roleKey, jdbcType=VARCHAR},
+			</if>
+			<if test="autoAssign != null" >
+				#{autoAssign, jdbcType=INTEGER},
+			</if>
+			<if test="visible != null" >
+				#{visible, jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 修改 -->
+	<update id="updateByPrimaryKey" parameterType="com.wml.springboot.entity.SecRole">
+		update sec_role set
+		ROLE_ID = #{roleId, jdbcType=BIGINT},
+		ROLE_NAME = #{roleName, jdbcType=VARCHAR},
+		ROLE_DESC = #{roleDesc, jdbcType=VARCHAR},
+		CREATE_USER = #{createUser, jdbcType=VARCHAR},
+		CREATE_DATE = #{createDate, jdbcType=TIMESTAMP},
+		CAN_MODIFY = #{canModify, jdbcType=INTEGER},
+		LAST_UPDATE_DATE = #{lastUpdateDate, jdbcType=TIMESTAMP},
+		ROLE_KEY = #{roleKey, jdbcType=VARCHAR},
+		AUTO_ASSIGN = #{autoAssign, jdbcType=INTEGER},
+		visible = #{visible, jdbcType=INTEGER}
+		where ROLE_ID = #{roleId, jdbcType=BIGINT}
+	</update>
+
+	<!-- 修改 -->
+	<update id="updateByPrimaryKeySelective" parameterType="com.wml.springboot.entity.SecRole">
+		update sec_role
+		<set>
+			<if test="roleId != null" >
+				ROLE_ID = #{roleId, jdbcType=BIGINT},
+			</if>
+			<if test="roleName != null" >
+				ROLE_NAME = #{roleName, jdbcType=VARCHAR},
+			</if>
+			<if test="roleDesc != null" >
+				ROLE_DESC = #{roleDesc, jdbcType=VARCHAR},
+			</if>
+			<if test="createUser != null" >
+				CREATE_USER = #{createUser, jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null" >
+				CREATE_DATE = #{createDate, jdbcType=TIMESTAMP},
+			</if>
+			<if test="canModify != null" >
+				CAN_MODIFY = #{canModify, jdbcType=INTEGER},
+			</if>
+			<if test="lastUpdateDate != null" >
+				LAST_UPDATE_DATE = #{lastUpdateDate, jdbcType=TIMESTAMP},
+			</if>
+			<if test="roleKey != null" >
+				ROLE_KEY = #{roleKey, jdbcType=VARCHAR},
+			</if>
+			<if test="autoAssign != null" >
+				AUTO_ASSIGN = #{autoAssign, jdbcType=INTEGER},
+			</if>
+			<if test="visible != null" >
+				visible = #{visible, jdbcType=INTEGER},
+			</if>
+		</set>
+		where ROLE_ID = #{roleId, jdbcType=BIGINT}
+	</update>
+
+</mapper>

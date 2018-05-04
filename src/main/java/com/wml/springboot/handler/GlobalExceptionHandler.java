@@ -1,6 +1,7 @@
 package com.wml.springboot.handler;
 
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
@@ -41,7 +43,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     /*@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)*/
-    public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
+     public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
         ModelAndView mav = new ModelAndView();
         String viewName = DEFAULT_ERROR_VIEW;
         HttpStatus status = getStatus(req);
@@ -58,6 +60,12 @@ public class GlobalExceptionHandler {
         return mav;
     }
 
+    @ExceptionHandler(value = UnauthorizedException.class)
+    /*@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)*/
+    public void unauthorizedErrorHandler(HttpServletRequest req, HttpServletResponse response, Exception e) throws Exception {
+        response.sendRedirect("/403");
+        return;
+    }
     /**
      *
      * @param e

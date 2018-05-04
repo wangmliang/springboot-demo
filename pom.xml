@@ -73,7 +73,7 @@
       <artifactId>commons-pool2</artifactId>
       <version>2.4.2</version>
     </dependency>
-    <dependency>
+    <!--<dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
     </dependency>
@@ -88,7 +88,7 @@
     <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-parameter-names</artifactId>
-    </dependency>
+    </dependency>-->
 
     <!-- 分页插件 -->
     <dependency>
@@ -119,6 +119,20 @@
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-spring</artifactId>
       <version>1.4.0</version>
+    </dependency>
+
+    <!-- t-io配置-->
+    <!-- https://mvnrepository.com/artifact/org.t-io/tio-core -->
+    <dependency>
+      <groupId>org.t-io</groupId>
+      <artifactId>tio-core</artifactId>
+      <version>2.2.0.v20180405-RELEASE</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.t-io</groupId>
+      <artifactId>tio-websocket-server</artifactId>
+      <version>0.1.0-tio-websocket</version>
     </dependency>
   </dependencies>
 

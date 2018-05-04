@@ -3,6 +3,7 @@ package com.wml.springboot.controller;
 import com.wml.springboot.entity.User;
 import com.wml.springboot.services.UserService;
 import com.wml.springboot.util.RedisService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ public class UserController {
      * @return
      * @throws Exception
      */
+    @RequiresPermissions("userInfo:add")
     @RequestMapping(value = "/get/{id}", produces = {"application/json;charset=UTF-8"})
     @ResponseBody
     public User findAllUser(@PathVariable("id") Integer id) throws Exception {
@@ -62,6 +64,7 @@ public class UserController {
         return userService.findAllUser(id);
     }
 
+    @RequiresPermissions("userInfo:del")
     @RequestMapping("/list")
     @ResponseBody
     public List<User> getAll(int pageNumber, int pageSize) {

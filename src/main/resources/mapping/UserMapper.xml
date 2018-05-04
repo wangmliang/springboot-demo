@@ -6,6 +6,8 @@
     <result column="user_name" property="userName" jdbcType="VARCHAR" />
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <collection property="roleList" ofType="com.wml.springboot.entity.SysRole"
+                select="com.wml.springboot.mapper.SysRoleMapper.getRoleById" column="id"></collection>
   </resultMap>
   <sql id="Base_Column_List" >
     user_id, user_name, password, phone

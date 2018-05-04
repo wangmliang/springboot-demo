@@ -19,7 +19,7 @@ import java.util.Set;
  * <b>Copyright (c) 2018 ASPire Tech.</b>
  * </pre>
  */
-// @Component
+@Component
 public class UserRealm extends AbstractUserRealm {
 
     @Override
@@ -27,6 +27,8 @@ public class UserRealm extends AbstractUserRealm {
         Set<String> userRoles = new HashSet<>();
         Set<String> userPermissions = new HashSet<>();
         //TODO 获取当前用户下拥有的所有角色列表,及权限
+        userRoles.add("admin");
+        userPermissions.add("userInfo:add");
         /*List<SysRole> roleList = userInfo.getRoleList();
         if(null != roleList && !roleList.isEmpty()) {
             roleList.forEach(role -> {
@@ -46,6 +48,8 @@ public class UserRealm extends AbstractUserRealm {
     public UserRolesAndPermissions doGetRoleAuthorizationInfo(User userInfo) {
         Set<String> userRoles = new HashSet<>();
         Set<String> userPermissions = new HashSet<>();
+        userRoles.add("admin");
+        userPermissions.add("userInfo:add");
         //TODO 获取当前用户下拥有的所有角色列表,及权限
         /*List<SysRole> roleList = userInfo.getRoleList();
         if(null != roleList && !roleList.isEmpty()) {

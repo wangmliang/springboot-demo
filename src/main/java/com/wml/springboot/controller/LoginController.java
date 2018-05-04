@@ -29,12 +29,12 @@ public class LoginController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login() {
-        return "login/login";
+        return "login";
     }
 
     @PostMapping("/login")
     public String login(@Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        /*if (bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             return "login";
         }
         String loginName = user.getUserName();
@@ -73,8 +73,8 @@ public class LoginController {
         } else {
             token.clear();
             return "redirect:/login";
-        }*/
-        return "redirect:/index";
+        }
+        //return "redirect:/index";
     }
 
     @GetMapping("/logout")
@@ -93,5 +93,10 @@ public class LoginController {
     @RequestMapping("/main.html")
     public String main() {
         return "main";
+    }
+
+    @RequestMapping("/403")
+    public String no() {
+        return "403";
     }
 }

@@ -7,6 +7,7 @@ import com.wml.springboot.auth.entity.Staff;
 import com.wml.springboot.auth.service.DepartmentService;
 import com.wml.springboot.auth.service.RoleService;
 import com.wml.springboot.auth.service.StaffService;
+import com.wml.springboot.util.LayerPage;
 import com.wml.springboot.util.StaffUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springside.modules.web.Servlets;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -190,13 +193,20 @@ public class DepartmentController extends BaseController {
 	 */
 	@RequestMapping({ "/listDepartmentRoles.ajax" })
 	@ResponseBody
-	public Map<String, ? extends Object> listDepartmentRoles(Long departmentId) {
+	public LayerPage<Role> listDepartmentRoles(HttpServletRequest request) {
+		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "");
+		LayerPage<Role> layerPage = null;
+		Long departmentId = Long.valueOf(searchParams.get("departmentId").toString());
 		try {
-			return page(this.departmentService.listDepartmentRoles(departmentId));
+			Integer page = Integer.valueOf(searchParams.get("page").toString());
+			Integer limit = Integer.valueOf(searchParams.get("limit").toString());
+			//layerPage = new LayerPage<Role>(this.departmentService.listDepartmentRoles(departmentId));
 		} catch (Exception e) {
 			LOGGER.error("根据[departmentId]=" + departmentId + ",查询角色出错", e);
-			return fail(e.getMessage());
+			layerPage.setCode(1);
+			layerPage.setMsg("请求错误");
 		}
+		return layerPage;
 	}
 
 	/**

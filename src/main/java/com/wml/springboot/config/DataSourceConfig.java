@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@MapperScan("com.wml.springboot.*.mapper")  // 指定Mapper目录，Mapper文件不需要重新设置@Mapper
+@MapperScan({"com.wml.springboot.mapper", "com.wml.springboot.auth.mapper"})  // 指定Mapper目录，Mapper文件不需要重新设置@Mapper
 @EnableTransactionManagement
 public class DataSourceConfig {
 

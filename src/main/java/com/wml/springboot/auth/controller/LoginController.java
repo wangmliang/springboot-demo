@@ -34,7 +34,7 @@ import java.util.Map;
  * <b>Copyright (c) 2016 ASPire Tech.</b>   
  * </pre>
  */
-@Controller
+@Controller("portalLogin")
 @RequestMapping({ "/portal" })
 public class LoginController extends BaseController {
 

@@ -229,7 +229,7 @@ public class DepartmentService {
 		}
 	}
 
-	public List<Role> listDepartmentRoles(Long departmentId) throws Exception {
+	public List<Role> listDepartmentRoles1(Long departmentId) throws Exception {
 		/*Page<Role> page = new Page<Role>();
 		page.setRows(Integer.valueOf(99999));*/
 		Map<String, Object> map = new HashMap<>();

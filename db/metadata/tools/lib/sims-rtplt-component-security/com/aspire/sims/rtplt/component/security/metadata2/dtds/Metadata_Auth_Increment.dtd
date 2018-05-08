@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- 元数据增量文件 DTD-->
+<!-- 元数据操作定义
+	placeholder：占位
+	upsert：修改或添加
+	delete：级联删除
+	delsert：删除并添加
+-->
+<!ELEMENT domain (resource-category+)>
+<!ELEMENT resource-category (resource-category*, resource*)>
+<!ELEMENT resource (operation*)>  
+<!ELEMENT operation (address+)>
+<!ELEMENT address (param1?, param2?, param3?)>
+<!ELEMENT param1 EMPTY>
+<!ELEMENT param2 EMPTY>
+<!ELEMENT param3 EMPTY>
+
+<!ATTLIST domain
+	subsystem CDATA #REQUIRED
+	oldSubsystem CDATA #IMPLIED
+	id CDATA #REQUIRED
+>
+<!ATTLIST resource-category
+	key CDATA #REQUIRED
+	name CDATA #REQUIRED
+	desc CDATA #IMPLIED
+	orderKey CDATA #IMPLIED
+	metadataOperation (placeholder| upsert | delete | delsert)  "upsert"
+>
+<!ATTLIST resource
+	key CDATA #REQUIRED
+	name CDATA #REQUIRED
+	desc CDATA #IMPLIED
+	authType CDATA #IMPLIED
+	orderKey CDATA #IMPLIED	
+	metadataOperation (placeholder | upsert | delete | delsert) "upsert"
+
+>
+<!ATTLIST operation
+	key CDATA #REQUIRED
+	name CDATA #REQUIRED
+	desc CDATA #IMPLIED	
+	depend CDATA #IMPLIED
+	orderKey CDATA #IMPLIED
+	metadataOperation (upsert | delete | delsert) "upsert"
+>
+<!ATTLIST address
+	name CDATA #REQUIRED
+	url CDATA #REQUIRED
+>
+<!ATTLIST param1
+	name CDATA #REQUIRED
+	value CDATA #REQUIRED
+>
+<!ATTLIST param2
+	name CDATA #REQUIRED
+	value CDATA #REQUIRED
+>
+<!ATTLIST param3
+	name CDATA #REQUIRED
+	value CDATA #REQUIRED
+> 
+
+
+	

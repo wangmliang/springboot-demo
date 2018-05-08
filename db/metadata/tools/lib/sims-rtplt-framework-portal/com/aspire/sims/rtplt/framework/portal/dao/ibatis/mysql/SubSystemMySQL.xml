@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!-- Always ensure to use the correct XML header as above! -->
+<sqlMap namespace="SubSystem">
+    <typeAlias alias="subSystem" type="com.aspire.sims.rtplt.framework.portal.pojo.SubSystem"/>
+    <resultMap id="subSystem_result" class="subSystem">
+        <result property="subSystemId" column="SUB_SYSTEM_ID"/>
+        <result property="subSystemName" column="SUB_SYSTEM_NAME"/>
+        <result property="subSystemDesc" column="SUB_SYSTEM_DESC"/>
+        <result property="hopDomain" column="HOP_DOMAIN"/>
+        <result property="domain" column="DOMAIN"/>
+    </resultMap>
+
+    <select id="SubSystem_findSubSystem" resultMap="subSystem_result" parameterClass="string">
+        <![CDATA[
+		    SELECT
+		            SUB_SYSTEM_ID, 
+		            SUB_SYSTEM_NAME, 
+		            SUB_SYSTEM_DESC, 
+		            HOP_DOMAIN,
+		            DOMAIN
+		    FROM SUB_SYSTEM WHERE SUB_SYSTEM_ID = #subSystemId#
+		]]>
+    </select>
+    
+    <select id="SubSystem_listSubSystem" resultMap="subSystem_result">
+        <![CDATA[
+		    SELECT
+		            SUB_SYSTEM_ID, 
+		            SUB_SYSTEM_NAME, 
+		            SUB_SYSTEM_DESC, 
+		            HOP_DOMAIN,
+		            DOMAIN
+		    FROM SUB_SYSTEM
+		]]>
+    </select>
+
+</sqlMap>

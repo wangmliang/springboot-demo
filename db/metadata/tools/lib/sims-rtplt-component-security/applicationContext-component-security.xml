@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans>
+    <!-- DAO Bean定义 -->
+    <bean id="secStaffDao" class="com.aspire.sims.rtplt.component.security.dao.ibatis.StaffDaoImpl">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClient"/>
+        </property>
+    </bean>
+    <bean id="secDepartmentDao" class="com.aspire.sims.rtplt.component.security.dao.ibatis.DepartmentDaoImpl">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClient"/>
+        </property>
+    </bean>
+    <bean id="secRoleDao" class="com.aspire.sims.rtplt.component.security.dao.ibatis.RoleDaoImpl">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClient"/>
+        </property>
+        <property name="resourceDao">
+            <ref local="secResourceDao"/>
+        </property>
+        <property name="operationDao">
+            <ref local="secOperationDao"/>
+        </property>
+    </bean>
+    <bean id="secResourceCategoryDao" class="com.aspire.sims.rtplt.component.security.dao.ibatis.ResourceCategoryDaoImpl">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClient"/>
+        </property>
+    </bean>
+    <bean id="secResourceDao" class="com.aspire.sims.rtplt.component.security.dao.ibatis.ResourceDaoImpl">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClient"/>
+        </property>
+    </bean>
+    <bean id="secOperationDao" class="com.aspire.sims.rtplt.component.security.dao.ibatis.OperationDaoImpl">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClient"/>
+        </property>
+    </bean>
+    <bean id="secOperationAddressDao" class="com.aspire.sims.rtplt.component.security.dao.ibatis.OperationAddressDaoImpl">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClient"/>
+        </property>
+    </bean>
+    <bean id="secMetadataDao" class="com.aspire.sims.rtplt.component.security.dao.ibatis.MetadataDaoImpl">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClient"/>
+        </property>
+        <property name="resourceCategoryDao">
+            <ref local="secResourceCategoryDao"/>
+        </property>
+        <property name="resourceDao">
+            <ref local="secResourceDao"/>
+        </property>
+        <property name="operationDao">
+            <ref local="secOperationDao"/>
+        </property>
+        <property name="operationAddressDao">
+            <ref local="secOperationAddressDao"/>
+        </property>
+    </bean>
+
+    <!-- 服务接口定义 -->
+    <bean id="securityInterface" class="com.aspire.sims.rtplt.component.security.impl.SecurityCachedImpl">
+        <property name="staffDao">
+            <ref local="secStaffDao"/>
+        </property>
+        <property name="departmentDao">
+            <ref local="secDepartmentDao"/>
+        </property>
+        <property name="resourceDao">
+            <ref local="secResourceDao"/>
+        </property>
+        <property name="operationDao">
+            <ref local="secOperationDao"/>
+        </property>
+        <property name="operationAddressDao">
+            <ref local="secOperationAddressDao"/>
+        </property>
+        <property name="roleDao">
+            <ref local="secRoleDao"/>
+        </property>
+        <property name="tmpIdDao">
+            <ref bean="basicTempDao"/>
+        </property>
+    </bean>    
+</beans>

@@ -1,11 +1,13 @@
 package com.wml.springboot.controller;
 
 import com.wml.springboot.entity.User;
+import com.wml.springboot.services.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,9 @@ import javax.validation.Valid;
 public class LoginController {
 
     private Logger logger = LoggerFactory.getLogger(LoginController.class);
+
+    @Autowired
+    public UserService userService;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login() {
@@ -66,6 +71,11 @@ public class LoginController {
             logger.info("对用户[" + loginName + "]进行登录验证..验证未通过,堆栈轨迹如下");
             redirectAttributes.addFlashAttribute("message", "用户名或密码不正确");
         }
+        User record = new User();
+        record.setUserName("wml");
+        record.setPassword("123456");
+        record.setPhone("15399705971");
+        // userService.insert(record);
         //验证是否登录成功
         if (currentUser.isAuthenticated()) {
             logger.info("用户[" + loginName + "]登录认证通过(这里可以进行一些认证通过后的一些系统参数初始化操作)");

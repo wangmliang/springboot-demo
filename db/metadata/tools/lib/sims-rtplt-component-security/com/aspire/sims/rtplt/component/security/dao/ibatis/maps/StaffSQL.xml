@@ -1,0 +1,1348 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!-- The SQL in these maps files has purposely been typed with more verbosity than is actually required.
+ For example, many of the selects could have just used SELECT * FROM... instead of listing all of the columns.
+ This is to demonstrate that even complex SQL can be handled and coded and formatted the way SQL was meant
+ to be (i.e. not a bunch of concatenated strings in a Java class). -->
+
+<sqlMap namespace="SecStaff">
+    <typeAlias alias="SecRole" type="com.aspire.sims.rtplt.component.security.pojo.Role"/>
+    <typeAlias alias="SecStaff" type="com.aspire.sims.rtplt.component.security.pojo.Staff"/>
+    <typeAlias alias="SecExtendProperty" type="com.aspire.sims.rtplt.component.security.pojo.ExtendProperty"/>
+    <typeAlias alias="SecLoginHistory" type="com.aspire.sims.rtplt.component.security.pojo.LoginHistory"/>
+    <typeAlias alias="SecPasswordHistory" type="com.aspire.sims.rtplt.component.security.pojo.PasswordHistory"/>
+
+
+    <resultMap id="SecStaffResult" class="SecStaff">
+        <result property="staffId" column="STAFF_ID"/>
+        <result property="loginName" column="LOGIN_NAME"/>
+        <result property="departmentId" column="DEPARTMENT_ID"/>
+        <result property="realName" column="REAL_NAME"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="status" column="STATUS"/>
+        <result property="sex" column="SEX"/>
+        <result property="telephone" column="TELEPHONE"/>
+        <result property="mobile" column="MOBILE"/>
+        <result property="email" column="EMAIL"/>
+        <result property="createUser" column="CREATE_USER"/>
+        <result property="createDate" column="CREATE_DATE"/>
+        <result property="expireDate" column="EXPIRE_DATE"/>
+        <result property="passwordExpireDate" column="PASSWORD_EXPIRE_DATE"/>
+        <result property="lockDate" column="LOCK_DATE"/>
+        <result property="lastUpdateDate" column="LAST_UPDATE_DATE"/>
+        <result property="cityId" column="CITY_ID"/>
+    </resultMap>
+
+    <resultMap id="SecStaffExtendPropertyResult" class="SecExtendProperty">
+        <result property="id" column="STAFF_ID"/>
+        <result property="property" column="PROPERTY"/>
+        <result property="value" column="VALUE"/>
+    </resultMap>
+
+    <resultMap id="SecLoginHistoryResult" class="SecLoginHistory">
+        <result property="staffId" column="STAFF_ID"/>
+        <result property="loginTime" column="LOGIN_TIME"/>
+        <result property="loginFlag" column="LOGIN_FLAG"/>
+        <result property="description" column="DESCRIPTION"/>
+    </resultMap>
+
+    <resultMap id="SecPasswordHistoryResult" class="SecPasswordHistory">
+        <result property="staffId" column="STAFF_ID"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="updateDate" column="UPDATE_DATE"/>
+    </resultMap>
+
+    <!--add by WUFAN 080819  -->
+    <resultMap id="StaffListHistoryResult" class="SecStaff">
+        <result property="staffId" column="STAFF_ID"/>
+        <result property="loginName" column="LOGIN_NAME"/>
+        <result property="departmentId" column="DEPARTMENT_ID"/>
+        <result property="realName" column="REAL_NAME"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="status" column="STATUS"/>
+        <result property="sex" column="SEX"/>
+        <result property="telephone" column="TELEPHONE"/>
+        <result property="mobile" column="MOBILE"/>
+        <result property="email" column="EMAIL"/>
+        <result property="createUser" column="CREATE_USER"/>
+        <result property="createDate" column="CREATE_DATE"/>
+        <result property="expireDate" column="EXPIRE_DATE"/>
+        <result property="passwordExpireDate" column="PASSWORD_EXPIRE_DATE"/>
+        <result property="lockDate" column="LOCK_DATE"/>
+        <result property="lastUpdateDate" column="LAST_UPDATE_DATE"/>
+        <result property="cityId" column="CITY_ID"/>
+        <result property="loginHistory.loginFlag" column="LOGIN_FLAG"/>
+        <result property="loginHistory.loginTime" column="LOGIN_TIME"/>
+        <result property="department.domain" column="DOMAIN"/>
+    </resultMap>
+    <!--add by WUFAN 080819  -->
+
+    <select id="secStaff_getStaffId" resultClass="java.lang.Long">
+        <![CDATA[
+   		SELECT SEQ_SEC_STAFF_ID.NEXTVAL FROM DUAL
+   		]]>
+    </select>
+
+    <insert id="secStaff_insertStaff" parameterClass="SecStaff">
+        <![CDATA[
+		INSERT INTO SEC_STAFF  (
+		       STAFF_ID        ,
+		       LOGIN_NAME      ,
+		       DEPARTMENT_ID   ,
+		       REAL_NAME       ,
+		       PASSWORD        ,
+		       STATUS          ,
+		       SEX             ,
+		       TELEPHONE       ,
+		       MOBILE          ,
+		       EMAIL           ,
+		       CREATE_USER     ,
+		       CREATE_DATE     ,
+		       EXPIRE_DATE     ,
+		       PASSWORD_EXPIRE_DATE,
+		       LOCK_DATE	   ,
+              CITY_ID	   ,
+		       LAST_UPDATE_DATE)
+		VALUES(#staffId#,
+		       #loginName#,
+		       #departmentId#,
+		       #realName#,
+		       #password#,
+		       #status#,
+		       #sex#,
+		       #telephone:VARCHAR#,
+		       #mobile#,
+		       #email:VARCHAR#,
+		       #createUser#,
+		       SYSDATE,
+		       #expireDate:DATE#,
+		       #passwordExpireDate:DATE#,
+		       #lockDate:DATE#,
+              #cityId#,  		       
+		       #lastUpdateDate:DATE#)
+		]]>
+    </insert>
+
+    <update id="secStaff_updateStaff" parameterClass="SecStaff">
+        <![CDATA[
+		UPDATE SEC_STAFF     
+		SET    LOGIN_NAME       = #loginName#,         
+		       DEPARTMENT_ID    = #departmentId#,      
+		       REAL_NAME        = #realName#,          
+		       STATUS           = #status#,
+		       SEX              = #sex#,
+		       TELEPHONE        = #telephone:VARCHAR#, 
+		       MOBILE           = #mobile#,            
+		       EMAIL            = #email:VARCHAR#,     
+		       CREATE_USER      = #createUser#,        
+		       CREATE_DATE      = #createDate#,
+		       EXPIRE_DATE      = #expireDate:DATE#,   
+		       PASSWORD_EXPIRE_DATE = #passwordExpireDate:DATE#,  
+		       LOCK_DATE		= #lockDate:TIMESTAMP#,
+              CITY_ID = #cityId#,
+		       LAST_UPDATE_DATE = SYSDATE
+		WHERE  STAFF_ID         = #staffId#
+		]]>
+    </update>
+
+    <update id="secStaff_updateStaffStatus" parameterClass="SecStaff">
+        <![CDATA[
+		UPDATE SEC_STAFF     
+		SET    STATUS           = #status#
+		WHERE  STAFF_ID         = #staffId#
+		]]>
+    </update>
+    
+    <update id="secStaff_batchUpdateStaffStatus" parameterClass="java.util.Map">
+        <![CDATA[
+		UPDATE SEC_STAFF     
+		SET    STATUS           = #status#
+		WHERE  STAFF_ID         IN ($staffIds$)
+		]]>
+    </update>
+
+    <update id="secStaff_expireStaffs" parameterClass="java.util.Date">
+        <![CDATA[
+		UPDATE 	SEC_STAFF
+		SET 	STATUS = 'EXPIRED',
+				LAST_UPDATE_DATE = SYSDATE
+		WHERE 	SYSDATE > EXPIRE_DATE
+		]]>
+    </update>
+
+    <update id="secStaff_expirePasswords" parameterClass="java.util.Date">
+        <![CDATA[
+		UPDATE 	SEC_STAFF
+		SET 	STATUS = 'PASSWORD_EXPIRED',
+				LAST_UPDATE_DATE = SYSDATE
+		WHERE 	SYSDATE > PASSWORD_EXPIRE_DATE
+		]]>
+    </update>
+
+    <update id="secStaff_unlockStaffs" parameterClass="java.util.Date">
+        <![CDATA[
+		UPDATE 	SEC_STAFF
+		SET 	STATUS = 'INITIAL',
+				LAST_UPDATE_DATE = SYSDATE
+		WHERE 	STATUS = 'AUTO_LOCKED'
+		AND		LOCK_DATE < #value#
+		]]>
+    </update>
+
+    <delete id="secStaff_deleteStaff" parameterClass="java.lang.String">
+        <![CDATA[
+  		UPDATE 	SEC_STAFF
+  		SET		STATUS 	 = 'DELETED'
+  		WHERE	STAFF_ID = #value#
+  		]]>
+    </delete>
+
+    <!--  delete dept with dept'staff -->
+    <delete id="secStaff_deleteStaffCauseByDeleteDepartment" parameterClass="java.lang.String">
+        <![CDATA[
+  		UPDATE 	SEC_STAFF
+  		SET		STATUS 	 = 'DELETED', DEPARTMENT_ID = null
+  		WHERE	STAFF_ID = #value#
+  		]]>
+    </delete>
+
+    <delete id="secStaff_removeStaff" parameterClass="java.lang.String">
+        <![CDATA[
+  		DELETE	FROM SEC_STAFF  		
+  		WHERE	STAFF_ID = #value#
+  		]]>
+    </delete>
+
+    <select id="secStaff_findStaffById" 
+            resultMap="SecStaffResult" 
+            parameterClass="java.lang.String">
+        <![CDATA[
+		SELECT *
+		FROM   SEC_STAFF             
+		WHERE  STAFF_ID = #value#
+		]]>
+    </select>
+
+    <select id="secStaff_findStaffByLoginName" 
+            resultMap="SecStaffResult" 
+            parameterClass="java.lang.String">
+        <![CDATA[
+		SELECT *
+		FROM   SEC_STAFF             
+		WHERE  LOGIN_NAME = #value# AND STATUS != 'DELETED'
+		]]>
+    </select>
+
+    <select id="secStaff_listStaffByRole" resultMap="SecStaffResult" parameterClass="SecRole">
+        SELECT *
+        FROM SEC_STAFF
+        WHERE STATUS != 'DELETED' AND STAFF_ID IN (
+        SELECT STAFF_ID
+        FROM SEC_STAFF_DEPARTMENT_ROLE
+        WHERE ROLE_ID = (
+        SELECT ROLE_ID
+        FROM SEC_ROLE
+        <dynamic prepend="WHERE">
+            <isNotEmpty prepend="AND" property="roleId">
+                ROLE_ID = #roleId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="roleKey">
+                ROLE_KEY = #roleKey#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="roleName">
+                ROLE_NAME = #roleName#
+            </isNotEmpty>
+        </dynamic>
+        )
+        )
+
+    </select>
+
+	<select id="secStaff_listStaffCount" resultClass="java.lang.Integer" parameterClass="SecStaff">
+		SELECT count(1)
+		FROM   SEC_STAFF
+        <dynamic prepend="WHERE">
+            <!--<isEmpty prepend="AND" property="dynamicFields.status">
+                STATUS != 'DELETED'
+            </isEmpty>-->
+            <isNotEmpty prepend="AND" property="loginName">
+                LOGIN_NAME like '%'||trim(#loginName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.keyword">
+                (LOGIN_NAME like '%'||#dynamicFields.keyword#||'%' OR REAL_NAME like '%'||#dynamicFields.keyword#||'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="departmentId">
+                DEPARTMENT_ID = trim(#departmentId#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.departmentIds">
+                DEPARTMENT_ID in ($dynamicFields.departmentIds$)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="department.domain">
+                DEPARTMENT_ID in (select department_id from sec_department where domain=#department.domain# )
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="department.dynamicFields.domains">
+                DEPARTMENT_ID in (select department_id from sec_department where domain in ($department.dynamicFields.domains$ ))
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="realName">
+                REAL_NAME like '%'||trim(#realName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="status">
+                STATUS = #status#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="email">
+                EMAIL = #email#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="mobile">
+                MOBILE = #mobile#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="telephone">
+                TELEPHONE = #telephone#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="sex">
+                SEX = #sex#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="cityId">
+                CITY_ID = #cityId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.staffIds">
+                STAFF_ID IN ($dynamicFields.staffIds$)
+            </isNotEmpty>
+           <isNotEmpty prepend="AND" property="dynamicFields.beforeDays">
+               ((last_update_date > sysdate - $dynamicFields.beforeDays$) or (status = 'INITIAL' and CREATE_DATE > sysdate - $dynamicFields.beforeDays$)) 
+            </isNotEmpty>
+        </dynamic>
+    </select>
+	
+
+    <select id="secStaff_listStaff" resultMap="SecStaffResult" parameterClass="SecStaff">
+        select * from (
+        select rownum rn, t.* from (
+        SELECT *
+        FROM SEC_STAFF
+        <dynamic prepend="WHERE">
+            <!--<isEmpty prepend="AND" property="dynamicFields.status">
+                STATUS != 'DELETED'
+            </isEmpty>-->
+            <isNotEmpty prepend="AND" property="loginName">
+                LOGIN_NAME like '%'||trim(#loginName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.keyword">
+                (LOGIN_NAME like '%'||#dynamicFields.keyword#||'%' OR REAL_NAME like '%'||#dynamicFields.keyword#||'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="departmentId">
+                DEPARTMENT_ID = trim(#departmentId#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.departmentIds">
+                DEPARTMENT_ID in ($dynamicFields.departmentIds$)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.staffIds">
+                STAFF_ID in ($dynamicFields.staffIds$)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="department.domain">
+                DEPARTMENT_ID in (select department_id from sec_department where domain=#department.domain# )
+            </isNotEmpty>
+             <isNotEmpty prepend="AND" property="department.dynamicFields.domains">
+                DEPARTMENT_ID in (select department_id from sec_department where domain in ($department.dynamicFields.domains$ ))
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="realName">
+                REAL_NAME like '%'||trim(#realName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="status">
+                STATUS = #status#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="email">
+                EMAIL = #email#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="mobile">
+                MOBILE = #mobile#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="telephone">
+                TELEPHONE = #telephone#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="sex">
+                SEX = #sex#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="cityId">
+                CITY_ID = #cityId#
+            </isNotEmpty>
+             <isNotEmpty prepend="AND" property="dynamicFields.beforeDays">
+               ((last_update_date > sysdate - $dynamicFields.beforeDays$) or (status = 'INITIAL' and CREATE_DATE > sysdate - $dynamicFields.beforeDays$)) 
+            </isNotEmpty>
+        </dynamic>
+        <dynamic prepend="order by">
+            <isNotEmpty prepend="order by" property="sort">
+            	<isEqual property="sort" compareValue="REAL_NAME">
+            		NLSSORT(REAL_NAME,'NLS_SORT=SCHINESE_PINYIN_M')
+            	</isEqual>
+            	<isNotEqual property="sort" compareValue="">
+            		<isNotEqual property="sort" compareValue="REAL_NAME">
+                		$sort$
+                	</isNotEqual>
+                </isNotEqual>
+            </isNotEmpty>
+            <isNotEmpty prepend=" " property="order">
+                $order$
+            </isNotEmpty>
+        </dynamic>
+
+        <![CDATA[
+          ) t where rownum <= #end#
+        ) where rn >= #start#]]>
+    </select>
+
+    <select id="secStaff_findLastedLoginHistoryByLoginFlag" resultMap="SecLoginHistoryResult" parameterClass="java.util.Map">
+        select * from (
+            SELECT *
+            FROM SEC_LOGIN_HISTORY
+            WHERE STAFF_ID=#staffId# AND LOGIN_FLAG = #loginFlag#
+            ORDER BY LOGIN_TIME DESC
+        ) temp where rownum=1
+
+    </select>
+
+    <select id="secStaff_checkLoginName" resultMap="SecStaffResult" parameterClass="java.lang.String">
+        <![CDATA[
+		SELECT *
+		FROM   SEC_STAFF
+		WHERE  LOGIN_NAME = #value#
+		]]>
+    </select>
+	
+    <insert id="secStaff_insertStaffExtendProperties" parameterClass="SecExtendProperty">
+        <![CDATA[
+		INSERT INTO SEC_STAFF_EXTEND_PROPERTY (
+		       STAFF_ID	    ,
+		       PROPERTY 	,
+		       VALUE	 	)
+		VALUES(#id#			,
+		       #property#	,
+		       #value#		)
+		]]>
+    </insert>
+
+    <insert id="secStaff_deleteStaffExtendProperties" parameterClass="java.lang.String">
+        <![CDATA[
+		DELETE FROM SEC_STAFF_EXTEND_PROPERTY
+		WHERE  STAFF_ID = #value#
+		]]>
+    </insert>
+
+    <select id="secStaff_listStaffExtendProperties" resultMap="SecStaffExtendPropertyResult" parameterClass="java.lang.String">
+        <![CDATA[
+		SELECT  *
+		FROM    SEC_STAFF_EXTEND_PROPERTY 
+		WHERE   STAFF_ID = #value#
+		]]>
+    </select>
+	
+	<select id="secStaff_listStaffExtendPropertiesByTmp" resultMap="SecStaffExtendPropertyResult">
+        <![CDATA[
+		SELECT  *
+		FROM    SEC_STAFF_EXTEND_PROPERTY,basic_tmp_id
+		WHERE   STAFF_ID = id
+		]]>
+    </select>
+	
+    <insert id="secStaff_insertStaffRoles" parameterClass="java.util.Map">
+        <![CDATA[
+		INSERT 	INTO SEC_STAFF_DEPARTMENT_ROLE (
+				STAFF_ID		,
+				DEPARTMENT_ID	,
+				ROLE_ID			)
+		VALUES (#staffId#		, 
+				#departmentId# 	,
+				#roleId#		)
+		]]>
+    </insert>
+
+    <delete id="secStaff_deleteStaffRoles" parameterClass="java.util.Map">
+        <![CDATA[
+		DELETE	FROM SEC_STAFF_DEPARTMENT_ROLE
+		WHERE
+		DEPARTMENT_ID 	= #departmentId#
+		]]>
+        <dynamic>
+            <isNotEmpty prepend="AND" property="staffId">
+                STAFF_ID = trim(#staffId#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="roleId">
+                ROLE_ID = trim(#roleId#)
+            </isNotEmpty>
+        </dynamic>
+    </delete>
+
+    <insert id="secStaff_insertStaffRolesByKey" parameterClass="java.util.Map">
+        <![CDATA[
+		INSERT 	INTO SEC_STAFF_DEPARTMENT_ROLE
+		SELECT 	#staffId#, 
+				#departmentId# ,
+				ROLE_ID
+		FROM	SEC_ROLE
+		WHERE	ROLE_KEY = #roleKey#
+		]]>
+    </insert>
+
+ 	<select id="secStaff_lastLoginTime" resultClass="java.lang.String" parameterClass="SecLoginHistory">
+ 		<![CDATA[
+		SELECT LOGIN_TIME FROM (SELECT LOGIN_TIME, ROWNUM RNUM
+		  FROM (SELECT LOGIN_TIME
+		          FROM SEC_LOGIN_HISTORY
+		         WHERE STAFF_ID = #staffId#
+		         AND LOGIN_FLAG IN (#loginFlag#)
+		         ORDER BY LOGIN_TIME DESC)
+		 ) 
+		 WHERE RNUM = 2
+		 ]]>
+    </select>
+
+    <insert id="secStaff_insertLoginHistory" parameterClass="SecLoginHistory">
+        <![CDATA[
+		INSERT  INTO SEC_LOGIN_HISTORY (
+		 		STAFF_ID		       ,
+		 		LOGIN_TIME		       ,
+		 		LOGIN_FLAG, DESCRIPTION
+		 				       )
+		VALUES (#staffId#	,
+				SYSDATE		,
+				#loginFlag#	,#description:VARCHAR#)
+		]]>
+    </insert>
+
+    <insert id="secStaff_deleteLoginHistory" parameterClass="SecLoginHistory">
+        <![CDATA[
+		DELETE  SEC_LOGIN_HISTORY
+		WHERE	STAFF_ID   = #staffId#
+		AND		LOGIN_TIME < #loginTime#
+		]]>
+    </insert>
+
+    <select id="secStaff_listPasswordHistory" resultMap="SecPasswordHistoryResult" parameterClass="java.lang.String">
+        <![CDATA[
+		SELECT *
+		FROM   SEC_PASSWORD_HISTORY             
+		WHERE  STAFF_ID = #value#
+		ORDER  BY UPDATE_DATE DESC
+		]]>
+    </select>
+
+    <insert id="secStaff_insertPasswordHistory" parameterClass="SecPasswordHistory">
+        <![CDATA[
+		INSERT  INTO SEC_PASSWORD_HISTORY (
+		 		STAFF_ID		   	  	  ,
+		 		PASSWORD		      	  ,
+		 		UPDATE_DATE		      	  )
+		VALUES (#staffId#	,
+				#password#	,
+				SYSDATE		)
+		]]>
+    </insert>
+
+    <delete id="secStaff_deletePasswordHistory" parameterClass="SecPasswordHistory">
+        <![CDATA[
+		DELETE	FROM SEC_PASSWORD_HISTORY
+		WHERE	STAFF_ID 	= #staffId#
+		AND		UPDATE_DATE < #updateDate#
+		]]>
+    </delete>
+
+    <update id="secStaff_changePassword" parameterClass="SecStaff">
+        <![CDATA[
+		UPDATE  SEC_STAFF
+		SET		PASSWORD = #password#,
+				PASSWORD_EXPIRE_DATE = #passwordExpireDate:DATE#,
+				LAST_UPDATE_DATE = SYSDATE,
+				STATUS = #status#
+		WHERE	STAFF_ID = #staffId#
+		]]>
+    </update>
+
+    <select id="secStaff_listDepartmentStaffs" resultMap="SecStaffResult" fetchSize="200" parameterClass="java.lang.String">
+        SELECT STAFF.*
+        FROM SEC_STAFF STAFF
+        WHERE STAFF.DEPARTMENT_ID = #departmentId# AND STAFF.STATUS != 'DELETED'
+        ORDER BY NLSSORT(REAL_NAME,'NLS_SORT=SCHINESE_PINYIN_M')
+    </select>
+
+    <select id="secStaff_listDepartmentStaffsCount" resultClass="int" parameterClass="java.lang.String">
+        SELECT COUNT(*)
+        FROM SEC_STAFF STAFF
+        WHERE STAFF.DEPARTMENT_ID = #departmentId# AND STAFF.STATUS != 'DELETED'
+    </select>
+
+    <select id="secStaff_listDepartmentStaffsByRoleId" resultMap="SecStaffResult" parameterClass="java.util.Map">
+        <![CDATA[
+		SELECT  STAFF.*
+		FROM	SEC_STAFF STAFF,
+				SEC_STAFF_DEPARTMENT_ROLE SDR
+		WHERE	STAFF.STAFF_ID 	  = SDR.STAFF_ID
+		AND		SDR.DEPARTMENT_ID = #departmentId#
+		AND		SDR.ROLE_ID		  = #roleId#   AND STAFF.STATUS != 'DELETED'
+		]]>
+    </select>
+
+    <select id="secStaff_listStaffByRoleKey" resultMap="SecStaffResult" parameterClass="java.lang.String">
+        SELECT *
+        FROM SEC_STAFF
+        WHERE STATUS != 'DELETED' AND STAFF_ID IN (
+        SELECT STAFF_ID
+        FROM SEC_STAFF_DEPARTMENT_ROLE
+        WHERE ROLE_ID = (
+        SELECT ROLE_ID
+        FROM SEC_ROLE
+        WHERE
+        ROLE_KEY = #roleKey#
+        )
+        )
+    </select>
+
+    <select id="secStaff_listStaffByOperationKey" resultMap="SecStaffResult" parameterClass="java.util.Map">
+        SELECT y.*
+        FROM (
+	        SELECT rownum rnum, t.*
+	        FROM SEC_STAFF t
+	        WHERE STATUS != 'DELETED' AND STAFF_ID IN (
+		        SELECT STAFF_ID
+		        FROM SEC_STAFF_DEPARTMENT_ROLE
+		        WHERE ROLE_ID IN (
+			        SELECT
+	                    distinct ROLE_ID
+			        FROM
+	                    sec_role_resource_operation role, sec_operation operation, sec_resources res
+			        WHERE
+	    		        role.RESOURCE_ID = operation.RESOURCE_ID
+				        AND role.OPERATION_KEY = operation.OPERATION_KEY
+				        AND res.RESOURCE_ID = operation.RESOURCE_ID
+				        AND res.RESOURCE_KEY = #resourceKey#
+				        AND operation.OPERATION_KEY = #operationKey#
+		        )
+	        )
+	        <dynamic prepend="AND">
+	            <isNotEmpty property="end">
+	                <![CDATA[
+	                    rownum <= #end#  
+	                ]]>
+	            </isNotEmpty>
+	        </dynamic>	        
+	    ) y
+        <dynamic prepend="WHERE">
+            <isNotEmpty  property="start">
+                <![CDATA[
+                    rnum >= #start#  
+                ]]>
+            </isNotEmpty>
+        </dynamic>
+    </select>
+
+    <select id="secStaff_listStaffCountByOperationKey" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+        SELECT count(1)
+        FROM SEC_STAFF t
+        WHERE STATUS != 'DELETED' AND STAFF_ID IN (
+            SELECT STAFF_ID
+            FROM SEC_STAFF_DEPARTMENT_ROLE
+            WHERE ROLE_ID IN (
+                SELECT
+                    distinct ROLE_ID
+                FROM
+                    sec_role_resource_operation role, sec_operation operation, sec_resources res
+                WHERE
+                    role.RESOURCE_ID = operation.RESOURCE_ID
+                    AND role.OPERATION_KEY = operation.OPERATION_KEY
+                    AND res.RESOURCE_ID = operation.RESOURCE_ID
+                    AND res.RESOURCE_KEY = #resourceKey#
+                    AND operation.OPERATION_KEY = #operationKey#
+            )
+        )
+    </select>
+
+    <select id="secStaff_listLoginHistoryCount" resultClass="int" parameterClass="SecLoginHistory">
+        SELECT COUNT(*)
+        FROM SEC_LOGIN_HISTORY
+        WHERE STAFF_ID = #loginHistory.staffId#
+        <dynamic>
+            <isNotEmpty prepend="AND" property="loginTime">
+                LOGIN_TIME &gt; #loginTime#
+            </isNotEmpty>
+        </dynamic>
+        ORDER BY LOGIN_TIME DESC
+    </select>
+
+    <select id="secStaff_listLoginHistory" resultMap="SecLoginHistoryResult" parameterClass="SecLoginHistory">
+        select * from (
+        select rownum rn, t.* from (
+        SELECT *
+        FROM SEC_LOGIN_HISTORY
+        WHERE STAFF_ID = #staffId#
+        <dynamic>
+            <isNotEmpty prepend="AND" property="loginTime">
+                LOGIN_TIME &gt; #loginTime#
+            </isNotEmpty>
+        </dynamic>
+        ORDER BY LOGIN_TIME DESC
+        <![CDATA[
+          ) t where rownum <= #end#
+        ) where rn >= #start#]]>
+    </select>
+
+    <select id="secStaff_listStaffByKeywordCount" resultClass="int" parameterClass="SecStaff">
+        SELECT COUNT(*)
+        FROM SEC_STAFF
+        WHERE STATUS != 'DELETED' AND LOGIN_NAME like '%'||#dynamicFields.keyword#||'%' OR REAL_NAME like '%'||#dynamicFields.keyword#||'%'
+        <dynamic>
+            <isNotEmpty prepend="AND" property="departmentId">
+                DEPARTMENT_ID = trim(#dynamicFields.departmentId#)
+            </isNotEmpty>
+        </dynamic>
+    </select>
+
+    <select id="secStaff_listStaffByKeyword" resultMap="SecStaffResult" parameterClass="SecStaff">
+        select * from 
+        ( select rownum rn, t.* from 
+        	(
+       		  SELECT *
+        	  FROM SEC_STAFF
+        	  WHERE 
+        			STATUS != 'DELETED' 
+        		AND LOGIN_NAME like '%'||Trim(#dynamicFields.keyword#)||'%' 
+        		OR REAL_NAME like '%'||Trim(#dynamicFields.keyword#)||'%'
+        <dynamic>
+            <isNotEmpty prepend="AND" property="departmentId">
+                DEPARTMENT_ID = trim(#dynamicFields.departmentId#)
+            </isNotEmpty>
+        </dynamic>
+        <dynamic prepend="order by">
+            <isNotEmpty prepend="order by" property="sort">
+                $sort$
+            </isNotEmpty>
+            <isNotEmpty prepend=" " property="order">
+                $order$
+            </isNotEmpty>
+        </dynamic>
+        <![CDATA[
+          ) t where rownum <= #end#
+        ) where rn >= #start#]]>
+    </select>
+
+
+    <select id="secStaff_listStaffByResourceId" resultMap="SecStaffResult" parameterClass="java.lang.String">
+        SELECT * FROM SEC_STAFF
+        WHERE STATUS != 'DELETED' AND STAFF_ID IN (
+        SELECT STAFF_ID
+        FROM SEC_STAFF_DEPARTMENT_ROLE
+        WHERE ROLE_ID IN (
+        SELECT ROLE_ID
+        FROM SEC_ROLE
+        WHERE ROLE_ID IN (SELECT DISTINCT ROLE_ID FROM sec_role_resource_operation WHERE RESOURCE_ID=#resourceId#)
+        )
+        )
+        <!--
+         SELECT s.* FROM SEC_STAFF s,
+        ( SELECT *
+            FROM SEC_STAFF_DEPARTMENT_ROLE
+            WHERE ROLE_ID IN (
+                SELECT ROLE_ID
+                FROM SEC_ROLE
+                WHERE ROLE_ID IN (SELECT ROLE_ID FROM SEC_ROLE_RESOURCE WHERE RESOURCE_ID=#resourceId#)
+            )
+        ) t where s.staff_id=t.staff_id and s.department_id=t.department_id
+        -->
+    </select>
+
+    <select id="secStaff_listStaffByResourceKey" resultMap="SecStaffResult" parameterClass="java.lang.String">
+        SELECT * FROM SEC_STAFF
+        WHERE STATUS != 'DELETED' AND STAFF_ID IN (
+        SELECT STAFF_ID
+        FROM SEC_STAFF_DEPARTMENT_ROLE
+        WHERE ROLE_ID IN (
+        SELECT ROLE_ID
+        FROM SEC_ROLE
+        WHERE ROLE_ID IN (SELECT DISTINCT ROLE_ID FROM sec_role_resource_operation a,sec_resources b WHERE a.resource_id=b.resource_id and RESOURCE_KEY=#resourceKey#)
+        )
+        )
+        <!--
+         SELECT s.* FROM SEC_STAFF s,
+        ( SELECT *
+            FROM SEC_STAFF_DEPARTMENT_ROLE
+            WHERE ROLE_ID IN (
+                SELECT ROLE_ID
+                FROM SEC_ROLE
+                WHERE ROLE_ID IN (SELECT ROLE_ID FROM SEC_ROLE_RESOURCE WHERE RESOURCE_ID=#resourceId#)
+            )
+        ) t where s.staff_id=t.staff_id and s.department_id=t.department_id
+        -->
+    </select>
+
+	<!--add by WUFAN 080910  -->
+	<select id="secStaff_listStaffByResourceKeyAndOperKey" resultMap="SecStaffResult" parameterClass="java.util.Map">
+        SELECT * FROM SEC_STAFF WHERE STATUS != 'DELETED' AND STAFF_ID IN (
+        	SELECT STAFF_ID FROM SEC_STAFF_DEPARTMENT_ROLE WHERE ROLE_ID IN (
+        		SELECT ROLE_ID FROM SEC_ROLE WHERE ROLE_ID IN (
+        			SELECT DISTINCT ROLE_ID FROM sec_role_resource_operation a,sec_resources b,SEC_OPERATION c
+        					WHERE a.resource_id=b.resource_id and RESOURCE_KEY=#resourceKey# 
+        						 and c.resource_id=b.resource_id
+        						 and c.operation_key = a.operation_key
+        					 <dynamic>
+            					<isNotEmpty prepend="AND" property="operationKey">
+                					c.OPERATION_KEY = trim(#operationKey#)
+            					</isNotEmpty>
+        					 </dynamic>
+        )
+        	)
+        			)
+    </select>
+    
+    <!--add by WUFAN 080819  -->
+    <select id="secStaff_listStaffLoginHistory" resultMap="StaffListHistoryResult" parameterClass="SecStaff">
+        <![CDATA[
+			select rnum, y.* from 
+				( select x.*, rownum rnum from 
+					(
+		]]>
+        SELECT /*+ index(HIS IDX_SEC_LOGIN_HISTORY) */
+        STAFF.STAFF_ID as STAFF_ID,
+        STAFF.LOGIN_NAME as LOGIN_NAME,
+        STAFF.DEPARTMENT_ID as DEPARTMENT_ID,
+        STAFF.REAL_NAME as REAL_NAME,
+        STAFF.PASSWORD as PASSWORD,
+        STAFF.STATUS as STATUS,
+        STAFF.SEX as SEX,
+        STAFF.TELEPHONE as TELEPHONE,
+        STAFF.MOBILE as MOBILE,
+        STAFF.EMAIL as EMAIL,
+        STAFF.CREATE_USER as CREATE_USER,
+        STAFF.CREATE_DATE as CREATE_DATE,
+        STAFF.EXPIRE_DATE as EXPIRE_DATE,
+        STAFF.PASSWORD_EXPIRE_DATE as PASSWORD_EXPIRE_DATE,
+        STAFF.LOCK_DATE as LOCK_DATE,
+        STAFF.LAST_UPDATE_DATE as LAST_UPDATE_DATE,
+        STAFF.CITY_ID as CITY_ID,
+        HIS.LOGIN_FLAG as LOGIN_FLAG,
+        HIS.LOGIN_TIME as LOGIN_TIME,
+        DEP.DOMAIN as DOMAIN
+        FROM
+        SEC_STAFF STAFF,SEC_LOGIN_HISTORY HIS,SEC_DEPARTMENT DEP
+        WHERE
+        STAFF.STATUS != 'DELETED'
+        AND STAFF.STAFF_ID = HIS.STAFF_ID
+        AND STAFF.DEPARTMENT_ID = DEP.DEPARTMENT_ID
+        <dynamic>
+            <isNotEmpty prepend="AND" property="loginName">
+                STAFF.LOGIN_NAME like '%'||trim(#loginName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="department.domain">
+                DEP.DOMAIN = #department.domain#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="loginHistory.loginFlag">
+                <isEqual property="loginHistory.loginFlag" compareValue="OUT">
+                    HIS.LOGIN_FLAG IN ('LOGOUT','TIMEOUT')
+                </isEqual>
+                <isNotEqual property="loginHistory.loginFlag" compareValue="OUT">
+                    HIS.LOGIN_FLAG IN (#loginHistory.loginFlag#)
+                </isNotEqual>
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="loginHistory.loginTime">
+                HIS.LOGIN_TIME = #loginHistory.loginTime#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.benginTime">
+                <![CDATA[ HIS.LOGIN_TIME >= to_date(#dynamicFields.benginTime#,'YYYY-MM-DD HH24:MI:SS') ]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.endTime">
+                <![CDATA[ HIS.LOGIN_TIME <= to_date(#dynamicFields.endTime#,'YYYY-MM-DD HH24:MI:SS') ]]>
+            </isNotEmpty>
+        </dynamic>
+        <dynamic prepend="order by">
+            <isNotEmpty prepend="order by" property="sort">
+                $sort$
+            </isNotEmpty>
+            <isNotEmpty prepend=" " property="order">
+                $order$
+            </isNotEmpty>
+        </dynamic>
+        <![CDATA[
+				) x where rownum <= #end# 
+			) y where rnum >= #start#
+		]]>
+    </select>
+
+    <select id="secStaff_listStaffLoginHistoryCount" resultClass="int" parameterClass="SecStaff">
+        SELECT /*+ index(HIS IDX_SEC_LOGIN_HISTORY) */
+        COUNT(*)
+        FROM
+        SEC_STAFF STAFF,SEC_LOGIN_HISTORY HIS,SEC_DEPARTMENT DEP
+        WHERE
+        STAFF.STATUS != 'DELETED'
+        AND STAFF.STAFF_ID = HIS.STAFF_ID
+        AND STAFF.DEPARTMENT_ID = DEP.DEPARTMENT_ID
+        <dynamic>
+            <isNotEmpty prepend="AND" property="loginName">
+                STAFF.LOGIN_NAME like '%'||trim(#loginName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="department.domain">
+                DEP.DOMAIN = #department.domain#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="loginHistory.loginFlag">
+                <isEqual property="loginHistory.loginFlag" compareValue="OUT">
+                    HIS.LOGIN_FLAG IN ('LOGOUT','TIMEOUT')
+                </isEqual>
+                <isNotEqual property="loginHistory.loginFlag" compareValue="OUT">
+                    HIS.LOGIN_FLAG IN (#loginHistory.loginFlag#)
+                </isNotEqual>
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="loginHistory.loginTime">
+                HIS.LOGIN_TIME = #loginHistory.loginTime#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="dynamicFields.benginTime">
+                <![CDATA[ HIS.LOGIN_TIME >= to_date(#dynamicFields.benginTime#,'YYYY-MM-DD HH24:MI:SS') ]]>
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="dynamicFields.endTime">
+                <![CDATA[ HIS.LOGIN_TIME <= to_date(#dynamicFields.endTime#,'YYYY-MM-DD HH24:MI:SS') ]]>
+            </isNotEmpty>
+        </dynamic>
+    </select>
+
+    <!--add by WUFAN 080819  -->
+
+    <select id="secStaff_listStaffExpiredSoon" resultMap="SecStaffResult" parameterClass="int">
+        <![CDATA[
+        SELECT * FROM SEC_STAFF WHERE STATUS='NORMAL' AND (EXPIRE_DATE>SYSDATE-1) AND EXPIRE_DATE <= (SYSDATE + #daysTobeExpired# + 1)
+        ]]>
+    </select>
+
+
+    <select id="secStaff_listStaffExpired" resultMap="SecStaffResult">
+        <![CDATA[
+            SELECT * FROM SEC_STAFF WHERE STATUS='NORMAL' AND trunc(SYSDATE) > nvl(trunc(EXPIRE_DATE),SYSDATE+1)
+       ]]>
+    </select>
+
+    <select id="secStaff_listStaffPasswordExpired" resultMap="SecStaffResult">
+        <![CDATA[
+            SELECT * FROM SEC_STAFF WHERE STATUS='NORMAL' AND trunc(SYSDATE)> trunc(PASSWORD_EXPIRE_DATE)
+       ]]>
+    </select>
+
+    <select id="secStaff_listStaffAutoLockedBefore" resultMap="SecStaffResult" parameterClass="int">
+        <![CDATA[
+            SELECT * FROM SEC_STAFF WHERE STATUS='AUTO_LOCKED' AND LOCK_DATE <= (SYSDATE-#beforeHour#/24)
+       ]]>
+    </select>
+
+
+    <update id="secStaff_expireStaff" parameterClass="java.util.HashMap">
+        UPDATE SEC_STAFF
+        SET STATUS = 'EXPIRED', LAST_UPDATE_DATE = SYSDATE
+        WHERE STAFF_ID = #staffId#
+    </update>
+    <update id="secStaff_expirePassword" parameterClass="java.util.HashMap">
+        UPDATE SEC_STAFF
+        SET STATUS = 'PASSWORD_EXPIRED', LAST_UPDATE_DATE = SYSDATE
+        WHERE STAFF_ID = #staffId#
+    </update>
+     <select id="secStaff_listStaffDepartmentRole" resultClass="java.util.HashMap">
+        <![CDATA[
+            select staff_id staffId,department_id departmentId,role_id roleId from sec_staff_department_role  
+       ]]>
+    </select>
+     <select id="secStaff_listStaffDepartmentRoleByDepartmentId" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+        <![CDATA[
+            SELECT STAFF_ID STAFFID,DEPARTMENT_ID DEPARTMENTID,ROLE_ID ROLEID FROM SEC_STAFF_DEPARTMENT_ROLE
+            WHERE DEPARTMENT_ID = #value#  
+       ]]>
+    </select>
+    <!--
+    <update id="secStaff_unlockAutoLockedStaff" parameterClass="java.lang.String">
+        UPDATE SEC_STAFF
+        SET STATUS = 'INITIAL', LOCK_DATE = null, LAST_UPDATE_DATE = SYSDATE
+        WHERE STAFF_ID = #staffId# AND STATUS = 'AUTO_LOCKED'
+    </update>
+    -->
+    
+    <select id="secStaff_listStaffCountByTemp" resultClass="java.lang.Integer" parameterClass="SecStaff">
+		SELECT count(1)
+		FROM   SEC_STAFF,basic_tmp_id where staff_id = id  
+        <dynamic>
+            <!--<isEmpty prepend="AND" property="dynamicFields.status">
+                STATUS != 'DELETED'
+            </isEmpty>-->
+            <isNotEmpty prepend="AND" property="loginName">
+                LOGIN_NAME like '%'||trim(#loginName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.keyword">
+                (LOGIN_NAME like '%'||#dynamicFields.keyword#||'%' OR REAL_NAME like '%'||#dynamicFields.keyword#||'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="departmentId">
+                DEPARTMENT_ID = trim(#departmentId#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.departmentIds">
+                DEPARTMENT_ID in ($dynamicFields.departmentIds$)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="department.domain">
+                DEPARTMENT_ID in (select department_id from sec_department where domain=#department.domain# )
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="realName">
+                REAL_NAME like '%'||trim(#realName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="status">
+                STATUS = #status#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="email">
+                EMAIL = #email#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="mobile">
+                MOBILE = #mobile#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="telephone">
+                TELEPHONE = #telephone#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="sex">
+                SEX = #sex#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="cityId">
+                CITY_ID = #cityId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.staffIds">
+                STAFF_ID IN ($dynamicFields.staffIds$)
+            </isNotEmpty>
+        </dynamic>
+    </select>
+	
+
+    <select id="secStaff_listStaffByTemp" resultMap="SecStaffResult" parameterClass="SecStaff">
+        select * from (
+        select rownum rn, t.* from (
+        SELECT *
+        FROM SEC_STAFF, basic_tmp_id where staff_id = id 
+        <dynamic>
+            <!--<isEmpty prepend="AND" property="dynamicFields.status">
+                STATUS != 'DELETED'
+            </isEmpty>-->
+            <isNotEmpty prepend="AND" property="loginName">
+                LOGIN_NAME like '%'||trim(#loginName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.keyword">
+                (LOGIN_NAME like '%'||#dynamicFields.keyword#||'%' OR REAL_NAME like '%'||#dynamicFields.keyword#||'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="departmentId">
+                DEPARTMENT_ID = trim(#departmentId#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.departmentIds">
+                DEPARTMENT_ID in ($dynamicFields.departmentIds$)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.staffIds">
+                STAFF_ID in ($dynamicFields.staffIds$)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="department.domain">
+                DEPARTMENT_ID in (select department_id from sec_department where domain=#department.domain# )
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="realName">
+                REAL_NAME like '%'||trim(#realName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="status">
+                STATUS = #status#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="email">
+                t.EMAIL = #email#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="mobile">
+                MOBILE = #mobile#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="telephone">
+                TELEPHONE = #telephone#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="sex">
+                SEX = #sex#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="cityId">
+                CITY_ID = #cityId#
+            </isNotEmpty>
+        </dynamic>
+        <dynamic prepend="order by">
+            <isNotEmpty prepend="order by" property="sort">
+            	<isEqual property="sort" compareValue="REAL_NAME">
+            		NLSSORT(REAL_NAME,'NLS_SORT=SCHINESE_PINYIN_M')
+            	</isEqual>
+            	<isNotEqual property="sort" compareValue="">
+            		<isNotEqual property="sort" compareValue="REAL_NAME">
+                		$sort$
+                	</isNotEqual>
+                </isNotEqual>
+            </isNotEmpty>
+            <isNotEmpty prepend=" " property="order">
+                $order$
+            </isNotEmpty>
+        </dynamic>
+
+        <![CDATA[
+          ) t where rownum <= #end#
+        ) where rn >= #start#]]>
+    </select>
+
+
+	<select id="secStaff_listDepartmentTreeStaffCount" resultClass="java.lang.Integer" parameterClass="SecStaff">
+		SELECT count(1)
+		FROM   SEC_STAFF t
+	    <isNotEmpty property = "departmentId">
+   		,(select department_id,department_name from sec_department
+				connect by prior department_id=parent_id start with department_id=#departmentId#) d
+		</isNotEmpty>
+		<isEmpty property = "departmentId">
+   		,sec_department d
+		</isEmpty>
+		where t.department_id = d.department_id 
+        <dynamic>
+            <!--<isEmpty prepend="AND" property="dynamicFields.status">
+                STATUS != 'DELETED'
+            </isEmpty>-->
+            <isNotEmpty prepend="AND" property="loginName">
+                LOGIN_NAME like '%'||trim(#loginName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.keyword">
+                (LOGIN_NAME like '%'||#dynamicFields.keyword#||'%' OR REAL_NAME like '%'||#dynamicFields.keyword#||'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="department.domain">
+                t.DEPARTMENT_ID in (select department_id from sec_department where domain=#department.domain# )
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="realName">
+                REAL_NAME like '%'||trim(#realName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="status">
+                STATUS = #status#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="email">
+                t.EMAIL = #email#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="mobile">
+                MOBILE = #mobile#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="telephone">
+                TELEPHONE = #telephone#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="sex">
+                SEX = #sex#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="cityId">
+                CITY_ID = #cityId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.staffIds">
+                STAFF_ID IN ($dynamicFields.staffIds$)
+            </isNotEmpty>
+        </dynamic>
+    </select>
+	
+
+    <select id="secStaff_listDepartmentTreeStaff" resultMap="SecStaffResult" parameterClass="SecStaff">
+        select * from (
+        select rownum rn, t.* from (
+        SELECT t.*
+        FROM SEC_STAFF  t
+	    <isNotEmpty property = "departmentId">
+   		,(select department_id,department_name from sec_department
+				connect by prior department_id=parent_id start with department_id=#departmentId#) d
+		</isNotEmpty>
+		<isEmpty property = "departmentId">
+   		,sec_department d
+		</isEmpty>
+		where t.department_id = d.department_id
+        <dynamic>
+            <!--<isEmpty prepend="AND" property="dynamicFields.status">
+                STATUS != 'DELETED'
+            </isEmpty>-->
+            <isNotEmpty prepend="AND" property="loginName">
+                LOGIN_NAME like '%'||trim(#loginName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.keyword">
+                (LOGIN_NAME like '%'||#dynamicFields.keyword#||'%' OR REAL_NAME like '%'||#dynamicFields.keyword#||'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="department.domain">
+                t.DEPARTMENT_ID in (select department_id from sec_department where domain=#department.domain# )
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.staffIds">
+                STAFF_ID in ($dynamicFields.staffIds$)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="realName">
+                REAL_NAME like '%'||trim(#realName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="status">
+                STATUS = #status#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="email">
+                EMAIL = #email#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="mobile">
+                MOBILE = #mobile#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="telephone">
+                TELEPHONE = #telephone#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="sex">
+                SEX = #sex#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="cityId">
+                CITY_ID = #cityId#
+            </isNotEmpty>
+        </dynamic>
+        <dynamic prepend="order by">
+            <isNotEmpty prepend="order by" property="sort">
+            	<isEqual property="sort" compareValue="REAL_NAME">
+            		NLSSORT(REAL_NAME,'NLS_SORT=SCHINESE_PINYIN_M')
+            	</isEqual>
+            	<isNotEqual property="sort" compareValue="">
+            		<isNotEqual property="sort" compareValue="REAL_NAME">
+                		$sort$
+                	</isNotEqual>
+                </isNotEqual>
+            </isNotEmpty>
+            <isNotEmpty prepend=" " property="order">
+                $order$
+            </isNotEmpty>
+        </dynamic>
+
+        <![CDATA[
+          ) t where rownum <= #end#
+        ) where rn >= #start#]]>
+    </select>
+    
+    <select id="secStaff_listStaffByResourceKeysCount" resultClass="java.lang.Integer" parameterClass="SecStaff">
+		select count(1)  
+        FROM SEC_STAFF  t where STATUS != 'DELETED'
+        <dynamic>
+            <isNotEmpty prepend="AND" property="loginName">
+                LOGIN_NAME like '%'||trim(#loginName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.keyword">
+                (LOGIN_NAME like '%'||#dynamicFields.keyword#||'%' OR REAL_NAME like '%'||#dynamicFields.keyword#||'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="department.domain">
+                t.DEPARTMENT_ID in (select department_id from sec_department where domain=#department.domain# )
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.staffIds">
+                STAFF_ID in ($dynamicFields.staffIds$)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="realName">
+                REAL_NAME like '%'||trim(#realName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="status">
+                STATUS = #status#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="email">
+                EMAIL = #email#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="mobile">
+                MOBILE = #mobile#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="telephone">
+                TELEPHONE = #telephone#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="sex">
+                SEX = #sex#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="cityId">
+                CITY_ID = #cityId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="departmentId">
+                department_id = #departmentId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.resourceKeys">
+            	t.staff_id in (
+            			select distinct s.staff_id
+						  from (select distinct staff_id, c.resource_id, b.operation_key
+						          from sec_staff_department_role   a,
+						               sec_role_resource_operation b,
+						               sec_resources               c
+						         where a.role_id = b.role_id
+						           and b.resource_id = c.resource_id
+						           and c.resource_key in ($dynamicFields.resourceKeys$)) s
+                          <isNotEmpty prepend=" " property="dynamicFields.isAllOperKey">
+            				 group by s.staff_id, s.resource_id
+								having count(1) = (select count(1)
+			                     from sec_operation k
+			                    where k.resource_id = s.resource_id)
+            			 </isNotEmpty> 
+                         )
+            </isNotEmpty> 
+        </dynamic>
+    </select>
+	
+
+    <select id="secStaff_listStaffByResourceKeys" resultMap="SecStaffResult" parameterClass="SecStaff">
+        select * from (
+        select rownum rn, t.* from (
+        SELECT t.*
+        FROM SEC_STAFF  t where STATUS != 'DELETED'
+        <dynamic>
+            <isNotEmpty prepend="AND" property="loginName">
+                LOGIN_NAME like '%'||trim(#loginName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.keyword">
+                (LOGIN_NAME like '%'||#dynamicFields.keyword#||'%' OR REAL_NAME like '%'||#dynamicFields.keyword#||'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="department.domain">
+                t.DEPARTMENT_ID in (select department_id from sec_department where domain=#department.domain# )
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.staffIds">
+                STAFF_ID in ($dynamicFields.staffIds$)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="realName">
+                REAL_NAME like '%'||trim(#realName#)||'%'
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="status">
+                STATUS = #status#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="email">
+                EMAIL = #email#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="mobile">
+                MOBILE = #mobile#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="telephone">
+                TELEPHONE = #telephone#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="sex">
+                SEX = #sex#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="cityId">
+                CITY_ID = #cityId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="departmentId">
+                department_id = #departmentId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.resourceKeys">
+            	t.staff_id in (
+            			select distinct s.staff_id
+						  from (select distinct staff_id, c.resource_id, b.operation_key
+						          from sec_staff_department_role   a,
+						               sec_role_resource_operation b,
+						               sec_resources               c
+						         where a.role_id = b.role_id
+						           and b.resource_id = c.resource_id
+						           and c.resource_key in ($dynamicFields.resourceKeys$)) s
+                          <isNotEmpty prepend=" " property="dynamicFields.isAllOperKey">
+            				 group by s.staff_id, s.resource_id
+								having count(1) = (select count(1)
+			                     from sec_operation k
+			                    where k.resource_id = s.resource_id)
+            			 </isNotEmpty> 
+                         )
+            </isNotEmpty> 
+        </dynamic>
+        <dynamic prepend="order by">
+            <isNotEmpty prepend="order by" property="sort">
+            	<isEqual property="sort" compareValue="REAL_NAME">
+            		NLSSORT(REAL_NAME,'NLS_SORT=SCHINESE_PINYIN_M')
+            	</isEqual>
+            	<isNotEqual property="sort" compareValue="">
+            		<isNotEqual property="sort" compareValue="REAL_NAME">
+                		$sort$
+                	</isNotEqual>
+                </isNotEqual>
+            </isNotEmpty>
+            <isNotEmpty prepend=" " property="order">
+                $order$
+            </isNotEmpty>
+        </dynamic>
+
+        <![CDATA[
+          ) t where rownum <= #end#
+        ) where rn >= #start#]]>
+    </select>
+</sqlMap>

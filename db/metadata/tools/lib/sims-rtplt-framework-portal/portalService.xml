@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portalServices>
+	<portalService serviceName="地址鉴权服务" methodName="authorizeAddress" msgType="AuthorizeAddressReq"/>
+	<portalService serviceName="列出鉴权类型地址服务"  methodName="listAddressByAuthType" msgType="ListAddressByAuthTypeReq"/>
+	<portalService serviceName="用户信息查询服务"  methodName="findStaff" msgType="FindStaffReq"/>
+	<portalService serviceName="用户信息查询服务"  methodName="findStaffById" msgType="FindStaffByIdReq"/>
+	<portalService serviceName="根据ID查询部门信息服务"  methodName="findDepartmentById" msgType="FindDepartmentByIdReq"/>
+	<portalService serviceName="根据权限列出staffId服务"  methodName="listStaffIdsByAuth" msgType="ListStaffIdsByAuthReq"/>
+	<portalService serviceName="staff权限检查服务"  methodName="checkStaffAuth" msgType="CheckStaffAuthReq"/>
+	<portalService serviceName="得到菜单长路径服务"  methodName="getMenuLongPath" msgType="GetMenuLongPath"/>
+	<portalService serviceName="列出指定员工所拥有的角色"  methodName="listStaffRoleByLoginName" msgType="ListStaffRoleByLoginName"/>
+	<portalService serviceName="通过成员ID批量查询成员信息"  methodName="batchQueryStaffById" msgType="BatchQueryStaffByIdReq"/>
+	<portalService serviceName="批量成员鉴权"  methodName="batchCheckStaffAuth" msgType="BatchCheckStaffAuthReq"/>
+	<portalService serviceName="给员工授权"  methodName="staffAuthorization" msgType="StaffAuthorizationReq"/>
+	<portalService serviceName="给员工取消授权"  methodName="staffAuthorizationRevoke" msgType="StaffAuthorizationRevokeReq"/>
+	<portalService serviceName="根据组织ID查询组织成员列表"  methodName="listStaffByDepartmentId" msgType="ListStaffByDepartmentIdReq"/>
+	<portalService serviceName="查询指定的组织的直接下级组织列表"  methodName="listSubDepartment" msgType="ListSubDepartmentReq"/>
+	<portalService serviceName="根据组织ID查询角色列表"  methodName="listRoleByDepartmentId" msgType="ListRoleByDepartmentIdReq"/>
+	<portalService serviceName="根据角色获取某个组织下的成员列表"  methodName="listStaffByDeptIdAndRoleKey" msgType="ListStaffByDeptIdAndRoleKeyReq"/>
+	<portalService serviceName="查询指定员工所属的组织"  methodName="findDepartmentByStaffId" msgType="FindDepartmentByStaffIdReq"/>
+	<portalService serviceName="列出系统内的组织"  methodName="listDepartment" msgType="ListDepartmentReq"/>
+	<portalService serviceName="查询拥有某些资源Key权限的用户"  methodName="listStaffByResourceKey" msgType="ListStaffByResourceKeyReq"/>
+	<portalService serviceName="查询某组织下拥有某些资源Key权限的用户数量"  methodName="listStaffByResourceKeyCount" msgType="ListStaffByResourceKeyCountReq"/>
+	<portalService serviceName="批量检查用户资源Key权限"  methodName="batchCheckStaffResourceAuth" msgType="BatchCheckStaffResourceAuthReq"/>
+</portalServices>

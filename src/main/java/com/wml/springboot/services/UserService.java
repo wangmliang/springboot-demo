@@ -5,9 +5,13 @@ import com.github.pagehelper.PageInfo;
 import com.wml.springboot.entity.User;
 import com.wml.springboot.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springside.modules.security.utils.Digests;
+import org.springside.modules.utils.Encodes;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -42,9 +46,28 @@ public class UserService {
     @Transactional  // 事物回滚测试
     //@Transactional(noRollbackFor = {Exception.class}) // 事物不回滚测试
     public int insert(User record) {
-        int row = userMapper.insert(record);
-        int i = 5/ 0;
-        return row;
+        entryptPassword(record);
+        return userMapper.insert(record);
+    }
+
+    /**
+     * 用户密码加密
+     * @param user
+     */
+    public static void entryptPassword(User user)
+    {
+        byte[] salt = Digests.generateSalt(8);
+        user.setSalt(Encodes.encodeHex(salt));
+        byte[] hashPassword = Digests.sha1(user.getPassword().getBytes(), salt, 1024);
+        user.setPassword(Encodes.encodeHex(hashPassword));
+    }
+
+    public static void main( String[] args ) throws IOException {
+        User user = new User();
+        user.setUserName("admin");
+        user.setPassword("123456");
+        entryptPassword(user);
+        System.out.println(user.toString());
     }
 
     public PageInfo<User> getAll(int pageNumber, int pageSize) {
@@ -55,4 +78,5 @@ public class UserService {
     public User getUserByName(String userName) {
         return userMapper.getUserByName(userName);
     }
+
 }

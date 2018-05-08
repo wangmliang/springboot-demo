@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 主文件可以是一个文件或一个文件集(包含多个文件)-->
+<!ELEMENT metadata (main,increment*)>
+<!ELEMENT main EMPTY>
+<!ELEMENT increment EMPTY>
+<!ATTLIST domain 
+		id CDATA #REQUIRED>
+<!ATTLIST main 
+		file CDATA #REQUIRED
+		isFileset (true | false) "true">
+<!ATTLIST increment 
+		file CDATA #REQUIRED>

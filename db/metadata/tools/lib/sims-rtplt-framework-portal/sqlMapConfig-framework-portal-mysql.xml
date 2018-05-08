@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<settings lazyLoadingEnabled="false" enhancementEnabled="true"/>
+	
+	<sqlMap resource="com/aspire/sims/rtplt/framework/portal/dao/ibatis/mysql/MenuMySQL.xml"/>
+	<sqlMap resource="com/aspire/sims/rtplt/framework/portal/dao/ibatis/mysql/PersonShortcutMySQL.xml"/>
+	<sqlMap resource="com/aspire/sims/rtplt/framework/portal/dao/ibatis/mysql/LinkMySQL.xml"/>
+	<sqlMap resource="com/aspire/sims/rtplt/framework/portal/dao/ibatis/mysql/SubSystemMySQL.xml"/>
+    <sqlMap resource="com/aspire/sims/rtplt/framework/portal/dao/ibatis/mysql/PersonSettingMySQL.xml"/>
+	
+</sqlMapConfig>

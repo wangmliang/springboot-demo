@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+    <settings cacheModelsEnabled ="true" lazyLoadingEnabled="false" enhancementEnabled="true"/>
+    
+    <typeHandler javaType="com.aspire.sims.rtplt.component.security.constant.Sex" callback="com.aspire.sims.rtplt.component.security.dao.ibatis.StaffSexHandler"/>
+    <typeHandler javaType="com.aspire.sims.rtplt.component.security.constant.Status" callback="com.aspire.sims.rtplt.component.security.dao.ibatis.StaffStatusHandler"/>
+
+    <!--componets security start-->
+	<sqlMap resource="com/aspire/sims/rtplt/component/security/dao/ibatis/maps/DepartmentSQL.xml"/>
+	<sqlMap resource="com/aspire/sims/rtplt/component/security/dao/ibatis/maps/ResourceCategorySQL.xml"/>
+	<sqlMap resource="com/aspire/sims/rtplt/component/security/dao/ibatis/maps/ResourceSQL.xml"/>	
+	<sqlMap resource="com/aspire/sims/rtplt/component/security/dao/ibatis/maps/OperationSQL.xml"/>
+	<sqlMap resource="com/aspire/sims/rtplt/component/security/dao/ibatis/maps/OperationAddressSQL.xml"/>
+	<sqlMap resource="com/aspire/sims/rtplt/component/security/dao/ibatis/maps/MetadataSQL.xml"/>
+	<sqlMap resource="com/aspire/sims/rtplt/component/security/metadata2/MetadataSQL.xml"/>
+	<sqlMap resource="com/aspire/sims/rtplt/component/security/dao/ibatis/maps/RoleSQL.xml"/>	
+    <sqlMap resource="com/aspire/sims/rtplt/component/security/dao/ibatis/maps/StaffSQL.xml"/>
+	<!--componets security end-->
+</sqlMapConfig>

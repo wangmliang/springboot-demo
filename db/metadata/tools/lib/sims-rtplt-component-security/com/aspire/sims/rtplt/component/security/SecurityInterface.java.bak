@@ -1,0 +1,394 @@
+/**
+ * <p>System: SIMS2.0平台</p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2008</p>
+ * <p>Company: Aspire Technologies</p>
+ * @author: xiongzy
+ * @createDate: 2008-3-4
+ * @version 1.0
+ */
+package com.aspire.sims.rtplt.component.security;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.aspire.sims.rtplt.component.security.constant.Status;
+import com.aspire.sims.rtplt.component.security.exception.ChangePasswordException;
+import com.aspire.sims.rtplt.component.security.exception.CreateDepartmentException;
+import com.aspire.sims.rtplt.component.security.exception.CreateStaffException;
+import com.aspire.sims.rtplt.component.security.exception.IllegalStatusException;
+import com.aspire.sims.rtplt.component.security.exception.LoginNameOrPasswordException;
+import com.aspire.sims.rtplt.component.security.exception.PasswordErrorTimeAlertExcpetion;
+import com.aspire.sims.rtplt.component.security.exception.PasswordErrorTimeException;
+import com.aspire.sims.rtplt.component.security.exception.PasswordExpireAlertException;
+import com.aspire.sims.rtplt.component.security.exception.PasswordExpiredException;
+import com.aspire.sims.rtplt.component.security.exception.PasswordExpiredHanderUnLockException;
+import com.aspire.sims.rtplt.component.security.exception.PasswordMustChangeException;
+import com.aspire.sims.rtplt.component.security.exception.PasswordNotStrongException;
+import com.aspire.sims.rtplt.component.security.exception.PasswordRepeatException;
+import com.aspire.sims.rtplt.component.security.exception.ResetPasswordException;
+import com.aspire.sims.rtplt.component.security.exception.StaffAutoLockedException;
+import com.aspire.sims.rtplt.component.security.exception.StaffExpiredException;
+import com.aspire.sims.rtplt.component.security.exception.StaffLockedException;
+import com.aspire.sims.rtplt.component.security.pojo.Department;
+import com.aspire.sims.rtplt.component.security.pojo.OperationAddress;
+import com.aspire.sims.rtplt.component.security.pojo.Resource;
+import com.aspire.sims.rtplt.component.security.pojo.Role;
+import com.aspire.sims.rtplt.component.security.pojo.Staff;
+
+/**
+ * 权限组件接口.
+ */
+public interface SecurityInterface {
+    /**
+     * 登录接口.
+     * @param loginName 登录用户名
+     * @param password 密码
+     * @throws LoginNameOrPasswordException 登录名或密码异常
+     * @throws IllegalStatusException 成员状态异常
+     * @throws PasswordMustChangeException 密码必须修改异常
+     * @throws PasswordErrorTimeException 密码重复输入错误异常
+     * @throws StaffExpiredException 成员过期异常
+     * @throws StaffLockedException 成员帐户锁定异常
+     * @throws PasswordExpiredException 成员密码过期异常
+     */
+    void login(String loginName, String password) throws LoginNameOrPasswordException, IllegalStatusException,
+            PasswordMustChangeException, PasswordErrorTimeException, StaffExpiredException, StaffLockedException, StaffAutoLockedException,
+            PasswordExpiredException, PasswordErrorTimeAlertExcpetion, PasswordNotStrongException, PasswordExpireAlertException,PasswordExpiredHanderUnLockException;
+
+    /**
+     * 记录用户注销情况
+     * @param loginName     用户名
+     * @param activeLogout  是否是主动退出
+     */
+    void logout(String loginName, Boolean activeLogout);
+
+    /**
+     * 修改密码.
+     * @param loginName 登录用户名
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     * @throws ChangePasswordException 修改密码异常
+     * @throws PasswordRepeatException 密码重复异常
+     * @throws PasswordNotStrongException 密码强度不够异常
+     */
+    void changePassword(String loginName, String oldPassword, String newPassword) throws ChangePasswordException,
+            PasswordRepeatException, PasswordNotStrongException;
+
+    /**
+     * 密码重置.
+     * @param loginName 登录用户名
+     * @param newPassword 新密码
+     * @param resetStatus 是否重置状态为初始状态,自己重置密码不需要重置重置状态
+     * @throws ResetPasswordException 重置密码异常
+     */
+    void resetPassword(String loginName, String newPassword,boolean resetStatus) throws ResetPasswordException,PasswordRepeatException,PasswordNotStrongException;
+
+    /**
+     * 查找成员信息通过loginName.
+     * @param loginName 成员登录名
+     * @return 成员对象
+     */
+    Staff findStaff(String loginName);
+
+     /**
+     * 查找成员信息.
+     * @param staffId 成员ID
+     * @return 成员对象
+     */
+    Staff findStaffById(String staffId);
+
+    /**
+     * 查找部门信息.
+     * @param departmentId 部门ID
+     * @return 部门对象
+     */
+    Department findDepartment(String departmentId);
+
+    /**
+     * 按给定条件列表组织
+     * @param department
+     * @return
+     */
+    List<Department> listDepartment(Department department);
+    
+    /**
+     * 列表资源.
+     * @param loginName 登录用户名
+     * @return 资源域对象列表
+     */
+    List<Resource> listResource(String loginName);
+
+    /**
+     * 查找资源.
+     * @param resourceKey 资源编码
+     * @return 资源域对象
+     */
+    Resource findResource(String resourceKey);
+
+    /**
+     * 地址鉴权.
+     * @param loginName 登录用户名
+     * @param addressUrl 地址url
+     * @param parameterMap 地址参数map
+     * @return 成功|失败
+     */
+    boolean authorizeAddress(String loginName, String addressUrl, Map<String, String> parameterMap);
+    
+    /**
+     * 地址鉴权，urlMap为用户所能访问的url的map封装,addressUrl为需要鉴权的url
+     * @param addressUrl
+     * @param urlMap
+     * @return
+     */
+    boolean authorizeAddress(String addressUrl, Map<String, Set<Map<String, String>>> urlMap);
+    /**
+     * 列出用户所能访问的url
+     * @param loginName
+     * @return
+     */
+    Map<String, Set<Map<String, String>>> listAddressUrlByLoginName(String loginName);
+    /**
+     * 地址鉴权.
+     * @param loginName 登录用户名
+     * @param addressUrl 地址url（可能?号后带有参数）
+     * @return 成功|失败
+     */
+    boolean authorizeAddress(String loginName, String addressUrl);
+    
+    /**
+     * 针对非QUERY权限的地址鉴权.
+     * 如果只有QUERY权限，该接口会返回false
+     * @param loginName 登录用户名
+     * @param addressUrl 地址url（可能?号后带有参数）
+     * @return 成功|失败
+     */
+    boolean authorizeAddressNotQuery(String loginName, String addressUrl);
+    
+    /**
+     * 地址列表鉴权
+     * @param loginName 登录用户名
+     * @param addressUrlList 待鉴权的地址url列表（可能在?后带参数）
+     * @return 鉴权成功的url列表
+     */
+    List<String> authorizeAddressList(String loginName, List<String> addressUrlList);
+    
+    /**
+     * 操作鉴权.
+     * @param loginName 登录用户名
+     * @param resourceKey 资源key
+     * @param operationKey 操作key 
+     * @return 成功|失败
+     */
+    boolean authorizeOperation(String loginName, String resourceKey, String operationKey);
+
+    /**
+     * 操作鉴权.
+     * @param loginName 登录用户名
+     * @param resourceId 资源Id
+     * @param operationKey 操作key 
+     * @return 成功|失败
+     */
+    boolean authorizeOperationById(String loginName, String resourceId, String operationKey);
+    /**
+     * 列表操作地址.
+     * @param authType 鉴权类型
+     * @return 操作地址DO列表
+     */
+    List<OperationAddress> listAddressByAuthType(String authType);
+    
+    /**
+     * 创建部门.
+     * @param department 部门域对象
+     * @param roleKeys 部门角色编码列表
+     * @return 部门Id
+     * @throws CreateDepartmentException 创建部门异常
+     */
+    String createDepartment(Department department, List<String> roleKeys) throws CreateDepartmentException;
+
+    /**
+     * 创建用户.
+     * @param staff 成员域对象
+     * @param roleKeys 成员角色编码列表
+     * @return 用户ID
+     * @throws CreateStaffException 创建成员异常
+     * @throws PasswordNotStrongException 密码强度不够异常
+     */
+    String createStaffWithRoleKeys(Staff staff, List<String> roleKeys) throws CreateStaffException, PasswordNotStrongException;
+
+    /**
+     * 创建用户.
+     * @param staff 成员域对象
+     * @param roleIds 成员角色ID列表
+     * @return 用户ID
+     * @throws CreateStaffException 创建成员异常
+     * @throws PasswordNotStrongException 密码强度不够异常
+     */
+    String createStaffWithRoleIds(Staff staff, List<String> roleIds) throws CreateStaffException, PasswordNotStrongException;
+
+
+    /**
+     * 根据role_key列表所有有这个角色的用户
+     * @param roleKey
+     * @return
+     */
+    public List<Staff> listStaffByRoleKey(String roleKey);
+    
+    /**
+     * 根据资源key，操作key列表所有有这个角色的用户
+     * @param resourceKey
+     * @param operationKey
+     * @return
+     */
+    public List<Staff> listStaffByOperationKey(String resourceKey, String operationKey);
+
+    /**
+     * 根据资源key，操作key列表所有有这个角色的用户, 带分页参数
+     * @param resourceKey
+     * @param operationKey
+     * @param start 首行
+     * @param end   末行
+     * @return
+     */
+    public List<Staff> listStaffByOperationKey(String resourceKey, String operationKey, int start, int end);
+
+
+    /**
+     * 根据资源key，操作key列表所有有这个角色的用户数量
+     * @param resourceKey
+     * @param operationKey
+     * @return
+     */
+    public int listStaffCountByOperationKey(String resourceKey, String operationKey);
+    
+    /**
+     * 查询sp/sys的用户列表
+     * @param domainName
+     * @return
+     */
+    public List<Staff> listStaffByDomain(String domainName);
+
+    /**
+     * 批量更新成员状态.
+     *
+     * @param staffIds
+     * @param status
+     */
+    public void updateStaffStatus(String staffIds, Status status);
+    
+    /**
+     * 列出带扩展属性的成员(采用临时表方式)
+     * @param staff
+     * @return
+     */
+    List<Staff> listStaffWithExtProperty(Staff staff);
+    
+    /**
+     * 获取成员列表，支持分页查询（staff动态字段map中所需设分页参数为：start，end）
+     * @param staff
+     * @return
+     */
+    public List<Staff> listStaff(Staff staff);
+    
+    /**
+     * 查询成员数量，用于分页查询
+     * @param staff
+     * @return
+     */
+    int listStaffCount(Staff staff);
+
+    /**
+     * 获取成员列表,支持分页.如果给定部门id则查询该部门及其所有子孙部门的成员
+     *
+     * @param staff 成员查询条件
+     * @return 成员列表
+     */
+    List<Staff> listDepartmentTreeStaff(Staff staff);
+    
+   /**
+    * 查询staff数量,用于staff的分页查询.如果给定部门id则查询该部门及其所有子孙部门的成员
+    * @param staff
+    * @return
+    */
+    int listDepartmentTreeStaffCount(Staff staff);
+
+    /**
+     * 查询用户的角色
+     * @param loginName
+     * @return
+     */
+    public List<Role> listStaffRoleByLoginName(String loginName);
+
+    /**
+     * 查询用户密码输错达到次数而被锁定前的状态
+     * @param staffId
+     * @return
+     */
+    public Status findStatusBeforeAutoLocked(String staffId);
+
+    public Map<String, Set<String>> getUserResOperationsMap(String loginName);
+
+    public Map<String, List<OperationAddress>> getAllAddressMap();
+    
+    public void refreshUserResOperationsMap(String loginName);
+    
+    public void refreshUserResOperationsMap();
+    
+    /**
+     * 成员授权
+     * @param loginName
+     * @param roleKeys
+     */
+    void staffAuthorize(String loginName, List<String> roleKeys); 
+    
+    /**
+     * 成员授权取消
+     * @param loginName
+     * @param roleKey
+     */
+    void staffAuthorizationRevoke(String loginName,List<String> roleKeys);
+    
+    /**
+     * 批量查询成员信息通过ID
+     * @param staffIds
+     * @return
+     */
+    List<Staff> batchQueryStaffById(List<String> staffIds);
+    
+    /**
+     * 记录用户登录情况
+     * @param staffId
+     * @param loginFlag
+     */
+    void noteLogin(String staffId, String loginFlag);
+    
+    /**
+     * 修改组织信息,修改为参数对象中指定的值，不会做非空判断
+     * @param department
+     */
+    void updateDepartment(Department department);
+    
+    /**
+     * 列出某组织的所有直接下级组织，不带扩展属性
+     * @param departmentId 组织id
+     * @return
+     */
+    List<Department> listDirectSubDepartment(String departmentId);
+    
+    
+    /**
+     * 列出某组织的所有直接下级组织，包含扩展属性
+     * @param departmentId 组织id
+     * @return
+     */
+    List<Department> listDirectSubDepartmentExt(String departmentId);
+
+    /**
+     * 得到某组织的父组织
+     * @param departmentId
+     * @return
+     */
+    Department findParentDepartment(String departmentId);
+}
+

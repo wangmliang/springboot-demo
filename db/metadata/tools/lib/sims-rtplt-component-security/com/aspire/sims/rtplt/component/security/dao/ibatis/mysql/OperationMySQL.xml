@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!-- The SQL in these maps files has purposely been typed with more verbosity than is actually required.
+ For example, many of the selects could have just used SELECT * FROM... instead of listing all of the columns.
+ This is to demonstrate that even complex SQL can be handled and coded and formatted the way SQL was meant
+ to be (i.e. not a bunch of concatenated strings in a Java class). -->
+
+<sqlMap namespace="SecOperation">
+	<typeAlias alias="SecOperation" type="com.aspire.sims.rtplt.component.security.pojo.Operation"/>
+    <typeAlias alias="SecRoleResourceOperation" type="com.aspire.sims.rtplt.component.security.pojo.RoleResourceOperation"/>
+
+	<resultMap id="SecOperationResult" class="SecOperation">
+		<result property="resourceId" column="RESOURCE_ID" />
+		<result property="operationKey" column="OPERATION_KEY" />
+		<result property="dependKey" column="DEPEND_KEY" />		
+		<result property="operationName" column="OPERATION_NAME" />
+		<result property="operationDesc" column="OPERATION_DESC" />
+		<result property="metadataId" column="METADATA_ID" />
+		<result property="dependByKey" column="DEPEND_BY_KEY" />
+		<result property="orderKey" column="ORDER_KEY" javaType="int" jdbcType="NUMERIC" nullValue="0"/>  
+		<result property="domain" column="DOMAIN"/>
+	</resultMap>
+
+    <resultMap id="SecRoleResourceOperationResult" class="SecRoleResourceOperation">
+        <result property="roleId" column="ROLE_ID"/>
+        <result property="resourceId" column="RESOURCE_ID"/>
+        <result property="operationKey" column="OPERATION_KEY"/>
+    </resultMap>
+
+      <insert id="secOperation_insertOperation" parameterClass="SecOperation">
+		<![CDATA[
+		INSERT  INTO SEC_OPERATION	(
+				OPERATION_ID,
+			    RESOURCE_ID     ,
+		        OPERATION_KEY   ,
+		        DEPEND_KEY   ,		        
+		        OPERATION_NAME	,
+		        OPERATION_DESC 	,
+		        METADATA_ID 	,
+		        DEPEND_BY_KEY   ,
+		        ORDER_KEY,
+		        DOMAIN           )
+        VALUES (
+        		`SEQ_SEC_OPERATION_ID.Nextval`(),
+                #resourceId#  	,
+		        #operationKey#  ,
+		        #dependKey#  ,		        
+		        #operationName#	,
+		        #operationDesc:VARCHAR#	,
+		        #metadataId:VARCHAR#,
+		        #dependByKey:VARCHAR#,
+		        #orderKey#,
+		        #domain:VARCHAR# )
+		]]>	
+	</insert>	
+
+  	<select id="secOperation_findOperation" resultMap="SecOperationResult" parameterClass="SecOperation">    
+		<![CDATA[
+		SELECT	
+			    RESOURCE_ID     ,
+		        OPERATION_KEY   ,
+		        DEPEND_KEY   ,
+		        OPERATION_NAME	,
+		        OPERATION_DESC 	,
+		        METADATA_ID 	,
+		        DEPEND_BY_KEY,
+		        ORDER_KEY,
+		        DOMAIN
+		FROM	SEC_OPERATION
+		WHERE
+			RESOURCE_ID = #resourceId#
+			AND OPERATION_KEY = #operationKey#
+		]]>	
+	</select>
+
+  	<select id="secOperation_listOperation" resultMap="SecOperationResult" parameterClass="SecOperation">    
+		<![CDATA[
+		SELECT	
+			    RESOURCE_ID     ,
+		        OPERATION_KEY   ,
+		        DEPEND_KEY   ,
+		        OPERATION_NAME	,
+		        OPERATION_DESC 	,
+		        METADATA_ID 	,
+		        DEPEND_BY_KEY,
+		        ORDER_KEY,
+		        DOMAIN
+		FROM	SEC_OPERATION
+		]]>	
+		<dynamic prepend="WHERE">    
+            <isNotEmpty prepend="AND" property="resourceId">
+                RESOURCE_ID = trim(#resourceId#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="operationKey">
+                OPERATION_KEY = trim(#operationKey#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="operationName">
+                OPERATION_NAME like CONCAT('%',trim(#operationName#),'%')    
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="operationDesc">
+                OPERATION_DESC like CONCAT('%',trim(#operationDesc#),'%')    
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dependKey">
+                DEPEND_KEY = #dependKey#
+            </isNotEmpty>
+             <isNotEmpty prepend="AND" property="dependKey">
+                DEPEND_BY_KEY = #dependByKey#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="metadataId">
+                METADATA_ID = trim(#metadataId#)
+            </isNotEmpty>
+        </dynamic>
+          order by ORDER_KEY,OPERATION_ID
+    </select>
+
+    <select id="secOperation_listResourceOperationByStaffId" resultClass="java.util.HashMap" parameterClass="java.lang.String">    
+        <![CDATA[
+				SELECT  RESOURCE_ID, OPERATION_KEY
+                FROM    SEC_ROLE_RESOURCE_OPERATION
+                WHERE   ROLE_ID IN
+                        (SELECT ROLE_ID
+                        FROM    SEC_STAFF_DEPARTMENT_ROLE
+                        WHERE   STAFF_ID =  #value#
+                        UNION ALL
+                        SELECT ROLE_ID FROM SEC_ROLE WHERE AUTO_ASSIGN = 1
+                        )
+        ]]>
+    </select>
+
+    <update id="secOperation_updateOperation" parameterClass="SecOperation">
+        UPDATE SEC_OPERATION
+        SET OPERATION_NAME = #operationName#,
+        OPERATION_DESC = #operationDesc#,
+        DEPEND_KEY = #dependKey#
+        METADATA_ID = #metadataId#
+        WHERE RESOURCE_ID = #resourceId# AND OPERATION_KEY = #operationKey#
+    </update>
+
+    <update id="secOperation_deleteOperation" parameterClass="SecOperation">
+        DELETE FROM SEC_OPERATION
+        WHERE RESOURCE_ID = #resourceId# AND OPERATION_KEY = #operationKey#
+    </update>
+
+    <select id="secOperation_listOperationByRoleId" resultMap="SecOperationResult" parameterClass="java.lang.String">
+        SELECT
+		  O.*
+		FROM SEC_OPERATION O,
+		  SEC_ROLE_RESOURCE_OPERATION R
+		WHERE O.RESOURCE_ID = R.RESOURCE_ID
+		    AND O.OPERATION_KEY = R.OPERATION_KEY
+		    AND R.ROLE_ID =#roleId# 
+    </select>
+
+    <select id="secOperation_listOperationByRoleResourceOperation" resultMap="SecOperationResult"
+            parameterClass="SecRoleResourceOperation">
+        SELECT
+		  O.*
+		FROM SEC_OPERATION O,
+		  SEC_ROLE_RESOURCE_OPERATION R
+		WHERE O.RESOURCE_ID = R.RESOURCE_ID
+		    AND O.OPERATION_KEY = R.OPERATION_KEY
+        <dynamic>
+            <isNotEmpty prepend="AND" property="roleId">
+                R.ROLE_ID = #roleId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="resourceId">
+                R.RESOURCE_ID = #resourceId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="operationKey">
+                R.OPERATION_KEY = TRIM(#operationKey#)
+            </isNotEmpty>
+        </dynamic>
+    </select>
+</sqlMap>

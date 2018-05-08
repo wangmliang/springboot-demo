@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+           
+	<!--spring transcation config -->
+	<aop:config>
+		<aop:advisor pointcut="execution(* com.aspire.sims.rtplt.component.security.metadata2.RoleImporter.*(..))" advice-ref="roleImporterAdvice"/>
+		<!--<aop:advisor pointcut="execution(* com.aspire.sims.rtplt.component.security.metadata2.AuthMetadataImporter.*(..))" advice-ref="metadataImporterAdvice"/>-->
+	</aop:config>
+	<tx:advice id="roleImporterAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" propagation="REQUIRED"/>
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- <tx:advice id="metadataImporterAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" propagation="REQUIRED"/>
+		</tx:attributes>
+	</tx:advice> -->
+
+	
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:jdbc_mysql.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}"/>
+		<property name="url" value="${jdbc.url}"/>
+		<property name="username" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    	<property name="dataSource"><ref local="dataSource"/></property>
+  	</bean>
+    
+	<bean id="sqlMapClient" class="com.aspire.sims.rtplt.component.springhelper.SqlMapClientFactoryBean">
+		<property name="configLocation"  value="sqlMapConfig-component-security-mysql.xml,sqlMapConfig-component-basic.xml"/>
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<!--import security spring config-->
+	<import resource="classpath:applicationContext-component-security.xml"/>
+	<import resource="classpath:applicationContext-component-basic.xml"/>
+	
+	<bean id="secMetadataDao2" class="com.aspire.sims.rtplt.component.security.metadata2.MetadataDaoImpl">
+        <property name="sqlMapClient">
+            <ref bean="sqlMapClient"/>
+        </property>
+        <property name="resourceCategoryDao" ref="secResourceCategoryDao">
+        </property>
+        <property name="resourceDao" ref="secResourceDao">
+        </property>
+        <property name="operationDao" ref="secOperationDao">
+        </property>
+        <property name="operationAddressDao" ref="secOperationAddressDao">
+        </property>
+    </bean>
+    
+    <bean id="authMetadataManage" class="com.aspire.sims.rtplt.component.security.metadata2.AuthMetadataManagerImpl">
+		<property name="metadataDao" ref="secMetadataDao2">
+		</property>					
+	</bean>
+    
+	<bean id="authMetadataImporter" class="com.aspire.sims.rtplt.component.security.metadata2.AuthMetadataImporter">
+		<property name="authMetadataManage" ref="authMetadataManage">
+		</property>					
+	</bean>
+	
+	<bean id="roleImporter" class="com.aspire.sims.rtplt.component.security.metadata2.RoleImporter">
+		<property name="roleDao" ref="secRoleDao">
+		</property>					
+		<property name="departmentDao" ref="secDepartmentDao">
+		</property>					
+		<property name="staffDao" ref="secStaffDao">
+		</property>					
+	</bean>
+</beans>

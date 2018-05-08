@@ -1,6 +1,6 @@
 # 默认端口
 server:
-    port: 8080
+    port: 8082
     error:
         path: /templates/error
 
@@ -73,11 +73,11 @@ spring:
 # mybatis配置
 mybatis:
   mapper-locations: classpath:mapping/*.xml
-  type-aliases-package: com.wml.springboot.entity
+  type-aliases-package: com.wml.springboot.*.entity
 
 # Mapper接口文件
 mapper:
-  mappers:  com.wml.springboot.mapper
+  mappers:  com.wml.springboot.*.mapper
   not-empty: false
   identity: MYSQL
 

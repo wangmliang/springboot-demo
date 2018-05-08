@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!-- Always ensure to use the correct XML header as above! -->
+<sqlMap namespace="Menu">
+    <typeAlias alias="menu" type="com.aspire.sims.rtplt.framework.portal.pojo.Menu"/>
+    <resultMap id="menu_result" class="menu">
+        <result property="menuId" column="menu_id"/>
+        <result property="menuName" column="menu_name"/>
+        <result property="menuKey" column="menu_key"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="url" column="url"/>
+        <result property="menuOrder" column="menu_order"/>
+        <result property="subsystem" column="subsystem"/>
+        <result property="domain" column="domain"/>
+    </resultMap>
+
+	<cacheModel id="menu-cache" type="OSCACHE" readOnly="false" serialize="true"> 
+       <flushInterval minutes="30"/> 
+       <flushOnExecute statement="Menu_insertMenu"/>
+       <flushOnExecute statement="Menu_deleteMenu"/>
+       <flushOnExecute statement="Menu_deleteMenuBySubsystem"/>
+       <flushOnExecute statement="Menu_deleteMenuByDomain"/>
+       <flushOnExecute statement="Menu_selectLeavingMenu"/>
+       <flushOnExecute statement="Menu_deleteMenu_tool"/>
+       <flushOnExecute statement="Menu_updateMenu"/>
+       <property name="size" value="1000" /> 
+    </cacheModel>
+	
+    <select id="Menu_getNextId" resultClass="java.lang.String">
+        <![CDATA[
+    SELECT ltrim(to_char(Seq_Menu_Next_Id.Nextval,'0000000000')) 
+           AS Id 
+    FROM dual
+]]>
+    </select>
+
+    <select id="Menu_listMenuCount" resultClass="java.lang.Integer" parameterClass="menu">
+        <![CDATA[
+    SELECT count(*) FROM Menu
+]]>
+    </select>
+
+    <insert id="Menu_insertMenu" parameterClass="menu">
+        <![CDATA[
+    INSERT INTO Menu (
+            menu_id, 
+            menu_name,
+            menu_key, 
+            parent_id, 
+            image_url, 
+            url, 
+            menu_order, 
+            subsystem,
+            domain            
+        )
+    VALUES (
+            #menuId#,
+            #menuName#,
+            #menuKey#,
+            #parentId#,
+            #imageUrl#,
+            #url#,
+            #menuOrder#,
+            #subsystem#,
+            #domain#            
+    )
+]]>
+    </insert>
+
+    <delete id="Menu_deleteMenu" parameterClass="string">
+        <![CDATA[
+    DELETE  FROM  Menu WHERE menu_id = #menuId#
+]]>
+</delete> 
+
+<statement id="Menu_selectLeavingMenu" resultMap="menu_result">
+        <![CDATA[
+    SELECT * FROM menu where subsystem is null and menu_id not in (select parent_id from menu where parent_id is not null)
+]]>
+    </statement>
+
+    <delete id="Menu_deleteMenuBySubsystem" parameterClass="string">
+        <![CDATA[
+    DELETE  FROM  Menu WHERE subsystem = #subsystem#
+]]>
+    </delete>
+    
+    <delete id="Menu_deleteMenuByDomain" parameterClass="string">
+        <![CDATA[
+    DELETE  FROM  Menu WHERE domain = #domain#
+]]>
+    </delete>
+    
+    <!-- add the statement int the temp ,seq merge with bover delete statement -->
+     <delete id="Menu_deleteMenu_tool" parameterClass="java.util.HashMap">
+	    DELETE  FROM  Menu
+     	<dynamic prepend="WHERE">
+           <isNotEmpty prepend="and" property="domain">
+               domain = #domain#
+           </isNotEmpty>
+           <isNotEmpty prepend="and" property="subsystem">
+               subsystem = #subsystem#
+           </isNotEmpty>
+       </dynamic>
+    </delete>
+
+    <update id="Menu_updateMenu" parameterClass="menu">
+        <![CDATA[
+    UPDATE Menu 
+    SET
+            menu_id = #menuId#,
+            menu_name = #menuName#,
+            parent_id = #parentId#,
+            image_url = #imageUrl#,
+            url = #url#,
+            menu_order = #menuOrder#,
+            subsystem = #subsystem#,
+            domain = #domain#            
+    WHERE menu_id = #menuId#
+]]>
+    </update>
+
+    <select id="Menu_findMenu" resultMap="menu_result" parameterClass="string">
+        <![CDATA[
+    SELECT
+            menu_id, 
+            menu_name,
+            menu_key, 
+            parent_id, 
+            image_url, 
+            url, 
+            menu_order, 
+            subsystem,
+            domain            
+    FROM Menu WHERE menu_id = #menuId#
+]]>
+    </select>
+    
+    <select id="Menu_findMenuByKey" resultMap="menu_result" parameterClass="string">
+        <![CDATA[
+    SELECT
+            menu_id, 
+            menu_name,
+            menu_key, 
+            parent_id, 
+            image_url, 
+            url, 
+            menu_order, 
+            subsystem,
+            domain            
+    FROM Menu WHERE menu_key = #menuKey#
+]]>
+    </select>
+
+    <select id="Menu_listMenu" resultMap="menu_result" parameterClass="menu">
+        <![CDATA[
+    SELECT
+            menu_id, 
+            menu_name,
+            menu_key, 
+            parent_id, 
+            image_url, 
+            url, 
+            menu_order, 
+            subsystem,
+            domain
+    FROM Menu
+]]>
+        <dynamic prepend="WHERE">
+            <isNotEmpty prepend="and" property="menuId">
+                menu_id = #menuId#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="menuName">
+                menu_name = #menuName#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="menuKey">
+                menu_key = #menuKey#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="parentId">
+                parent_id = #parentId#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="imageUrl">
+                image_url = #imageUrl#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="url">
+                url = #url#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="menuOrder">
+                menu_order = #menuOrder#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="subsystem">
+                subsystem = #subsystem#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="domain">
+                domain = #domain#
+            </isNotEmpty>
+        </dynamic>
+    </select>
+    
+    <select id="Menu_listNotDomainMenuCountById" resultClass="java.lang.Integer" parameterClass="string">
+        <![CDATA[
+    SELECT count(1) FROM Menu where domain is null and subsystem=#subsystem# 
+    ]]>
+    </select>
+
+    <select id="Menu_listRecursiveMenu" resultMap="menu_result" parameterClass="menu" cacheModel="menu-cache">
+        <![CDATA[
+    SELECT
+            menu_id, 
+            menu_name,
+            menu_key, 
+            parent_id, 
+            image_url, 
+            url, 
+            menu_order, 
+            subsystem,
+            domain     
+    FROM 
+    	Menu
+	WHERE domain = #domain#    	
+    START WITH 
+    	parent_id = #parentId#
+    CONNECT BY PRIOR 
+    	menu_id=parent_id 
+    ORDER BY 
+    	parent_id,menu_id
+]]>
+    </select>
+
+</sqlMap>

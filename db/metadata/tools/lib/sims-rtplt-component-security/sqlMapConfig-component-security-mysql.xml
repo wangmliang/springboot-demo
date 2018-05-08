@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+    <settings cacheModelsEnabled ="true" lazyLoadingEnabled="false" enhancementEnabled="true"/>
+    
+    <typeHandler javaType="com.aspire.sims.rtplt.component.security.constant.Sex" callback="com.aspire.sims.rtplt.component.security.dao.ibatis.StaffSexHandler"/>
+    <typeHandler javaType="com.aspire.sims.rtplt.component.security.constant.Status" callback="com.aspire.sims.rtplt.component.security.dao.ibatis.StaffStatusHandler"/>
+
+    <!--componets security start-->
+	<sqlMap resource="com/aspire/sims/rtplt/component/security/dao/ibatis/mysql/DepartmentMySQL.xml"/>
+	<sqlMap resource="com/aspire/sims/rtplt/component/security/dao/ibatis/mysql/OperationAddressMySQL.xml"/>
+	<sqlMap resource="com/aspire/sims/rtplt/component/security/dao/ibatis/mysql/OperationMySQL.xml"/>
+	<sqlMap resource="com/aspire/sims/rtplt/component/security/dao/ibatis/mysql/ResourceCategoryMySQL.xml"/>
+	<sqlMap resource="com/aspire/sims/rtplt/component/security/dao/ibatis/mysql/ResourceMySQL.xml"/>
+	<sqlMap resource="com/aspire/sims/rtplt/component/security/dao/ibatis/mysql/RoleMySQL.xml"/>
+	<sqlMap resource="com/aspire/sims/rtplt/component/security/dao/ibatis/mysql/StaffMySQL.xml"/>
+	<sqlMap resource="com/aspire/sims/rtplt/component/security/metadata2/MetadataMySQL.xml"/>
+	<!--  
+	
+	<sqlMap resource="com/aspire/sims/rtplt/component/security/dao/ibatis/maps/MetadataSQL.xml"/>
+	
+		
+    
+    -->
+	<!--componets security end-->
+</sqlMapConfig>

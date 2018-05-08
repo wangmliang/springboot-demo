@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!-- Always ensure to use the correct XML header as above! -->
+<sqlMap namespace="PortalSession">
+<typeAlias alias="portalSession" type="com.aspire.sims.rtplt.framework.portal.pojo.PortalSession"/> 
+<resultMap id="portalSession_result" class="portalSession">
+    <result property="sessionId" column="SESSION_ID"/>
+    <result property="staffId" column="STAFF_ID"/>
+    <result property="loginTime" column="LOGIN_TIME"/>
+    <result property="loginTime2" column="LOGIN_TIME2"/>
+</resultMap>
+
+<insert id="PortalSession_insertPortalSession" parameterClass="portalSession" >
+<![CDATA[
+    INSERT INTO portal_session (
+            SESSION_ID, 
+            STAFF_ID, 
+            LOGIN_TIME, 
+            LOGIN_TIME2
+        )
+    VALUES (
+            #sessionId#,
+            #staffId#,
+            #loginTime#,
+            #loginTime2#
+    )
+]]>
+</insert>
+
+<delete id="PortalSession_deletePortalSession" parameterClass="string">
+<![CDATA[
+    DELETE  FROM  portal_session WHERE SESSION_ID = #sessionId#
+]]>
+</delete>    
+
+<update id="PortalSession_updatePortalSession" parameterClass="portalSession">
+    UPDATE portal_session 
+    SET
+    	SESSION_ID = #sessionId#
+	<isNotEmpty prepend="," property="staffId">
+            STAFF_ID = #staffId#
+	</isNotEmpty>
+	<isNotEmpty prepend="," property="loginTime">
+            LOGIN_TIME = #loginTime#
+	</isNotEmpty>
+	<isNotEmpty prepend="," property="loginTime2">
+            LOGIN_TIME2 = #loginTime2#
+	</isNotEmpty>
+    WHERE SESSION_ID = #sessionId#
+</update> 
+
+<select id="PortalSession_findPortalSession" resultMap="portalSession_result" parameterClass="string">
+<![CDATA[
+    SELECT
+            SESSION_ID, 
+            STAFF_ID, 
+            LOGIN_TIME, 
+            LOGIN_TIME2
+    FROM portal_session WHERE SESSION_ID = #sessionId#
+]]>
+</select>
+
+<select id="PortalSession_findRecentPortalSession" resultMap="portalSession_result" parameterClass="string">
+<![CDATA[
+	SELECT * FROM(
+	    SELECT
+	            SESSION_ID, 
+	            STAFF_ID, 
+	            LOGIN_TIME, 
+	            LOGIN_TIME2
+	    FROM portal_session WHERE STAFF_ID = #staffId#
+	    ORDER BY LOGIN_TIME DESC
+	) WHERE ROWNUM = 1
+]]>
+</select>
+
+<delete id="PortalSession_deleteBeforeDayPortalSession" parameterClass="int">
+<![CDATA[
+    DELETE  FROM  portal_session WHERE LOGIN_TIME2 < sysdate - #beforeDay#
+]]>
+</delete> 
+
+</sqlMap>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!-- Always ensure to use the correct XML header as above! -->
+<sqlMap namespace="Link">
+    <typeAlias alias="link" type="com.aspire.sims.rtplt.framework.portal.pojo.Link"/>
+    <resultMap id="ink_result" class="link">
+        <result property="linkName" column="LINK_NAME"/>
+        <result property="linkUrl" column="LINK_URL"/>
+        <result property="dispType" column="DISP_TYPE"/>
+        <result property="linkType" column="LINK_TYPE"/>
+        <result property="target" column="TARGET"/>
+        <result property="subSystem" column="SUB_SYSTEM"/>
+        <result property="domain" column="DOMAIN"/>
+        <result property="needRight" column="NEED_RIGHT"/>
+    </resultMap>
+    
+    <select id="Link_listLink" resultMap="ink_result">
+        <![CDATA[
+			SELECT
+				LINK_NAME, 
+				LINK_URL,
+				DISP_TYPE,
+				LINK_TYPE,
+				TARGET,
+				SUB_SYSTEM,
+				DOMAIN,
+				NEED_RIGHT
+			FROM LINKS 
+		]]>
+        <dynamic prepend="WHERE">
+            <isNotEmpty prepend="and" property="linkName">
+                LINK_NAME = #linkName#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="linkUrl">
+                LINK_URL = #linkUrl#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="dispType">
+                DISP_TYPE = #dispType#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="linkType">
+                LINK_TYPE = #linkType#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="target">
+                TARGET = #target#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="subSystem">
+                SUB_SYSTEM = #subSystem#
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="domain">
+                DOMAIN = #domain#
+            </isNotEmpty>
+        </dynamic>
+    </select>
+
+</sqlMap>

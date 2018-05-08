@@ -5,12 +5,13 @@ import com.sj.config.shiro.filter.KickoutSessionControlFilter;
 import com.sj.config.shiro.filter.MyAuthenticationFilter;
 import com.sj.config.shiro.realm.UserRealm;
 import org.apache.shiro.cache.ehcache.EhCacheManager;*/
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
+import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
@@ -18,7 +19,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
-import javax.servlet.Filter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -78,11 +78,12 @@ public class ShiroConfiguration {
         return shiroFilterFactoryBean;
     }
 
-    /*@Bean
+    @Bean
     public EhCacheManager ehCacheManager() {
         EhCacheManager cacheManager = new EhCacheManager();
+        cacheManager.setCacheManagerConfigFile("classpath:ehcache-shiro.xml");
         return cacheManager;
-    }*/
+    }
 
     /**
      * 不指定名字的话，自动创建一个方法名第一个字母小写的bean * @Bean(name = "securityManager") * @return
@@ -93,9 +94,18 @@ public class ShiroConfiguration {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(userRealm);
         //注入缓存管理器;
-        // securityManager.setCacheManager(ehCacheManager());//这个如果执行多次，也是同样的一个对象;
+        securityManager.setCacheManager(ehCacheManager());//这个如果执行多次，也是同样的一个对象;
         return securityManager;
     }
+
+    /**
+     * 添加ShiroDialect 为了在thymeleaf里使用shiro的标签的bean
+     * @return
+     */
+    /*@Bean(name = "shiroDialect")
+    public ShiroDialect shiroDialect(){
+        return new ShiroDialect();
+    }*/
 
     /**
      * Shiro生命周期处理器 * @return

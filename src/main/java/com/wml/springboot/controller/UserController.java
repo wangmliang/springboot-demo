@@ -1,6 +1,7 @@
 package com.wml.springboot.controller;
 
 import com.wml.springboot.entity.User;
+import com.wml.springboot.exception.MyException;
 import com.wml.springboot.services.UserService;
 import com.wml.springboot.util.RedisService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -52,7 +53,7 @@ public class UserController {
     @RequiresPermissions("userInfo:add")
     @RequestMapping(value = "/get/{id}", produces = {"application/json;charset=UTF-8"})
     @ResponseBody
-    public User findAllUser(@PathVariable("id") Integer id) throws Exception {
+    public User findAllUser(@PathVariable("id") Integer id) throws MyException {
         redisService.set("userId", id.toString());
         logger.info("redis取值:{}", redisService.get("userId"));
 
@@ -61,6 +62,10 @@ public class UserController {
         record.setPhone("15399999999");
         record.setPassword("666666");
         userService.insert(record);
+        if(1 == 1) {
+            throw new MyException("测试自定义异常...");
+
+        }
         return userService.findAllUser(id);
     }
 

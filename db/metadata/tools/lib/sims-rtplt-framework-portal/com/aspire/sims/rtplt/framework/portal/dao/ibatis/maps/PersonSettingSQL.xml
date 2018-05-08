@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!-- Always ensure to use the correct XML header as above! -->
+<sqlMap namespace="PersonSetting">
+<typeAlias alias="personSetting" type="com.aspire.sims.rtplt.framework.portal.pojo.PersonSetting"/> 
+<resultMap id="personSetting_result" class="personSetting">
+    <result property="staffId" column="staff_id"/>
+    <result property="propName" column="prop_name"/>
+    <result property="propValue" column="prop_value"/>
+</resultMap>
+<select id="PersonSetting_getSetting" resultMap="personSetting_result" parameterClass="personSetting">
+<![CDATA[
+    SELECT * FROM PERSON_SETTING
+    WHERE STAFF_ID=#staffId# 
+    AND PROP_NAME=#propName#
+]]>
+</select>
+
+<select id="PersonSetting_count" resultClass="java.lang.Integer" parameterClass="personSetting">
+<![CDATA[
+    SELECT count(*) FROM PERSON_SETTING
+    WHERE STAFF_ID=#staffId# 
+    AND PROP_NAME=#propName#
+]]>
+</select>
+
+<insert id="PersonSetting_insert" parameterClass="personSetting" >
+<![CDATA[
+    INSERT INTO PERSON_SETTING (
+            STAFF_ID, 
+            PROP_NAME, 
+            PROP_VALUE 
+        )
+    VALUES (
+            #staffId#,
+            #propName#,
+            #propValue#
+    )
+]]>
+</insert>
+
+<update id="PersonSetting_update" parameterClass="personSetting">
+<![CDATA[
+    UPDATE PERSON_SETTING 
+    SET	PROP_VALUE = #propValue#
+    WHERE STAFF_ID = #staffId#
+    AND PROP_NAME = #propName#
+]]>
+</update> 
+
+<delete id="PersonSetting_delete" parameterClass="personSetting">
+<![CDATA[
+	DELETE FROM PERSON_SETTING
+    WHERE STAFF_ID = #staffId#
+    AND PROP_NAME = #propName#
+]]>
+</delete>
+</sqlMap>

@@ -1,5 +1,7 @@
 package com.wml.springboot.handler;
 
+import com.wml.springboot.exception.ErrorInfo;
+import com.wml.springboot.exception.MyException;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.slf4j.Logger;
@@ -13,6 +15,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -42,8 +46,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = Exception.class)
-    /*@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)*/
-     public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
+    public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
         ModelAndView mav = new ModelAndView();
         String viewName = DEFAULT_ERROR_VIEW;
         HttpStatus status = getStatus(req);
@@ -53,15 +56,41 @@ public class GlobalExceptionHandler {
             mav.addObject("exception", pringExceptionInfo(e));
             logger.error("系统500Error： 请求链接：{}，错误信息：{}", req.getRequestURL(), e.getMessage());
         }
-        mav.addObject("url", req.getRequestURL());
+        mav.addObject("url", req.getServletPath());
         // 设定状态为成功，避免浏览器提示错误
         mav.setStatus(HttpStatus.OK);
         mav.setViewName(viewName);
         return mav;
     }
 
+    /**
+     * 自定义异常
+     * @param req
+     * @param e
+     * @return
+     * @throws Exception
+     */
+    @ExceptionHandler(value = MyException.class)
+    @ResponseBody
+    public ErrorInfo myErrorHandler(HttpServletRequest req, MyException e) throws Exception {
+        ErrorInfo error = new ErrorInfo();
+        HttpStatus status = getStatus(req);
+        error.setError(status.value() == 404 ? "Not Found" : "500 Error");
+        error.setStatus(status.value());
+        error.setMessage(e.getMessage());
+        error.setTimestamp(new Date().getTime());
+        error.setPath(req.getServletPath());
+        return error;
+    }
+
+    /**
+     * 无权限错误拦截
+     * @param req
+     * @param response
+     * @param e
+     * @throws Exception
+     */
     @ExceptionHandler(value = UnauthorizedException.class)
-    /*@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)*/
     public void unauthorizedErrorHandler(HttpServletRequest req, HttpServletResponse response, Exception e) throws Exception {
         response.sendRedirect("/403");
         return;

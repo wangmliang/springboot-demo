@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!-- The SQL in these maps files has purposely been typed with more verbosity than is actually required.
+ For example, many of the selects could have just used SELECT * FROM... instead of listing all of the columns.
+ This is to demonstrate that even complex SQL can be handled and coded and formatted the way SQL was meant
+ to be (i.e. not a bunch of concatenated strings in a Java class). -->
+
+<sqlMap namespace="SecResource">
+	<typeAlias alias="SecResource" type="com.aspire.sims.rtplt.component.security.pojo.Resource"/>
+	
+	<cacheModel id="resource-cache" type="OSCACHE" readOnly="true" serialize="false"> 
+        <flushInterval hours="1"/> 
+        <property name="size" value="500" /> 
+    </cacheModel>
+    
+	<resultMap id="SecResourceResult" class="SecResource">
+		<result property="resourceId" column="RESOURCE_ID" />
+		<result property="resourceKey" column="RESOURCE_KEY" />
+		<result property="resourceName" column="RESOURCE_NAME" />
+		<result property="resourceDesc" column="RESOURCE_DESC" />
+		<result property="categoryId" column="CATEGORY_ID" />
+		<result property="metadataId" column="METADATA_ID" />
+		<result property="authType" column="AUTH_TYPE" />
+		<result property="orderKey" column="ORDER_KEY" javaType="int" jdbcType="NUMERIC" nullValue="0"/>  		
+		<result property="domain" column="DOMAIN" />
+	</resultMap>
+	
+  	<select id="secResource_getResourceId" resultClass="java.lang.Long" >
+  		<![CDATA[
+   		SELECT `SEQ_SEC_RESOURCES_ID.Nextval`()
+   		]]>
+  	</select> 
+    
+	<insert id="secResource_insertResource" parameterClass="SecResource">
+		<![CDATA[
+		INSERT INTO SEC_RESOURCES (
+			   RESOURCE_ID,
+		       RESOURCE_KEY   ,
+		       RESOURCE_NAME  ,
+		       RESOURCE_DESC  ,
+		       CATEGORY_ID    ,
+		       METADATA_ID    ,
+		       AUTH_TYPE      ,
+		       ORDER_KEY,		       
+		       DOMAIN         )
+		VALUES(
+			   #resourceId#,
+		       #resourceKey#         ,
+		       #resourceName#        ,
+		       #resourceDesc:VARCHAR#,
+		       #categoryId#            ,
+		       #metadataId:VARCHAR#  ,
+		       #authType:VARCHAR#  ,
+		       #orderKey#,		       
+		       #domain:VARCHAR#)
+		]]>       
+  	</insert>
+
+  	<delete id="secResource_deleteResourceByMetadataId" parameterClass="java.lang.String">
+  		<![CDATA[
+  		DELETE 	FROM SEC_RESOURCES
+  		WHERE	METADATA_ID = #value#
+  		]]>
+  	</delete>
+  	
+  	<select id="secResource_findResource" 
+  	        resultMap="SecResourceResult" 
+  	        parameterClass="java.lang.String"
+  	        cacheModel="resource-cache">
+		<![CDATA[
+		SELECT  
+		       RESOURCE_ID    ,
+		       RESOURCE_KEY   ,
+		       RESOURCE_NAME  ,
+		       RESOURCE_DESC  ,
+		       CATEGORY_ID    ,
+		       METADATA_ID    ,
+		       AUTH_TYPE    ,
+		       ORDER_KEY,		       
+		       DOMAIN         
+		FROM	SEC_RESOURCES
+		WHERE   RESOURCE_ID = #value#
+		]]>
+  	</select>  
+  	
+  	<select id="secResource_findResourceByKey" resultMap="SecResourceResult" parameterClass="java.lang.String">
+		<![CDATA[
+		SELECT
+		       RESOURCE_ID    ,
+		       RESOURCE_KEY   ,
+		       RESOURCE_NAME  ,
+		       RESOURCE_DESC  ,
+		       CATEGORY_ID    ,
+		       METADATA_ID    ,
+		       AUTH_TYPE    ,
+		       ORDER_KEY,		       
+		       DOMAIN         		
+		FROM	SEC_RESOURCES
+		WHERE   RESOURCE_KEY = #value#
+		]]>
+  	</select>   	
+  	
+  	<select id="secResource_listResource" resultMap="SecResourceResult" parameterClass="SecResource">
+		<![CDATA[
+		SELECT
+		       RESOURCE_ID    ,
+		       RESOURCE_KEY   ,
+		       RESOURCE_NAME  ,
+		       RESOURCE_DESC  ,
+		       CATEGORY_ID    ,
+		       METADATA_ID    ,
+		       AUTH_TYPE    ,
+		       ORDER_KEY,		       
+		       DOMAIN         
+		FROM    SEC_RESOURCES
+		]]>	       
+		<dynamic prepend="WHERE">  
+            <isNotEmpty prepend="AND" property="resourceId">
+                RESOURCE_ID = trim(#resourceId#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="resourceKey">
+                RESOURCE_KEY = trim(#resourceKey#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="resourceName">
+                RESOURCE_NAME like '%'||trim(#resourceName#)||'%'    
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="resourceDesc">
+                RESOURCE_DESC like '%'||trim(#resourceDesc#)||'%'    
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="categoryId">
+                CATEGORY_ID = trim(#categoryId#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="authType">
+                AUTH_TYPE = trim(#authType#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="metadataId">
+                METADATA_ID = trim(#metadataId#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="domain">
+                DOMAIN = trim(#domain#)
+            </isNotEmpty>
+        </dynamic> 
+        order by ORDER_KEY 
+	</select>
+	
+  	<select id="secResource_listResourceByLoginName" resultMap="SecResourceResult" parameterClass="java.lang.String">    
+		<![CDATA[
+		SELECT
+		       RESOURCE_ID    ,
+		       RESOURCE_KEY   ,
+		       RESOURCE_NAME  ,
+		       RESOURCE_DESC  ,
+		       CATEGORY_ID    ,
+		       METADATA_ID    ,
+		       AUTH_TYPE    ,
+		       ORDER_KEY,		       
+		       DOMAIN         
+		FROM    SEC_RESOURCES
+        WHERE   RESOURCE_ID IN
+                (SELECT RESOURCE_ID
+                FROM    SEC_ROLE_RESOURCE_OPERATION
+                WHERE   ROLE_ID IN
+                        (SELECT ROLE_ID
+                        FROM    SEC_STAFF_DEPARTMENT_ROLE
+                        WHERE   STAFF_ID =  (SELECT STAFF_ID
+                                            FROM    SEC_STAFF
+                                            WHERE   STATUS NOT IN ('EXPIRED', 'DELETED')
+                                                    AND LOGIN_NAME = #LoginName#
+                                                    LIMIT 0,1
+                                            )
+
+                        UNION ALL
+                        SELECT ROLE_ID FROM SEC_ROLE WHERE AUTO_ASSIGN = 1
+                        )
+                )
+		]]>
+	</select>
+
+	
+    <select id="secResource_listResourceByRoleId" resultMap="SecResourceResult" parameterClass="java.lang.String">
+        SELECT *
+        FROM SEC_RESOURCES
+        WHERE AUTH_TYPE='AUTH' AND RESOURCE_ID IN (
+            SELECT RESOURCE_ID
+            FROM SEC_ROLE_RESOURCE_OPERATION
+            WHERE ROLE_ID = #roleId#
+        )
+    </select>
+
+	<resultMap id="SecResourceAndOperation" class="java.util.HashMap">
+		<result property="wholeright" column="wholeright" />
+		<result property="resourceId" column="resourceId" />
+		<result property="operationKey" column="operationKey" />
+		<result property="categoryId" column="categoryId" />
+	</resultMap>
+
+	<select id="secResource_connetResourceAndOperation"  resultMap="SecResourceAndOperation">
+	    select 
+	    	CONCAT(b.resource_name,'\\', c.operation_name) AS wholeright,
+        	 b.resource_id AS resourceId,
+        	 c.operation_key AS operationKey,
+        	 b.category_id AS categoryId
+   		FROM SEC_RESOURCES b, SEC_OPERATION c
+ 		WHERE b.resource_id = c.resource_id
+ 	    ORDER BY b.category_id asc
+	</select>
+	
+</sqlMap>

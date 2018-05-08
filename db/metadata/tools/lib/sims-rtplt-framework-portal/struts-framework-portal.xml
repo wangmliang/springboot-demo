@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="GBK" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <package name="portal" extends="json-default">
+        <!--interceptors-->
+        <!-- 用户鉴权拦截器 -->
+        <!--interceptor name="userAuthInterceptor" class="com.aspire.sims.rtplt.framework.portal.interceptor.UserAuthInterceptor">
+              </interceptor-->
+        <!-- 资源鉴权拦截器 -->
+        <!--interceptor name="resAuthInterceptor" class="com.aspire.sims.rtplt.framework.portal.interceptor.ResAuthInterceptor">
+              </interceptor-->
+
+        <!-- 定义门户拦截器栈:首先调用struts2 default，然后进行用户鉴权，资源鉴权 -->
+        <!--interceptor-stack name="portalStack">
+                  <interceptor-ref name="defaultStack"></interceptor-ref>
+                  <interceptor-ref name="userAuthInterceptor"></interceptor-ref>
+                  <interceptor-ref name="resAuthInterceptor"></interceptor-ref>
+              </interceptor-stack-->
+        <!--/interceptors-->
+
+        <!-- 定义门户拦截器栈为缺省拦截器 -->
+        <!--
+          <default-interceptor-ref name="portalStack"></default-interceptor-ref>
+           -->
+
+        <global-results>
+            <result name="error" type="json">
+                <param name="includeProperties">
+                    result,errorReason.*
+                </param>
+            </result>
+        </global-results>
+
+        <!--ACTION命名约束-->
+        <!--命名和Action类名保持一致，只是以小写字母开头，去掉Action后缀 -->
+        <!--如：调用XyzAction的doXyz()方法 相应命名为xyz!xyz -->
+        <!--这里沿用了webwork的命名习惯，好处是很方便根据名称找到相应的class -->
+
+        <!-- 列表菜单 -->
+        <action name="menu" method="doList" class="com.aspire.sims.rtplt.framework.portal.action.MenuAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result,menus.*
+                </param>
+            </result>
+        </action>
+        
+         <!-- 菜单长路径 -->
+        <action name="menu!doGetLongPath" method="doGetMenuLongPath" class="com.aspire.sims.rtplt.framework.portal.action.MenuAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result,menuLongPath
+                </param>
+            </result>
+        </action>
+
+        <!-- 列表快捷方式 -->
+        <action name="shortcut!list" method="doList" class="com.aspire.sims.rtplt.framework.portal.action.ShortcutAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result,menus.*
+                </param>
+            </result>
+        </action>
+        <!-- 快捷方式设置 -->
+        <action name="shortcut!setting" method="doSettingList" class="com.aspire.sims.rtplt.framework.portal.action.ShortcutAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result,menus.*
+                </param>
+            </result>
+        </action>
+
+        <!-- 更新快捷方式 -->
+        <action name="shortcut!update" method="doUpdate" class="com.aspire.sims.rtplt.framework.portal.action.ShortcutAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result
+                </param>
+            </result>
+        </action>
+
+        <!-- 用户登录 -->
+        <action name="login" method="doLogin" class="com.aspire.sims.rtplt.framework.portal.action.LoginAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result
+                </param>
+            </result>
+        </action>
+
+        <!-- 退出登录 -->
+        <action name="logout" method="doLogout" class="com.aspire.sims.rtplt.framework.portal.action.LogoutAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result
+                </param>
+            </result>
+        </action>
+        
+        <!-- 检查是否需要退出 -->
+        <action name="logout!needLogout" method="doNeedLogout" class="com.aspire.sims.rtplt.framework.portal.action.LogoutAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result,data.*
+                </param>
+            </result>
+        </action>
+
+        <!-- 初始密码修改 -->
+        <action name="initialPwd!change" method="doChange" class="com.aspire.sims.rtplt.framework.portal.action.InitialPasswordAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result
+                </param>
+            </result>
+        </action>
+
+        <!-- 用户鉴权 -->
+        <action name="userAuth" method="doAuth" class="com.aspire.sims.rtplt.framework.portal.action.UserAuthRespAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result
+                </param>
+            </result>
+        </action>
+
+        <!-- 资源鉴权 -->
+        <action name="resAuth" method="doAuth" class="com.aspire.sims.rtplt.framework.portal.action.ResAuthRespAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result
+                </param>
+            </result>
+        </action>
+
+        <!-- 设置CSS -->
+        <action name="cssStyle!set" method="doSet" class="com.aspire.sims.rtplt.framework.portal.action.CssStyleAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result
+                </param>
+            </result>
+        </action>
+
+        <!-- 校验码图片 -->
+        <action name="checkCode!view" method="doView" class="com.aspire.sims.rtplt.framework.portal.action.CheckCodeAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result
+                </param>
+            </result>
+        </action>
+        <!-- 重置密码 -->
+        <action name="resetPwd!email" method="doEmail" class="com.aspire.sims.rtplt.framework.portal.action.ResetPasswordAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result
+                </param>
+            </result>
+        </action>
+        <action name="resetPwd!reset" method="doReset" class="com.aspire.sims.rtplt.framework.portal.action.ResetPasswordAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result
+                </param>
+            </result>
+        </action>
+        <action name="resetPwd!check" method="doCheck" class="com.aspire.sims.rtplt.framework.portal.action.ResetPasswordAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result,loginName
+                </param>
+            </result>
+        </action>
+        <action name="theme!set" method="doSetTheme" class="com.aspire.sims.rtplt.framework.portal.action.SettingAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result
+                </param>
+            </result>
+        </action>
+        <action name="setting!setPCLayout" method="doSetPortletContainerLayout" class="com.aspire.sims.rtplt.framework.portal.action.SettingAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result
+                </param>
+            </result>
+        </action>
+        <action name="setting!set" method="doSet" class="com.aspire.sims.rtplt.framework.portal.action.SettingAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result
+                </param>
+            </result>
+        </action>
+        <action name="setting!get" method="doGet" class="com.aspire.sims.rtplt.framework.portal.action.SettingAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    data.*
+                </param>
+            </result>
+        </action>
+        <action name="setting!loadStates" method="doLoadStates" class="com.aspire.sims.rtplt.framework.portal.action.SettingAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    data.*
+                </param>
+            </result>
+        </action>
+        <action name="userInfo" method="doGetUserInfo" class="com.aspire.sims.rtplt.framework.portal.action.UserInfoAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result,data.*
+                </param>
+            </result>
+        </action>
+
+        <!-- SMS校验 -->
+        <action name="smsVerify!sendSmsVerifyCode" method="sendSmsVerifyCode" class="com.aspire.sims.rtplt.framework.portal.action.SmsVerifyAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result,data.*
+                </param>
+            </result>
+        </action>
+        <action name="smsVerify!verifySmsCode" method="verifySmsCode" class="com.aspire.sims.rtplt.framework.portal.action.SmsVerifyAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result,data.*
+                </param>
+            </result>
+        </action>
+        
+         <action name="link" method="doList" class="com.aspire.sims.rtplt.framework.portal.action.LinkAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result,links.*
+                </param>
+            </result>
+        </action>
+         <action name="staffMenuAuthCheck" method="check" class="com.aspire.sims.rtplt.framework.portal.action.StaffMenuAuthCheckAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result,results.*
+                </param>
+            </result>
+        </action>
+         <action name="sqlMapClientDataCacheFlush" method="doFlush" class="com.aspire.sims.rtplt.framework.portal.action.SqlMapClientDataCacheFlushAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result
+                </param>
+            </result>
+        </action>
+        <action name="resAuth!pageComponentAuth" method="doPageComponentAuth" class="com.aspire.sims.rtplt.framework.portal.action.ResAuthAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result,results.*
+                </param>
+            </result>
+        </action>
+        <action name="image!add" method="doAdd" class="com.aspire.sims.rtplt.framework.portal.action.ImageAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result,storedFilePath
+                </param>
+            </result>
+        </action>              
+        <action name="image!list" method="doList" class="com.aspire.sims.rtplt.framework.portal.action.ImageAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result,imageList.*
+                </param>
+            </result>
+        </action>  
+         <action name="search" method="doSearch" class="com.aspire.sims.rtplt.framework.portal.action.SearchAction">
+            <!-- 如果输出json格式，type=”json” -->
+            <result name="success" type="json">
+                <!--includeProperties定义了需要输出的json数据-->
+                <param name="includeProperties">
+                    result,menus.*,totalCount
+                </param>
+            </result>
+        </action>
+    </package>
+</struts>
+

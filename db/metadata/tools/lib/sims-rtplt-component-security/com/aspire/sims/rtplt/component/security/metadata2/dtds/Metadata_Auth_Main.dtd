@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 元数据主文件 DTD-->
+<!ELEMENT domain (resource-category+)>
+<!ELEMENT resource-category (resource-category*, resource*)>
+<!ELEMENT resource (operation*)>  
+<!ELEMENT operation (address+)>
+<!ELEMENT address (param1?, param2?, param3?)>
+<!ELEMENT param1 EMPTY>
+<!ELEMENT param2 EMPTY>
+<!ELEMENT param3 EMPTY>
+
+<!ATTLIST domain
+	subsystem CDATA #REQUIRED
+	oldSubsystem CDATA #IMPLIED
+	id CDATA #REQUIRED
+>
+<!ATTLIST resource-category
+	key CDATA #REQUIRED
+	name CDATA #REQUIRED
+	desc CDATA #IMPLIED
+	orderKey CDATA #IMPLIED
+>
+<!ATTLIST resource
+	key CDATA #REQUIRED
+	name CDATA #REQUIRED
+	desc CDATA #IMPLIED
+	authType CDATA #IMPLIED
+	orderKey CDATA #IMPLIED	
+>
+<!ATTLIST operation
+	key CDATA #REQUIRED
+	name CDATA #REQUIRED
+	desc CDATA #IMPLIED	
+	depend CDATA #IMPLIED
+	orderKey CDATA #IMPLIED	
+>
+<!ATTLIST address
+	name CDATA #REQUIRED
+	url CDATA #REQUIRED
+>
+<!ATTLIST param1
+	name CDATA #REQUIRED
+	value CDATA #REQUIRED
+>
+<!ATTLIST param2
+	name CDATA #REQUIRED
+	value CDATA #REQUIRED
+>
+<!ATTLIST param3
+	name CDATA #REQUIRED
+	value CDATA #REQUIRED
+> 
+
+
+	

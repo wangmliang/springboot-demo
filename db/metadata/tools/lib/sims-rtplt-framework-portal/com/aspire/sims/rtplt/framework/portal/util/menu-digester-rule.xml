@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<digester-rules>
+     <pattern value="*/menu">
+		<object-create-rule classname="com.aspire.sims.rtplt.framework.portal.pojo.Menu"/>   
+
+      	<!--set menu bean props by attrs-->
+		<set-properties-rule>
+      		<!--attr prop mapping-->
+			<alias attr-name="name" prop-name="menuName"/>
+			<alias attr-name="image" prop-name="imageUrl"/>
+			<alias attr-name="order" prop-name="menuOrder"/>
+		</set-properties-rule>
+
+		<set-next-rule methodname="addChild" />
+     </pattern>
+</digester-rules>

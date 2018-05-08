@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="GBK" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!-- The SQL in these maps files has purposely been typed with more verbosity than is actually required.
+ For example, many of the selects could have just used SELECT * FROM... instead of listing all of the columns.
+ This is to demonstrate that even complex SQL can be handled and coded and formatted the way SQL was meant
+ to be (i.e. not a bunch of concatenated strings in a Java class). -->
+
+<sqlMap namespace="SecMetadata2">
+	<typeAlias alias="SecMetadataLog2" type="com.aspire.sims.rtplt.component.security.metadata2.MetadataLog"/>
+	
+	<resultMap id="SecMetadataLog2Result" class="SecMetadataLog2">
+		<result column="LOG_ID" property="logId"/>
+		<result column="METADATA_ID" property="metadataId"/>
+		<result column="HOST_NAME" property="hostName"/>
+		<result column="CLIENT_IP" property="clientIp"/>
+		<result column="FILE_NAME" property="fileName"/>
+		<result column="BACKUP_FILE_NAME" property="backupFileName"/>
+		<result column="SUFFIX" property="suffix"/>
+		<result column="PREFIX" property="prefix"/>
+		<result column="OPERATION_DATE" property="operationDate"/>
+		<result column="OPERATOR" property="operator"/>
+		<result column="RESULT" property="result"/>
+		<result column="OPERATION" property="operation"/>
+		<result column="DOMAIN" property="domain"/>
+	</resultMap>
+	
+	<select id="secMetadata2_getMetadataLogId" resultClass="java.lang.Long" >
+  		<![CDATA[
+   		SELECT `SEQ_SEC_METADATA_LOG_ID.Nextval`()
+   		]]>
+  	</select> 
+  	  	  	
+	<insert id="secMetadata2_insertMetadataLog" parameterClass="SecMetadataLog2">
+		<![CDATA[
+		INSERT  INTO SEC_METADATA_LOG (
+				LOG_ID,
+		        METADATA_ID       ,
+		        HOST_NAME         ,
+		        CLIENT_IP         ,
+		        FILE_NAME         ,
+		        BACKUP_FILE_NAME  ,
+		        SUFFIX      	  ,
+		        PREFIX      	  ,
+		        OPERATION_DATE    ,
+		        OPERATOR          ,
+		        RESULT            ,
+		        OPERATION         ,
+		        DOMAIN)
+		VALUES (
+				#logId:VARCHAR#, 
+		        #metadataId:VARCHAR#    ,
+		        #hostName:VARCHAR#      ,
+		        #clientIp:VARCHAR#      ,
+		        #fileName:VARCHAR#      ,
+		        #backupFileName:VARCHAR#,
+		        #suffix:VARCHAR#   		,
+		        #prefix:VARCHAR#   		,
+		        NOW()                 ,
+		        #operator:VARCHAR#      ,
+		        #result:VARCHAR#        ,
+		        #operation:VARCHAR#     ,
+		        #domain:VARCHAR#)
+		]]>       
+  	</insert>
+
+	<update id="secMetadata2_updateMetadataLog" parameterClass="SecMetadataLog2">
+		<![CDATA[
+		UPDATE  SEC_METADATA_LOG
+		SET     OPERATION        = #operation#,
+				OPERATION_DATE   = NOW()    ,
+		        RESULT           = #result#
+		WHERE   LOG_ID           = #logId#
+		]]>       
+  	</update>
+  	  	
+  	<!-- 备份元数据表数据 -->
+    <statement id="secMetadata2_backupMetadata"  parameterClass="java.util.HashMap">
+        <![CDATA[
+        	$sql$
+        ]]>     
+    </statement> 
+         
+    
+    <!-- 删除元数据表数据，通过级联删除cascade实现 -->
+    <delete id="secMetadata2_deleteMetadata"  parameterClass="java.util.HashMap">
+        DELETE	FROM SEC_RESOURCE_CATEGORY
+        <dynamic prepend="WHERE">
+            <isNotNull prepend="AND" property="domain">    
+                DOMAIN = #domain#
+            </isNotNull>
+             <isNotNull prepend="AND" property="metadataId">    
+                METADATA_ID = #metadataId#
+            </isNotNull>
+        </dynamic>
+    </delete>
+    
+    <!-- 级联删除资源和分类 -->
+    <delete id="secMetadata2_deleteResourcesAndOperation" parameterClass="java.util.HashMap">
+        delete from SEC_RESOURCES 
+        <dynamic prepend="WHERE">    
+            <isNotNull prepend="AND" property="domain">    
+               DOMAIN   = #domain#
+            </isNotNull>
+            <isNotNull prepend="AND" property="metadataId">    
+               METADATA_ID   = #metadataId#
+            </isNotNull>  
+            <isNotNull prepend="AND" property="condition">    
+               $condition$
+            </isNotNull>                                
+        </dynamic>
+    </delete>
+    
+    <statement id="secMetadata2_deleteResourceCategory"  resultClass="java.lang.Integer">
+        DELETE	FROM SEC_RESOURCE_CATEGORY where category_id not in (select parent_id from SEC_RESOURCE_CATEGORY where parent_id is not null) and category_id not in (select category_id from SEC_RESOURCES)
+    </statement>
+    
+    <statement id="secMetadata2_selectResourceCategory"  resultClass="java.lang.String">
+        SELECT category_id	FROM SEC_RESOURCE_CATEGORY where category_id not in (select parent_id from SEC_RESOURCE_CATEGORY where parent_id is not null) and category_id not in (select category_id from SEC_RESOURCES)
+    </statement>
+    
+  	<!-- 不使用此方式备份
+    <insert id="secMetadata2_mergeRoleResourceOperation" parameterClass="SecMetadataLog2">
+		<![CDATA[
+		INSERT  INTO SEC_ROLE_RESOURCE_OPERATION
+		SELECT  Bak_Role_ROP.ROLE_ID, 
+		        Res.RESOURCE_ID,
+		        Opt.OPERATION_KEY
+		FROM    BAK_Sec_Role_Resource_Op Bak_Role_ROP,                         
+		        BAK_Sec_Operation BAK_Opt,
+		        Sec_Operation Opt,
+            	Bak_Sec_Resources Bak_Res,
+            	Sec_Resources Res            
+    	WHERE   Bak_Role_ROP.Operation_Key = Bak_Opt.Operation_Key
+		        AND Bak_Role_ROP.Resource_Id = Bak_Opt.Resource_Id
+		        AND Bak_Role_ROP.Resource_Id = Bak_Res.Resource_Id
+		        AND Bak_Res.Resource_Key = Res.Resource_Key
+		        AND Res.Resource_Id = Opt.Resource_Id
+		        AND Bak_Role_ROP.Operation_Key = Opt.Operation_Key
+				AND	BAK_OPT.METADATA_ID   = #metadataId#
+		]]>  
+  	</insert> 
+  	 -->
+  	  	
+  	<!-- 恢复关系 -->
+  	 <insert id="secMetadata2_recoverRelation" parameterClass="java.util.HashMap">
+		<![CDATA[
+		INSERT  INTO SEC_ROLE_RESOURCE_OPERATION
+		SELECT  distinct Bak_Role_ROP.ROLE_ID, 
+		        Res.RESOURCE_ID,
+		        Opt.OPERATION_KEY
+		FROM    SEC_ROLE_RESOURCE$suffix$ Bak_Role_ROP,                         
+		        SEC_OPERATION$suffix$ Bak_Opt,
+		        SEC_OPERATION Opt,
+            	SEC_RESOURCES$suffix$ Bak_Res,
+            	SEC_RESOURCES Res            
+    	WHERE   Bak_Role_ROP.Operation_Key = Bak_Opt.Operation_Key
+		        AND Bak_Role_ROP.Resource_Id = Bak_Opt.Resource_Id
+		        AND Bak_Role_ROP.Resource_Id = Bak_Res.Resource_Id
+		        AND Bak_Res.Resource_Key = Res.Resource_Key
+		        AND Res.Resource_Id = Opt.Resource_Id
+		        AND Bak_Role_ROP.Operation_Key = Opt.Operation_Key
+		]]>  
+		<dynamic>    
+            <isNotNull prepend="AND" property="domain">    
+               Opt.DOMAIN   = #domain#
+            </isNotNull>
+            <isNotNull prepend="AND" property="metadataId">    
+               Opt.METADATA_ID   = #metadataId#
+            </isNotNull>                                 
+        </dynamic> 
+  	</insert>  	
+  	
+	<select id="secMetadata2_getLastMetadataLog" resultMap="SecMetadataLog2Result" parameterClass="SecMetadataLog2" >
+  		<![CDATA[
+   		SELECT 	*                     
+        FROM	SEC_METADATA_LOG              
+        WHERE	RESULT = #result# 
+        AND		OPERATION like CONCAT('%',trim(#operation#))
+        ORDER	BY OPERATION_DATE desc   
+		LIMIT 0,1                       
+		]]>
+  	</select>   	
+  	
+  	<!-- 恢复元数据表数据 -->
+    <insert id="secMetadata2_recoverResourceCategory"  parameterClass="java.util.HashMap">
+    	INSERT INTO SEC_RESOURCE_CATEGORY SELECT * FROM SEC_RESOURCE_CAT$suffix$
+    </insert>   
+      	
+    <insert id="secMetadata2_recoverResources"  parameterClass="java.util.HashMap">
+        INSERT INTO SEC_RESOURCES SELECT * FROM SEC_RESOURCES$suffix$
+    </insert>   
+    
+    <insert id="secMetadata2_recoverOperation"  parameterClass="java.util.HashMap">
+        INSERT INTO SEC_OPERATION SELECT * FROM SEC_OPERATION$suffix$
+    </insert>   
+            
+    <insert id="secMetadata2_recoverOperationAddress"  parameterClass="java.util.HashMap">
+        INSERT INTO SEC_OPERATION_ADDRESS SELECT * FROM SEC_OPERATION_URL$suffix$
+    </insert>     
+
+    <insert id="secMetadata2_recoverRoleResourceOperation"  parameterClass="java.util.HashMap">   
+        INSERT INTO SEC_ROLE_RESOURCE_OPERATION SELECT * FROM SEC_ROLE_RESOURCE$suffix$
+    </insert>       	
+</sqlMap>

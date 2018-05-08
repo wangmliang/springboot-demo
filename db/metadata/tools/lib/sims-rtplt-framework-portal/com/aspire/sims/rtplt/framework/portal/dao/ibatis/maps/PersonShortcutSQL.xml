@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!-- Always ensure to use the correct XML header as above! -->
+<sqlMap namespace="PersonShortcut">
+<typeAlias alias="personShortcut" type="com.aspire.sims.rtplt.framework.portal.pojo.PersonShortcut"/> 
+<resultMap id="personShortcut_result" class="personShortcut">
+    <result property="shortcutId" column="shortcut_id"/>
+    <result property="staffId" column="staff_id"/>
+    <result property="menuId" column="menu_id"/>
+    <result property="title" column="title"/>
+</resultMap>
+
+<select id="PersonShortcut_getNextId" resultClass="java.lang.String">
+<![CDATA[
+    SELECT ltrim(to_char(Seq_person_shortcut_Next_Id.Nextval,'0000000000')) 
+           AS Id 
+    FROM dual
+]]>
+</select>
+
+<select id="PersonShortcut_listPersonShortcutCount" resultClass="java.lang.Integer" parameterClass="personShortcut">
+<![CDATA[
+    SELECT count(*) FROM person_shortcut
+]]>
+</select>
+
+<insert id="PersonShortcut_insertPersonShortcut" parameterClass="personShortcut" >
+<![CDATA[
+    INSERT INTO person_shortcut (
+            shortcut_id, 
+            staff_id, 
+            menu_id, 
+            title
+        )
+    VALUES (
+            #shortcutId#,
+            #staffId#,
+            #menuId#,
+            #title#
+    )
+]]>
+</insert>
+
+<delete id="PersonShortcut_deletePersonShortcut" parameterClass="personShortcut">
+<![CDATA[
+    DELETE  FROM  person_shortcut
+]]>
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="and" property = "shortcutId">
+				shortcut_id = #shortcutId#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property = "staffId">
+				staff_id = #staffId#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property = "menuId">
+				menu_id = #menuId#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property = "title">
+				title = #title#
+			</isNotEmpty>
+		</dynamic>
+</delete>    
+
+<update id="PersonShortcut_updatePersonShortcut" parameterClass="personShortcut">
+<![CDATA[
+    UPDATE person_shortcut 
+    SET
+            shortcut_id = #shortcutId#,
+            staff_id = #staffId#,
+            menu_id = #menuId#,
+            title = #title#
+    WHERE shortcut_id = #shortcutId#
+]]>
+</update> 
+
+<select id="PersonShortcut_findPersonShortcut" resultMap="personShortcut_result" parameterClass="string">
+<![CDATA[
+    SELECT
+            shortcut_id, 
+            staff_id, 
+            menu_id, 
+            title
+    FROM person_shortcut WHERE shortcut_id = #shortcutId#
+]]>
+</select>
+
+<select id="PersonShortcut_listPersonShortcut" resultMap="personShortcut_result" parameterClass="personShortcut">
+<![CDATA[
+    SELECT
+            shortcut_id, 
+            staff_id, 
+            menu_id, 
+            title
+    FROM person_shortcut
+]]>
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="and" property = "shortcutId">
+				shortcut_id = #shortcutId#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property = "staffId">
+				staff_id = #staffId#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property = "menuId">
+				menu_id = #menuId#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property = "title">
+				title = #title#
+			</isNotEmpty>
+		</dynamic>
+		order by shortcut_id
+</select>
+    
+    <!-- PersonShortcut还原 -->
+    <statement id="PersonShortcut_recoverShortcut"  parameterClass="java.util.HashMap">
+        <![CDATA[
+        	INSERT INTO PERSON_SHORTCUT
+			  SELECT BAK_PS.SHORTCUT_ID, BAK_PS.STAFF_ID, BAK_PS.TITLE, M.MENU_ID
+			    FROM PERSON_SHORTCUT$suffix$ BAK_PS, MENU$suffix$ BAK_MENU, MENU M
+			   WHERE BAK_PS.MENU_ID = BAK_MENU.MENU_ID
+			     AND BAK_MENU.MENU_KEY = M.MENU_KEY
+        ]]> 
+        <dynamic>
+        	<isNotEmpty prepend="and" property = "subsystem">
+				M.SUBSYSTEM = #subsystem#
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property = "domain">
+				M.DOMAIN = #domain#
+			</isNotEmpty>
+		</dynamic>    
+    </statement> 
+
+</sqlMap>

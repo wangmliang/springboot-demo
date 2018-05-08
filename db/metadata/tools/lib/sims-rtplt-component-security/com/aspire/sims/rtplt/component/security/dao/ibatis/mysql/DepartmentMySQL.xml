@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!-- The SQL in these maps files has purposely been typed with more verbosity than is actually required.
+ For example, many of the selects could have just used SELECT * FROM... instead of listing all of the columns.
+ This is to demonstrate that even complex SQL can be handled and coded and formatted the way SQL was meant
+ to be (i.e. not a bunch of concatenated strings in a Java class). -->
+
+<sqlMap namespace="SecDepartment">
+    <typeAlias alias="SecRole" type="com.aspire.sims.rtplt.component.security.pojo.Role"/>
+	<typeAlias alias="SecDepartment" type="com.aspire.sims.rtplt.component.security.pojo.Department"/>
+	<typeAlias alias="SecExtendProperty" type="com.aspire.sims.rtplt.component.security.pojo.ExtendProperty"/>
+	
+	<resultMap id="SecDepartmentResult" class="SecDepartment">
+	    <result property="departmentId" column="DEPARTMENT_ID" /> 
+	    <result property="departmentName" column="DEPARTMENT_NAME" />
+	    <result property="departmentDesc" column="DEPARTMENT_DESC" />
+	    <result property="parentId" column="PARENT_ID" />
+	    <result property="email" column="EMAIL" />  
+	    <result property="address" column="ADDRESS" />
+	    <result property="addSub" column="ADD_SUB" />
+	    <result property="createUser" column="CREATE_USER" />
+	    <result property="createDate" column="CREATE_DATE" />    
+	    <result property="lastUpdateDate" column="LAST_UPDATE_DATE" />
+	    <result property="domain" column="DOMAIN" />
+	</resultMap>
+	
+	<resultMap id="SecDepartmentExtendPropertyResult" class="SecExtendProperty">
+	    <result property="id" column="DEPARTMENT_ID" />
+	    <result property="property" column="PROPERTY" /> 
+	    <result property="value" column="VALUE" />
+	</resultMap>	
+	
+    <resultMap id="list_dep_staff_role" class="java.util.HashMap">
+		<result property="staffId" column="staffId"/>
+		<result property="departmentId" column="departmentId"/>
+		<result property="roleId" column="roleId"/>
+	</resultMap>
+	<select id="secDepartment_listStaffDepartmentRoles" parameterClass="java.lang.String" resultMap="list_dep_staff_role">
+		SELECT 
+				STAFF_ID AS staffId,
+				DEPARTMENT_ID AS departmentId,
+				ROLE_ID AS roleId
+		FROM 
+				SEC_STAFF_DEPARTMENT_ROLE
+		WHERE 
+				DEPARTMENT_ID = #value#
+  	</select>  
+
+  	<select id="secDepartment_getDepartmentId" resultClass="java.lang.Long" >
+  		<![CDATA[
+   		SELECT `SEQ_SEC_DEPARTMENT_ID.NEXTVAL`()
+   		]]>
+  	</select> 
+    
+	<insert id="secDepartment_insertDepartment" parameterClass="SecDepartment">
+		<![CDATA[
+		INSERT INTO SEC_DEPARTMENT  (
+		       DEPARTMENT_NAME 		,
+		       DEPARTMENT_DESC 		,
+		       PARENT_ID       		,
+		       EMAIL           		,
+		       ADDRESS         		,
+		       ADD_SUB         		,
+		       CREATE_USER     		,
+		       CREATE_DATE     		,
+		       LAST_UPDATE_DATE		,
+		       DOMAIN          		)
+		VALUES(
+		       #departmentName#,
+		       #departmentDesc:VARCHAR#,
+		       #parentId:VARCHAR#,
+		       #email:VARCHAR#,
+		       #address:VARCHAR#,
+		       #addSub#,
+		       #createUser#,
+		       #createDate:DATE#,
+		       #lastUpdateDate:DATE#,
+		       #domain:VARCHAR#)
+		]]>       
+  	</insert>
+  
+	<update id="secDepartment_updateDepartment" parameterClass="SecDepartment">
+		<![CDATA[
+		UPDATE SEC_DEPARTMENT
+		SET    DEPARTMENT_NAME  = #departmentName#,
+		       DEPARTMENT_DESC  = #departmentDesc:VARCHAR#,
+		       PARENT_ID        = #parentId:VARCHAR#,
+		       EMAIL            = #email:VARCHAR#,
+		       ADDRESS          = #address:VARCHAR#,
+		       ADD_SUB          = #addSub#,
+		       CREATE_USER      = #createUser#,
+		       CREATE_DATE      = #createDate#,
+		       LAST_UPDATE_DATE = #lastUpdateDate#,
+		       DOMAIN           = #domain:VARCHAR#
+		WHERE  DEPARTMENT_ID    = #departmentId#
+		]]>
+	</update>  
+
+  	<delete id="secDepartment_deleteDepartment" parameterClass="java.lang.String">
+  		<![CDATA[
+  		DELETE 	FROM SEC_DEPARTMENT
+  		WHERE	DEPARTMENT_ID = #value#
+  		]]>
+  	</delete>
+  	
+  	<select id="secDepartment_findDepartment" 
+  	        resultMap="SecDepartmentResult" 
+  	        parameterClass="java.lang.String">
+		<![CDATA[
+		SELECT  *
+		FROM	SEC_DEPARTMENT
+		WHERE   DEPARTMENT_ID = #value#
+		]]>
+  	</select>
+  	
+  	<select id="secDepartment_isDepartmentRoleExist" resultClass="java.lang.Integer"  parameterClass="java.util.Map">
+		<![CDATA[
+		SELECT  count(*)
+		FROM	SEC_DEPARTMENT_ROLE
+		WHERE   DEPARTMENT_ID = #departmentId# and ROLE_ID = #roleId#
+		]]>
+  	</select>
+  	
+    <select id="secDepartment_findDepartmentTwo" resultMap="SecDepartmentResult" parameterClass="SecDepartment">
+		<![CDATA[
+		SELECT  *
+		FROM	SEC_DEPARTMENT
+		]]>
+		 <dynamic prepend="WHERE">    
+		    <isNotEmpty prepend="AND" property="departmentId">    
+                DEPARTMENT_ID =  trim(#departmentId#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="departmentName">    
+                DEPARTMENT_NAME =  trim(#departmentName#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="departmentDesc">
+                DEPARTMENT_DESC like CONCAT('%',trim(#departmentDesc#),'%')    
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="parentId">
+                PARENT_ID = #parentId#    
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="domain">
+                DOMAIN = trim(#domain#)
+            </isNotEmpty>
+        </dynamic>           
+  	</select> 	
+	
+	<select id="secDepartment_getRootDepartment" resultMap="SecDepartmentResult">
+		SELECT * FROM SEC_DEPARTMENT
+		WHERE (PARENT_ID is null or PARENT_ID='') 
+    </select>
+    
+    <select id="secDepartment_listRootDepartment" resultMap="SecDepartmentResult">
+		SELECT * FROM SEC_DEPARTMENT
+		WHERE (PARENT_ID is null or PARENT_ID='') 
+    </select>
+    
+    <select id="secDepartment_listSubDepartment" resultMap="SecDepartmentResult" parameterClass="java.lang.String">
+		SELECT *
+		FROM SEC_DEPARTMENT
+        WHERE PARENT_ID = #parentId#
+        ORDER BY DEPARTMENT_NAME
+    </select>
+
+    <select id="secDepartment_listDepartment" resultMap="SecDepartmentResult" parameterClass="SecDepartment">
+		SELECT  *
+		FROM    SEC_DEPARTMENT 
+        <dynamic prepend="WHERE">    
+            <isNotEmpty prepend="AND" property="departmentName">    
+                DEPARTMENT_NAME like CONCAT('%',trim(#departmentName#),'%')    
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="departmentDesc">
+                DEPARTMENT_DESC like CONCAT('%',trim(#departmentDesc#),'%')    
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="departmentId">
+                department_id = #departmentId#   
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="parentId">
+                PARENT_ID = #parentId#    
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="domain">
+                DOMAIN = trim(#domain#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.staffId">
+                department_id in (select distinct s.department_id from SEC_STAFF s where s.staff_id = #dynamicFields.staffId#  ) 
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.departmentIds">
+                department_id in ($dynamicFields.departmentIds$) 
+            </isNotEmpty>
+        </dynamic>
+        <dynamic prepend="order by">
+            <isNotEmpty prepend="order by" property="sort">
+                $sort$
+            </isNotEmpty>
+            <isNotEmpty prepend=" " property="order">
+                $order$
+            </isNotEmpty>
+        </dynamic> 
+        LIMIT #mysqlStart# , #rows#
+	</select>
+	
+	<select id="secDepartment_listDepartmentCount" resultClass="int" parameterClass="SecDepartment">
+		SELECT  count(1)
+		FROM    SEC_DEPARTMENT 
+        <dynamic prepend="WHERE">    
+            <isNotEmpty prepend="AND" property="departmentName">    
+                DEPARTMENT_NAME like CONCAT('%',trim(#departmentName#),'%')   
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="departmentDesc">
+                DEPARTMENT_DESC like CONCAT('%',trim(#departmentDesc#),'%')   
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="departmentId">
+                department_id = #departmentId#   
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="parentId">
+                PARENT_ID = #parentId#    
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="domain">
+                DOMAIN = trim(#domain#)
+            </isNotEmpty>
+             <isNotEmpty prepend="AND" property="dynamicFields.staffId">
+                 department_id in (select distinct s.staff_id from SEC_STAFF s where s.staff_id = #dynamicFields.staffId#  ) 
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="dynamicFields.departmentIds">
+                department_id in ($dynamicFields.departmentIds$) 
+            </isNotEmpty>
+        </dynamic>
+	</select>
+	<insert id="secDepartment_insertDepartmentExtendProperties" parameterClass="SecExtendProperty">
+		<![CDATA[
+		INSERT INTO SEC_DEPARTMENT_EXTEND_PROPERTY (
+		       DEPARTMENT_ID,
+		       PROPERTY 	,
+		       VALUE	 	)
+		VALUES(#id#			,
+		       #property#	,
+		       #value#		)
+		]]>       
+  	</insert>
+	
+	<insert id="secDepartment_deleteDepartmentExtendProperties" parameterClass="java.lang.String">
+		<![CDATA[
+		DELETE FROM SEC_DEPARTMENT_EXTEND_PROPERTY
+		WHERE  DEPARTMENT_ID = #value#
+		]]>       
+  	</insert>
+  	
+  	<select id="secDepartment_listDepartmentExtendProperties" 
+  	        resultMap="SecDepartmentExtendPropertyResult" 
+  	        parameterClass="java.lang.String">    
+		<![CDATA[
+		SELECT  *
+		FROM    SEC_DEPARTMENT_EXTEND_PROPERTY 
+		WHERE   DEPARTMENT_ID = #value#
+		]]>
+	</select>
+  	
+  	<select id="secDepartment_listDepartmentExtendPropertiesTwo" 
+  	        resultMap="SecDepartmentExtendPropertyResult" 
+  	        parameterClass="java.lang.String">    
+		<![CDATA[
+		SELECT  *
+		FROM    SEC_DEPARTMENT_EXTEND_PROPERTY 
+		WHERE   DEPARTMENT_ID IN ($value$)
+		]]>
+	</select>
+
+	<insert id="secDepartment_insertDepartmentRoles" parameterClass="java.util.Map">
+		<![CDATA[
+		INSERT 	INTO SEC_DEPARTMENT_ROLE (
+				DEPARTMENT_ID			 ,
+				ROLE_ID					 )
+		VALUES (#departmentId#,
+				#roleId#	  )
+		]]>       
+  	</insert>
+  	
+	<delete id="secDepartment_deleteDepartmentRoles" parameterClass="java.util.Map">
+		<![CDATA[
+		DELETE 	FROM SEC_DEPARTMENT_ROLE
+		WHERE  	DEPARTMENT_ID = #departmentId#
+		]]> 
+        <dynamic>    
+            <isNotEmpty prepend="AND" property="roleId">
+                ROLE_ID = TRIM(#roleId#)
+            </isNotEmpty>
+        </dynamic> 
+  	</delete>    	
+
+	<insert id="secDepartment_insertDepartmentRolesByKey" parameterClass="java.util.Map">
+		<![CDATA[
+		INSERT 	INTO SEC_DEPARTMENT_ROLE 
+		SELECT 	#departmentId# ,
+				ROLE_ID
+		FROM	SEC_ROLE
+		WHERE	ROLE_KEY = #roleKey#
+		]]>       
+  	</insert>
+  	  	
+	<insert id="secDepartment_insertDepartmentStaffs" parameterClass="java.util.Map">
+		<![CDATA[
+		INSERT INTO SEC_STAFF_DEPARTMENT_ROLE (
+		       STAFF_ID		   ,
+		       DEPARTMENT_ID   ,
+		       ROLE_ID		   )
+		VALUES(#staffId#	   ,
+			   #departmentId#  ,
+		       #roleId#		   )
+		]]>       
+  	</insert>  	 
+  	
+  	<delete id="secDepartment_deleteDepartmentStaffs" parameterClass="java.util.Map">
+		<![CDATA[
+		DELETE 	FROM SEC_STAFF_DEPARTMENT_ROLE
+		WHERE	STAFF_ID 	  = #staffId#
+		AND		DEPARTMENT_ID = #departmentId#
+		]]>       
+  	</delete>    	
+
+
+    <select id="secDepartment_listDepartmentByRole" resultMap="SecDepartmentResult" parameterClass="SecRole">
+        SELECT *
+        FROM SEC_DEPARTMENT
+        WHERE DEPARTMENT_ID IN (
+            SELECT DEPARTMENT_ID
+            FROM SEC_STAFF_DEPARTMENT_ROLE
+            WHERE ROLE_ID = (
+                SELECT ROLE_ID
+                FROM SEC_ROLE
+                 <dynamic prepend="WHERE">
+                    <isNotEmpty prepend="AND" property="roleId">
+                        ROLE_ID = #roleId#
+                    </isNotEmpty>
+                    <isNotEmpty prepend="AND" property="roleKey">
+                        ROLE_KEY = #roleKey#
+                    </isNotEmpty>
+                    <isNotEmpty prepend="AND" property="roleName">
+                        ROLE_NAME = #roleName#
+                    </isNotEmpty>
+                </dynamic>
+            )
+        )
+  	</select>
+
+    <select id="secDepartment_listDepartmentByResourceId" resultMap="SecDepartmentResult" parameterClass="java.lang.String">
+        SELECT * FROM SEC_DEPARTMENT
+        WHERE DEPARTMENT_ID IN (
+            SELECT DEPARTMENT_ID
+            FROM SEC_DEPARTMENT_ROLE
+            WHERE ROLE_ID IN (
+                SELECT ROLE_ID
+                FROM SEC_ROLE
+                WHERE ROLE_ID IN (SELECT DISTINCT ROLE_ID FROM SEC_ROLE_RESOURCE_OPERATION WHERE RESOURCE_ID=#resourceId#)
+            )
+        )
+    </select>
+    
+    <select id="secDepartment_listLowerDepartment" resultMap="SecDepartmentResult" parameterClass="java.util.Map">
+    	  call sec_department_list_sub($departmentIds$,
+    		<dynamic prepend="">
+                <isNotEmpty prepend="" property="level">
+                    #level#
+                </isNotEmpty>
+                 <isEmpty prepend="" property="level">
+                    1
+                </isEmpty>
+           	 </dynamic>
+           	 )
+    </select>
+    
+    <select id="secDepartment_listHigherUpDepartment" resultMap="SecDepartmentResult" parameterClass="java.util.Map">
+     	call sec_department_list_root($departmentIds$,
+    		<dynamic prepend="">
+                <isNotEmpty prepend="" property="level">
+                    #level#
+                </isNotEmpty>
+                 <isEmpty prepend="" property="level">
+                    1
+                </isEmpty>
+           	 </dynamic>
+           	 )
+    </select>
+    
+    <select id="secDepartment_listStartWithAllDepartment" resultMap="SecDepartmentResult">
+    	call sec_department_list_sub(NULL,0)
+    </select>
+
+
+    <select id="secDepartment_listSelfAndSubDepartmentIdByDepartmentId" resultClass="java.lang.String" parameterClass="java.lang.String">
+    	call sec_department_list_sub(#departmentId#,0)
+    </select>
+
+    <select id="secDepartment_listSelfAndSubDepartmentByDepartmentId" resultMap="SecDepartmentResult" parameterClass="java.lang.String">
+    	call sec_department_list_sub(#departmentId#,0)
+    </select>
+
+    <select id="secDepartment_listPathFromRootToCurrentDepartmentId" resultMap="SecDepartmentResult" parameterClass="java.lang.String">
+    	call sec_department_list_root(#departmentId#,0)
+    </select>
+    
+    <select id="secDepartment_findDepartmentByNameAndParentId" resultMap="SecDepartmentResult"  parameterClass="java.util.Map">
+		<![CDATA[
+		SELECT  *
+		FROM	sec_department
+		WHERE   parent_id = #parentId# and department_name = #departmentName#
+		]]>
+  	</select>
+  	
+  	<select id="secDepartment_findParentDepartment" resultMap="SecDepartmentResult"  parameterClass="java.lang.String">
+		<![CDATA[
+		SELECT * FROM sec_department  WHERE department_id = (SELECT parent_id FROM sec_department  WHERE department_id = #departmentId#)
+		]]>
+  	</select>
+  	
+  	<select id="secDepartment_listDepartmentExtendPropertiesByTemp" 
+  	        resultMap="SecDepartmentExtendPropertyResult" >    
+		<![CDATA[
+		SELECT  SEC_DEPARTMENT_EXTEND_PROPERTY.*
+		FROM    SEC_DEPARTMENT_EXTEND_PROPERTY,basic_tmp_id 
+		WHERE   DEPARTMENT_ID = id
+		]]>
+	</select>
+
+</sqlMap>

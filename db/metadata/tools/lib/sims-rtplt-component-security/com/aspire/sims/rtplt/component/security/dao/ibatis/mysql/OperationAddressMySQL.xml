@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!-- The SQL in these maps files has purposely been typed with more verbosity than is actually required.
+ For example, many of the selects could have just used SELECT * FROM... instead of listing all of the columns.
+ This is to demonstrate that even complex SQL can be handled and coded and formatted the way SQL was meant
+ to be (i.e. not a bunch of concatenated strings in a Java class). -->
+
+<sqlMap namespace="SecOperationAddress">
+    <typeAlias alias="SecOperationAddress" type="com.aspire.sims.rtplt.component.security.pojo.OperationAddress"/>
+    <typeAlias alias="SecOperation" type="com.aspire.sims.rtplt.component.security.pojo.Operation"/>
+
+    <cacheModel id="operation-address-cache" type="OSCACHE" readOnly="true" serialize="false"> 
+        <flushInterval minutes="30"/> 
+        <!--  
+        <flushOnExecute statement="secStaff_insertStaffRoles"/>
+        <flushOnExecute statement="secStaff_insertStaffRolesByKey"/>
+        <flushOnExecute statement="secRole_deleteRoleResourceOperationById"/>
+        <flushOnExecute statement="secRole_deleteRoleResourceOperation"/>
+        <flushOnExecute statement="secRole_insertRoleResourceOperation"/>
+        -->
+        <property name="size" value="1000" /> 
+    </cacheModel>
+    
+    <resultMap id="SecOperationAddressResult" class="SecOperationAddress">
+        <result property="addressId" column="ADDRESS_ID"/>
+        <result property="resourceId" column="RESOURCE_ID"/>
+        <result property="operationKey" column="OPERATION_KEY"/>
+        <result property="operationAddressName" column="OPERATION_ADDRESS_NAME"/>
+        <result property="operationAddressUrl" column="OPERATION_ADDRESS_URL"/>
+        <result property="parameterName1" column="PARAMETER_NAME1"/>
+        <result property="parameterValue1" column="PARAMETER_VALUE1"/>
+        <result property="parameterName2" column="PARAMETER_NAME2"/>
+        <result property="parameterValue2" column="PARAMETER_VALUE2"/>
+        <result property="parameterName3" column="PARAMETER_NAME3"/>
+        <result property="parameterValue3" column="PARAMETER_VALUE3"/>
+        <result property="metadataId" column="METADATA_ID"/>
+        <result property="domain" column="DOMAIN"/>
+    </resultMap>
+
+    <select id="secOperationAddress_getOperationAddressId" resultClass="java.lang.Long">
+        <![CDATA[
+   		SELECT 1 FROM DUAL
+   		]]>
+    </select>
+
+
+    <insert id="secOperationAddress_insertOperationAddress" parameterClass="SecOperationAddress">
+        <![CDATA[
+		INSERT  INTO SEC_OPERATION_ADDRESS(
+			    
+		        RESOURCE_ID           ,
+		        OPERATION_KEY         ,
+		        OPERATION_ADDRESS_NAME,
+		        OPERATION_ADDRESS_URL ,
+		        PARAMETER_NAME1       ,
+		        PARAMETER_VALUE1      ,
+		        PARAMETER_NAME2       ,
+		        PARAMETER_VALUE2      ,
+		        PARAMETER_NAME3       ,
+		        PARAMETER_VALUE3      ,
+		        METADATA_ID			  ,
+		        DOMAIN           )
+		VALUES (
+		        #resourceId#          		  ,
+		        #operationKey#        		  ,
+		        #operationAddressName:VARCHAR#,
+		        #operationAddressUrl# 		  ,
+		        #parameterName1:VARCHAR#      ,
+		        #parameterValue1:VARCHAR#     ,
+		        #parameterName2:VARCHAR#      ,
+		        #parameterValue2:VARCHAR#     ,
+		        #parameterName3:VARCHAR#      ,
+		        #parameterValue3:VARCHAR#     ,
+		        #metadataId:VARCHAR#          ,
+		        #domain:VARCHAR# )
+		]]>
+    </insert>
+
+    <select id="secOperationAddress_listOperationAddressByLoginName" 
+            resultMap="SecOperationAddressResult" 
+            parameterClass="java.util.Map"
+            cacheModel="operation-address-cache">
+        <![CDATA[
+		SELECT
+			    address.ADDRESS_ID            ,
+		        address.RESOURCE_ID           ,
+		        address.OPERATION_KEY         ,
+		        address.OPERATION_ADDRESS_NAME,
+		        address.OPERATION_ADDRESS_URL ,
+		        address.PARAMETER_NAME1       ,
+		        address.PARAMETER_VALUE1      ,
+		        address.PARAMETER_NAME2       ,
+		        address.PARAMETER_VALUE2      ,
+		        address.PARAMETER_NAME3       ,
+		        address.PARAMETER_VALUE3      ,
+		        address.METADATA_ID 		  ,
+		        address.DOMAIN        
+		FROM    SEC_OPERATION_ADDRESS 		address,		                 
+		        SEC_ROLE_RESOURCE_OPERATION roleOperation
+		]]>
+        WHERE
+	        address.RESOURCE_ID = roleOperation.RESOURCE_ID
+	        AND (roleOperation.ROLE_ID in
+	         (select role_id
+	             from SEC_STAFF_DEPARTMENT_ROLE
+	            where staff_id = (SELECT STAFF_ID
+	                                FROM SEC_STAFF
+	                               WHERE STATUS not in ('EXPIRED', 'DELETED')
+	                                 and LOGIN_NAME = #loginName#)
+			union all
+	        select role_id from SEC_ROLE where auto_assign = 1
+			)
+			) 
+        	and roleOperation.Operation_Key=address.operation_key
+        <dynamic>
+            <isNotEmpty prepend="AND" property="operationAddressUrl">
+                address.OPERATION_ADDRESS_URL = #operationAddressUrl#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="operationAddressUrls">
+                address.OPERATION_ADDRESS_URL in ($operationAddressUrls$)
+            </isNotEmpty>
+        </dynamic>
+
+    </select>
+
+    <select id="secOperationAddress_listOperationAddressByOperationKey" resultMap="SecOperationAddressResult" parameterClass="java.util.Map">
+        <![CDATA[
+		SELECT
+			    address.ADDRESS_ID            ,
+		        address.RESOURCE_ID           ,
+		        address.OPERATION_KEY         ,
+		        address.OPERATION_ADDRESS_NAME,
+		        address.OPERATION_ADDRESS_URL ,
+		        address.PARAMETER_NAME1       ,
+		        address.PARAMETER_VALUE1      ,
+		        address.PARAMETER_NAME2       ,
+		        address.PARAMETER_VALUE2      ,
+		        address.PARAMETER_NAME3       ,
+		        address.PARAMETER_VALUE3      ,
+		        address.METADATA_ID  		  ,
+		        address.DOMAIN      
+		FROM    SEC_OPERATION_ADDRESS 		address,		                 
+		        SEC_ROLE_RESOURCE_OPERATION roleOperation,
+		        SEC_RESOURCES               res
+		WHERE
+				address.RESOURCE_ID = roleOperation.RESOURCE_ID
+		AND     res.RESOURCE_ID = address.RESOURCE_ID
+		AND (roleOperation.ROLE_ID in
+	        (select role_id
+	            from SEC_STAFF_DEPARTMENT_ROLE
+	           where staff_id = (SELECT STAFF_ID
+	                               FROM SEC_STAFF
+	                              WHERE STATUS not in ('EXPIRED', 'DELETED')
+	                                and LOGIN_NAME = #loginName#)
+			union all
+        	select role_id from SEC_ROLE where auto_assign = 1
+			)
+			)  
+		AND     res.RESOURCE_KEY = #resourceKey#   
+		AND     roleOperation.OPERATION_KEY = #operationKey#
+		]]>
+    </select>
+
+    <select id="secOperationAddress_listOperationAddress" resultMap="SecOperationAddressResult" parameterClass="SecOperationAddress">
+        <![CDATA[
+		SELECT  
+			    ADDRESS_ID            ,
+		        RESOURCE_ID           ,
+		        OPERATION_KEY         ,
+		        OPERATION_ADDRESS_NAME,
+		        OPERATION_ADDRESS_URL ,
+		        PARAMETER_NAME1       ,
+		        PARAMETER_VALUE1      ,
+		        PARAMETER_NAME2       ,
+		        PARAMETER_VALUE2      ,
+		        PARAMETER_NAME3       ,
+		        PARAMETER_VALUE3      ,
+		        METADATA_ID  		  ,
+		        DOMAIN        
+		FROM    SEC_OPERATION_ADDRESS   
+		]]>
+        <dynamic prepend="WHERE">
+            <isNotEmpty prepend="AND" property="addressId">
+                ADDRESS_ID = trim(#addressId#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="resourceId">
+                RESOURCE_ID = trim(#resourceId#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="operationKey">
+                OPERATION_KEY = trim(#operationKey#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="operationAddressName">
+                OPERATION_ADDRESS_NAME like CONCAT('%',trim(#operationAddressName#),'%')    
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="operationAddressUrl">
+                OPERATION_ADDRESS_URL like CONCAT('%',trim(#operationAddressUrl#),'%')    
+            </isNotEmpty>
+        </dynamic>
+    </select>
+    
+<!--  
+    <select id="secOperationAddress_listOperationAddress2" resultMap="SecOperationAddressResult" parameterClass="java.util.Map">
+        SELECT *
+        FROM SEC_OPERATION_ADDRESS
+        WHERE RESOURCE_ID = #resourceId# AND OPERATION_KEY IN (
+            SELECT OPERATION_KEY
+            FROM SEC_ROLE_RESOURCE_OPERATION
+            WHERE ROLE_ID=#roleId# AND RESOURCE_ID=#resourceId#
+        )
+    </select>
+-->
+
+    <delete id="secOperationAddress_deleteOperationAddress" parameterClass="SecOperation">
+        DELETE FROM SEC_OPERATION_ADDRESS
+        WHERE RESOURCE_ID=#resourceId# AND OPERATION_KEY=#operationKey#
+    </delete>
+
+    <select id="secOperationAddress_listOperationAddressByAuthType" resultMap="SecOperationAddressResult" parameterClass="string">
+        <![CDATA[
+		SELECT  
+			    address.ADDRESS_ID            ,
+		        address.RESOURCE_ID           ,
+		        address.OPERATION_KEY         ,
+		        address.OPERATION_ADDRESS_NAME,
+		        address.OPERATION_ADDRESS_URL ,
+		        address.PARAMETER_NAME1       ,
+		        address.PARAMETER_VALUE1      ,
+		        address.PARAMETER_NAME2       ,
+		        address.PARAMETER_VALUE2      ,
+		        address.PARAMETER_NAME3       ,
+		        address.PARAMETER_VALUE3      ,
+		        address.METADATA_ID           ,
+		        address.DOMAIN   
+		FROM    SEC_OPERATION_ADDRESS address, SEC_RESOURCES res
+		WHERE  address.RESOURCE_ID = res.RESOURCE_ID
+			AND res.AUTH_TYPE = #authType#
+		]]>
+    </select>
+    
+    <select id="secOperationAddress_listOperationAddressNotQuery" 
+            resultMap="SecOperationAddressResult" 
+            parameterClass="java.util.Map"
+            cacheModel="operation-address-cache">
+        <![CDATA[
+		SELECT  
+			    ADDRESS_ID            ,
+		        RESOURCE_ID           ,
+		        OPERATION_KEY         ,
+		        OPERATION_ADDRESS_NAME,
+		        OPERATION_ADDRESS_URL ,
+		        PARAMETER_NAME1       ,
+		        PARAMETER_VALUE1      ,
+		        PARAMETER_NAME2       ,
+		        PARAMETER_VALUE2      ,
+		        PARAMETER_NAME3       ,
+		        PARAMETER_VALUE3      ,
+		        METADATA_ID           ,
+		        DOMAIN   
+		from SEC_OPERATION_ADDRESS
+		 where resource_id in
+		       (select resource_id
+		          from SEC_ROLE_RESOURCE_OPERATION
+		         where role_id in
+		               (select role_id
+		                  from SEC_STAFF_DEPARTMENT_ROLE
+		                 where staff_id = (SELECT STAFF_ID
+		                                     FROM SEC_STAFF
+		                                    WHERE STATUS not in ('EXPIRED', 'DELETED')
+		                                      AND LOGIN_NAME = #loginName# LIMIT 0,1))
+		           and operation_key <> 'QUERY')
+		 and operation_address_url = #operationAddressUrl#
+		]]>
+    </select>
+</sqlMap>

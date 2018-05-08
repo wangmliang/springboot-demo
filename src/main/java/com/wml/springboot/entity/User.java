@@ -5,6 +5,7 @@ import java.util.List;
 public class User {
     private Integer userId;
 
+    private String realName;
     private String userName;
 
     private String password;
@@ -12,6 +13,9 @@ public class User {
     private String phone;
 
     private List<SysRole> roleList;
+
+    private String salt;
+    private String state;
 
     public Integer getUserId() {
         return userId;
@@ -51,5 +55,42 @@ public class User {
 
     public void setRoleList(List<SysRole> roleList) {
         this.roleList = roleList;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", realName='" + realName + '\'' +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", phone='" + phone + '\'' +
+                ", salt='" + salt + '\'' +
+                ", state='" + state + '\'' +
+                '}';
     }
 }

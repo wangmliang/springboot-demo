@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+           
+	<!--spring transcation config -->
+	<aop:config>
+		<aop:advisor pointcut="execution(* com.aspire.sims.rtplt.framework.portal.util2.MenuMetadataImporter.*(..))" advice-ref="menuImporterAdvice"/>
+	</aop:config>
+
+	<tx:advice id="menuImporterAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" propagation="REQUIRED" rollback-for="Exception"/>
+		</tx:attributes>
+	</tx:advice>
+
+	
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:jdbc.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}"/>
+		<property name="url" value="${jdbc.url}"/>
+		<property name="username" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    	<property name="dataSource"><ref local="dataSource"/></property>
+  	</bean>
+    
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation"  value="sqlMapConfig-framework-portal.xml"/>
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<bean id="menuDao" class="com.aspire.sims.rtplt.framework.portal.dao.ibatis.MenuDaoImpl">
+		<property name="sqlMapClient" ref="sqlMapClient"/>
+	</bean>	
+	<bean id="personShortcutDao" class="com.aspire.sims.rtplt.framework.portal.dao.ibatis.PersonShortcutDaoImpl">
+		<property name="sqlMapClient" ref="sqlMapClient"/>
+	</bean>	
+	
+	<bean id="menuMetadagaManager" class="com.aspire.sims.rtplt.framework.portal.util2.MenuMetadataManagerImpl">
+		<property name="menuDao" ref="menuDao">
+		</property>
+		<property name="personShortcutDao" ref="personShortcutDao">
+		</property>										
+	</bean>
+	
+	<bean id="menuMetadataImporter" class="com.aspire.sims.rtplt.framework.portal.util2.MenuMetadataImporter">
+		<property name="menuMetadagaManager" ref="menuMetadagaManager">
+		</property>					
+	</bean>
+</beans>

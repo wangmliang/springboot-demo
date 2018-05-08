@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+
+<beans>
+    <!-- dao bean -->
+    <bean id="menuDao" class="com.aspire.sims.rtplt.framework.portal.dao.ibatis.MenuDaoImpl">
+        <property name="sqlMapClient" ref="sqlMapClient"/>
+    </bean>
+
+    <bean id="personShortcutDao" class="com.aspire.sims.rtplt.framework.portal.dao.ibatis.PersonShortcutDaoImpl">
+        <property name="sqlMapClient" ref="sqlMapClient"/>
+        <property name="menuDao" ref="menuDao"/>
+    </bean>
+    <bean id="personSettingDao" class="com.aspire.sims.rtplt.framework.portal.dao.ibatis.PersonSettingDaoImpl">
+        <property name="sqlMapClient" ref="sqlMapClient"/>
+    </bean>
+    <bean id="subSystemDao" class="com.aspire.sims.rtplt.framework.portal.dao.ibatis.SubSystemDaoImpl">
+        <property name="sqlMapClient" ref="sqlMapClient"/>
+    </bean>
+    <bean id="linkDao" class="com.aspire.sims.rtplt.framework.portal.dao.ibatis.LinkDaoImpl">
+        <property name="sqlMapClient" ref="sqlMapClient"/>
+    </bean>
+    <bean id="portalSessionDao" class="com.aspire.sims.rtplt.framework.portal.dao.ibatis.PortalSessionDaoImpl">
+        <property name="sqlMapClient" ref="sqlMapClient"/>
+    </bean>
+    
+    <!-- biz -->
+    <bean id="portalSessionBiz" class="com.aspire.sims.rtplt.framework.portal.biz.impl.PortalSessionBizImpl">
+        <property name="portalSessionDao" ref="portalSessionDao"/>
+    </bean>
+
+    <!-- interface bean -->
+    <bean id="menuInterface" class="com.aspire.sims.rtplt.framework.portal.impl.MenuImpl">
+        <property name="menuDao" ref="menuDao"/>
+        <property name="personShortcutDao" ref="personShortcutDao"/>
+        <property name="personSettingDao" ref="personSettingDao"/>
+        <property name="securityInterface" ref="securityInterface"/>
+        <property name="subSystemDao" ref="subSystemDao"/>
+    </bean>
+    
+    <!-- 用户登陆bean -->
+    <bean id="userLogin" class="com.aspire.sims.rtplt.framework.portal.impl.UserLoginImpl">
+    	<property name="securityInterface" ref="securityInterface"/>
+        <property name="businessLogger" ref="businessLogger"/>
+        <property name="menuInterface" ref="menuInterface"/>
+        <property name="portalSessionBiz" ref="portalSessionBiz"/>
+    </bean>
+    
+    <!-- 用户退出bean -->
+    <bean id="userLogout" class="com.aspire.sims.rtplt.framework.portal.impl.UserLogoutImpl">
+    	<property name="portalSessionBiz" ref="portalSessionBiz"/>
+    </bean>
+    
+    <!-- 登陆portal的用户认证请求bean -->
+    <bean id="userAuthReq" class="com.aspire.sims.rtplt.framework.portal.impl.UserAuthReqImpl">
+    </bean>
+    
+    <!-- 对业务系统用户认证请求的响应bean -->
+    <bean id="userAuthResp" class="com.aspire.sims.rtplt.framework.portal.impl.UserAuthRespImpl">
+    </bean>
+    
+    <!-- 资源鉴权bean -->
+    <bean id="resourceAuth" class="com.aspire.sims.rtplt.framework.portal.impl.ResourceAuthImpl">
+    </bean>
+    
+    <bean id="portalServiceInterface" class="com.aspire.sims.rtplt.framework.portal.impl.PortalServiceImpl">
+        <property name="securityInterface" ref="securityInterface"/>
+        <property name="menuInterface" ref="menuInterface"/>
+    </bean>
+    
+     <bean id="subsystemInterface" class="com.aspire.sims.rtplt.framework.portal.impl.SubsystemImpl">
+        <property name="subsystemDao" ref="subSystemDao"/>
+    </bean>
+    
+     <bean id="linkInterface" class="com.aspire.sims.rtplt.framework.portal.impl.LinkImpl">
+        <property name="linkDao" ref="linkDao"/>
+        <property name="menuInterface" ref="menuInterface"/>
+        <property name="securityInterface" ref="securityInterface"/>
+    </bean>
+     <bean id="imageManager" class="com.aspire.sims.rtplt.framework.portal.impl.ImageManagerImpl">
+    </bean>
+    
+    <bean id="userHidingLogin" class="com.aspire.sims.rtplt.framework.portal.impl.UserHidingLoginImpl">
+    </bean>
+    
+     <bean id="portalSessionInterface" class="com.aspire.sims.rtplt.framework.portal.impl.PortalSessionImpl">
+     	 <property name="portalSessionBiz" ref="portalSessionBiz"/>
+    </bean>
+    
+    <!-- job -->
+    <bean id="sessionClearQuartzJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+	  	<property name="jobClass" value="com.aspire.sims.rtplt.framework.portal.job.SessionClearJob" />
+	  	<property name="jobDataAsMap">
+		    <map>
+		      <entry key="portalSessionInterface" value-ref="portalSessionInterface" />
+		    </map>
+  		</property>
+	</bean>
+	
+	<bean id="sessionClearCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	    <property name="jobDetail" ref="sessionClearQuartzJob" />
+	    <!-- run every morning at 1 AM -->
+	    <property name="cronExpression" value="0 0 1 * * ?" />
+	</bean>
+	
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    	<property name="triggers" ref="sessionClearCronTrigger"/>
+	</bean>
+    
+</beans>

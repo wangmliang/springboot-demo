@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<!-- The SQL in these maps files has purposely been typed with more verbosity than is actually required.
+ For example, many of the selects could have just used SELECT * FROM... instead of listing all of the columns.
+ This is to demonstrate that even complex SQL can be handled and coded and formatted the way SQL was meant
+ to be (i.e. not a bunch of concatenated strings in a Java class). -->
+
+<sqlMap namespace="SecMetadata">
+	<typeAlias alias="SecMetadataLog" type="com.aspire.sims.rtplt.component.security.metadata.MetadataLog"/>
+	
+	<resultMap id="SecMetadataLogResult" class="SecMetadataLog">
+		<result column="LOG_ID" property="logId"/>
+		<result column="METADATA_ID" property="metadataId"/>
+		<result column="HOST_NAME" property="hostName"/>
+		<result column="CLIENT_IP" property="clientIp"/>
+		<result column="FILE_NAME" property="fileName"/>
+		<result column="BACKUP_FILE_NAME" property="backupFileName"/>
+		<result column="SUFFIX" property="suffix"/>
+		<result column="PREFIX" property="prefix"/>
+		<result column="OPERATION_DATE" property="operationDate"/>
+		<result column="OPERATOR" property="operator"/>
+		<result column="RESULT" property="result"/>
+		<result column="OPERATION" property="operation"/>
+	</resultMap>
+	
+	<select id="secMetadata_getMetadataLogId" resultClass="java.lang.Long" >
+  		<![CDATA[
+   		SELECT SEQ_SEC_METADATA_LOG_ID.NEXTVAL FROM DUAL
+   		]]>
+  	</select> 
+  	  	  	
+	<insert id="secMetadata_insertMetadataLog" parameterClass="SecMetadataLog">
+		<![CDATA[
+		INSERT  INTO SEC_METADATA_LOG (
+		        LOG_ID            ,
+		        METADATA_ID       ,
+		        HOST_NAME         ,
+		        CLIENT_IP         ,
+		        FILE_NAME         ,
+		        BACKUP_FILE_NAME  ,
+		        SUFFIX      	  ,
+		        PREFIX      	  ,
+		        OPERATION_DATE    ,
+		        OPERATOR          ,
+		        RESULT            ,
+		        OPERATION         )
+		VALUES (#logId#                 , 
+		        #metadataId:VARCHAR#    ,
+		        #hostName:VARCHAR#      ,
+		        #clientIp:VARCHAR#      ,
+		        #fileName:VARCHAR#      ,
+		        #backupFileName:VARCHAR#,
+		        #suffix:VARCHAR#   		,
+		        #prefix:VARCHAR#   		,
+		        SYSDATE                 ,
+		        #operator:VARCHAR#      ,
+		        #result:VARCHAR#        ,
+		        #operation:VARCHAR#     )
+		]]>       
+  	</insert>
+
+	<update id="secMetadata_updateMetadataLog" parameterClass="SecMetadataLog">
+		<![CDATA[
+		UPDATE  SEC_METADATA_LOG
+		SET     OPERATION        = #operation#,
+				OPERATION_DATE   = SYSDATE    ,
+		        RESULT           = #result#
+		WHERE   LOG_ID           = #logId#
+		]]>       
+  	</update>
+  	  	
+  	<!-- 备份元数据表数据 -->
+    <statement id="secMetadata_backupRoleResourceOperation"  parameterClass="SecMetadataLog">
+        INSERT INTO BAK_SEC_ROLE_RESOURCE_OP SELECT * FROM SEC_ROLE_RESOURCE_OPERATION
+    </statement> 
+    
+    <statement id="secMetadata_backupOperation"  parameterClass="SecMetadataLog">
+        INSERT INTO BAK_SEC_OPERATION SELECT * FROM SEC_OPERATION
+    </statement>   
+        
+    <statement id="secMetadata_backupResources"  parameterClass="SecMetadataLog">
+        INSERT INTO BAK_SEC_RESOURCES SELECT * FROM SEC_RESOURCES
+    </statement>   
+
+    <statement id="secMetadata_backupResourceCategory"  parameterClass="SecMetadataLog">
+        INSERT INTO BAK_SEC_RESOURCE_CATEGORY SELECT * FROM SEC_RESOURCE_CATEGORY
+    </statement>   
+        
+    <statement id="secMetadata_backupOperationAddress"  parameterClass="SecMetadataLog">
+        INSERT INTO BAK_SEC_OPERATION_ADDRESS SELECT * FROM SEC_OPERATION_ADDRESS
+    </statement>     
+    
+    <!-- 删除元数据表数据，通过级联删除cascade实现 -->
+    <delete id="secMetadata_deleteMetadata"  parameterClass="java.lang.String">
+        DELETE	FROM SEC_RESOURCE_CATEGORY
+        <dynamic prepend="WHERE">
+            <isNotNull>    
+                METADATA_ID = #value#
+            </isNotNull>
+        </dynamic>
+    </delete>
+  	
+    <insert id="secMetadata_mergeRoleResourceOperation" parameterClass="SecMetadataLog">
+		<![CDATA[
+		INSERT  INTO SEC_ROLE_RESOURCE_OPERATION
+		SELECT  Bak_Role_ROP.ROLE_ID, 
+		        Res.RESOURCE_ID,
+		        Opt.OPERATION_KEY
+		FROM    BAK_Sec_Role_Resource_Op Bak_Role_ROP,                         
+		        BAK_Sec_Operation BAK_Opt,
+		        Sec_Operation Opt,
+            	Bak_Sec_Resources Bak_Res,
+            	Sec_Resources Res            
+    	WHERE   Bak_Role_ROP.Operation_Key = Bak_Opt.Operation_Key
+		        AND Bak_Role_ROP.Resource_Id = Bak_Opt.Resource_Id
+		        AND Bak_Role_ROP.Resource_Id = Bak_Res.Resource_Id
+		        AND Bak_Res.Resource_Key = Res.Resource_Key
+		        AND Res.Resource_Id = Opt.Resource_Id
+		        AND Bak_Role_ROP.Operation_Key = Opt.Operation_Key
+				AND	BAK_OPT.METADATA_ID   = #metadataId#
+		]]>  
+  	</insert>  	
+  	
+	<select id="secMetadata_getLastMetadataLog" resultMap="SecMetadataLogResult" parameterClass="SecMetadataLog" >
+  		<![CDATA[
+   		SELECT  *                                 
+		FROM   (SELECT 	*                     
+		        FROM	SEC_METADATA_LOG              
+		        WHERE	RESULT = #result# 
+		        AND		OPERATION like '%'||trim(#operation#)
+		        ORDER	BY OPERATION_DATE desc)   
+		WHERE   ROWNUM = 1                        
+		]]>
+  	</select>   	
+  	
+  	<!-- 恢复元数据表数据 -->
+    <insert id="secMetadata_recoverResourceCategory"  parameterClass="SecMetadataLog">
+    	INSERT INTO SEC_RESOURCE_CATEGORY SELECT * FROM BAK_SEC_RESOURCE_CATEGORY
+    </insert>   
+      	
+    <insert id="secMetadata_recoverResources"  parameterClass="SecMetadataLog">
+        INSERT INTO SEC_RESOURCES SELECT * FROM BAK_SEC_RESOURCES
+    </insert>   
+    
+    <insert id="secMetadata_recoverOperation"  parameterClass="SecMetadataLog">
+        INSERT INTO SEC_OPERATION SELECT * FROM BAK_SEC_OPERATION
+    </insert>   
+            
+    <insert id="secMetadata_recoverOperationAddress"  parameterClass="SecMetadataLog">
+        INSERT INTO SEC_OPERATION_ADDRESS SELECT * FROM BAK_SEC_OPERATION_ADDRESS
+    </insert>     
+
+    <insert id="secMetadata_recoverRoleResourceOperation"  parameterClass="SecMetadataLog">   
+        INSERT INTO SEC_ROLE_RESOURCE_OPERATION SELECT * FROM BAK_SEC_ROLE_RESOURCE_OP
+    </insert>       	
+</sqlMap>

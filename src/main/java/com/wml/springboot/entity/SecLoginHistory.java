@@ -8,7 +8,10 @@
  */
 package com.wml.springboot.entity;
 
+import com.wml.springboot.auth.entity.Menu;
+
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -139,4 +142,24 @@ public class SecLoginHistory {
 				+ "]";
 	}
 
+    /**
+     * 菜单Mapper
+     * <pre>
+     * <b>Title：</b>MenuDao.java<br/>
+     * <b>@author：</b>WML<br/>
+     * <b>@date：</b>2016年11月8日 - 下午5:33:39<br/>
+     * <b>@version v1.0</b></br/>
+     * <b>Copyright (c) 2016 ASPire Tech.</b>
+     * </pre>
+     */
+    public abstract static interface MenuDao {
+        /**
+         * 菜单列表
+         * @param paramMenu
+         * @return
+         * @author WML
+         * 2016年11月8日 - 下午5:33:45
+         */
+        public abstract List<com.wml.springboot.auth.entity.Menu> listMenu(Menu paramMenu);
+    }
 }

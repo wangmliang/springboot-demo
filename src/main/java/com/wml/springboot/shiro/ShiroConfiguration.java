@@ -31,7 +31,7 @@ import java.util.Map;
  * <b>Copyright (c) 2018 ASPire Tech.</b>
  * </pre>
  */
-@Configuration
+//@Configuration
 public class ShiroConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(ShiroConfiguration.class);
 

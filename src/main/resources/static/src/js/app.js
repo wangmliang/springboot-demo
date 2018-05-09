@@ -71,7 +71,7 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
             if (_config.type === 'iframe') {
                 tab.set({
                     //renderType: 'iframe',
-                    mainUrl: 'main.html',
+                    //mainUrl: 'table.html',
                     //openWait: false,
                     elem: '#container',
                     onSwitch: function(data) { //选项卡切换时触发

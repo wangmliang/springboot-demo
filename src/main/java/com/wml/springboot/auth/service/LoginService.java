@@ -12,10 +12,13 @@ import com.wml.springboot.auth.entity.Staff;
 import com.wml.springboot.auth.entity.StaffExtendProperty;
 import com.wml.springboot.auth.mapper.DepartmentMapper;
 import com.wml.springboot.auth.mapper.StaffDao;
+import com.wml.springboot.exception.MyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springside.modules.security.utils.Digests;
+import org.springside.modules.utils.Encodes;
 
 @Service("loginService")
 @SuppressWarnings("unused")
@@ -41,32 +44,45 @@ public class LoginService {
 		return null;
 	}
 
-	public void login(String name, String password, HttpSession session)
-			throws Exception {
+	/**
+	 *
+	 * @param password
+	 * @param salt
+	 * @return
+	 */
+	public static String entryptPassword(String password, String salt)
+	{
+		byte[] hashPassword = Digests.sha1(password.getBytes(), salt.getBytes(), 1024);
+		return Encodes.encodeHex(hashPassword);
+	}
+
+	public void login(String name, String password, HttpSession session) {
 		Staff loginStaff = null;
 
 		loginStaff = this.staffDao.findStaffByLoginName(name);
 
 		if (loginStaff == null) {
 			logger.info("用户[" + name + "]登录失败,没有找到对应的用户。");
-			throw new Exception("登录名或者密码不正确");
+			throw new MyException("登录名不正确");
 		}
 
-		if ((!Staff.Status.NORMAL.equals(loginStaff.getStatus()))
-				&& (!Staff.Status.INITIAL.equals(loginStaff.getStatus()))) {
-			throw new Exception("用户状态异常");
+		if ((!"NORMAL".equals(loginStaff.getStatus()))
+				&& (!"INITIAL".equals(loginStaff.getStatus()))) {
+			throw new MyException("用户状态异常");
 		}
 
-		Staff paramStaff = new Staff();
+		/*Staff paramStaff = new Staff();
 		paramStaff.setStaffId(loginStaff.getStaffId());
 		paramStaff.setLoginName(name);
 		paramStaff.setPassword(password);
 
 		PasswordAdapter loginPwd = new PasswordAdapter(paramStaff);
 
-		if (!loginStaff.getPassword().equals(loginPwd.encryptPassword())) {
-			logger.info("用户[" + name + "]登录失败,登录密码不正确。");
-			throw new Exception("登录名或者密码不正确");
+		if (!loginStaff.getPassword().equals(loginPwd.encryptPassword())) {*/
+		String pwd = entryptPassword(password, loginStaff.getSalt());
+		if(!loginStaff.getPassword().equals(pwd)) {
+			logger.info("用户[" + name + "]登录失败,密码不正确。");
+			throw new MyException("登录密码不正确");
 		}
 
 		if (loginStaff.getDepartmentId() != null) {

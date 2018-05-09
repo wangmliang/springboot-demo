@@ -21,6 +21,7 @@
         <result property="lockDate" column="LOCK_DATE"/>
         <result property="lastUpdateDate" column="LAST_UPDATE_DATE"/>
         <result property="cityId" column="CITY_ID"/>
+        <result property="salt" column="SALT"/>
 	</resultMap>
 	<resultMap id="SecStaffDepartmentRoleKeyMap" type="com.wml.springboot.auth.entity.SecStaffDepartmentRoleKey" >
     <id column="STAFF_ID" property="staffId" jdbcType="VARCHAR" />
@@ -55,7 +56,8 @@
 		       PASSWORD_EXPIRE_DATE,
 		       LOCK_DATE	   ,
                CITY_ID	   ,
-		       LAST_UPDATE_DATE)
+		       LAST_UPDATE_DATE,
+		       SALT)
 		VALUES(#{staffId},
 		       #{loginName},
 		       #{departmentId,jdbcType=NUMERIC},
@@ -72,7 +74,8 @@
 		       #{passwordExpireDate,jdbcType=DATE},
 		       #{lockDate,jdbcType=DATE},
                #{cityId,jdbcType=VARCHAR},  		       
-		       #{lastUpdateDate,jdbcType=DATE})
+		       #{lastUpdateDate,jdbcType=DATE},
+		       #{salt,jdbcType=VARCHAR})
 		]]>
     </insert>
     
@@ -94,7 +97,8 @@
 		       PASSWORD_EXPIRE_DATE = #{passwordExpireDate,jdbcType=DATE},  
 		       LOCK_DATE		= #{lockDate,jdbcType=DATE},
                CITY_ID          = #{cityId,jdbcType=VARCHAR},
-		       LAST_UPDATE_DATE = SYSDATE()
+		       LAST_UPDATE_DATE = SYSDATE(),
+		       SALT = #{salt,jdbcType=VARCHAR}
 		WHERE  STAFF_ID         = #{staffId}
 		]]>
     </update>

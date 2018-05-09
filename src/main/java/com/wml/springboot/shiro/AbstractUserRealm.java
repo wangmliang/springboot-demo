@@ -2,6 +2,7 @@ package com.wml.springboot.shiro;
 
 import com.wml.springboot.entity.User;
 import com.wml.springboot.services.UserService;
+import com.wml.springboot.util.RSAUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
@@ -81,7 +82,7 @@ public abstract class AbstractUserRealm extends AuthorizingRealm {
         User user = userService.getUserByName(token.getUsername());
         if (user != null) {
             setSession("userInfo", user);
-
+//            RSAUtil.decryptString(token.getPassword().toString());
             // 若存在，将此用户存放到登录认证info中，无需自己做密码对比，Shiro会为我们进行密码对比校验
             byte[] salt = Encodes.decodeHex(user.getSalt());
             return new SimpleAuthenticationInfo(user, user.getPassword(), ByteSource.Util.bytes(salt), getName());

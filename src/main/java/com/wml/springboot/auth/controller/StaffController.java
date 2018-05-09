@@ -74,9 +74,9 @@ public class StaffController extends BaseController {
 				staff.setLastUpdateDate(new Date());
 				this.staffService.updateStaff(staff);
 			} else {
-				if (staff.getStatus() == null) {
+				/*if (staff.getStatus() == null) {
 					staff.setStatus(Staff.Status.INITIAL);
-				}
+				}*/
 				if (staff.getCreateUser() == null) {
 					if (StaffUtil.getLoginStaff() == null) {
 						staff.setCreateUser("nouser");
@@ -503,7 +503,7 @@ public class StaffController extends BaseController {
 			}
 			Staff staff2 = this.staffService.findStaffByLoginName(staff.getLoginName());
 			staff2.setRealName(staff.getRealName());
-			staff2.setSex(staff.getSex());
+			//staff2.setSex(staff.getSex());
 			staff2.setMobile(staff.getMobile());
 			staff2.setTelephone(staff.getTelephone());
 			staff2.setEmail(staff.getEmail());

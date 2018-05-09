@@ -16,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 全局监听系统500错误，响应对应错误信息
@@ -32,11 +30,16 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     public static final String DEFAULT_ERROR_VIEW = "error";
     public static final String DEFAULT_404_ERROR_VIEW = "404";
 
+    /**
+     * 获取请求错误状态码
+     * @param request
+     * @return
+     */
     private HttpStatus getStatus(HttpServletRequest request) {
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
         if (statusCode == null) {
@@ -45,6 +48,13 @@ public class GlobalExceptionHandler {
         return HttpStatus.valueOf(statusCode);
     }
 
+    /**
+     * 系统默认错误处理
+     * @param req
+     * @param e
+     * @return
+     * @throws Exception
+     */
     @ExceptionHandler(value = Exception.class)
     public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
         ModelAndView mav = new ModelAndView();
@@ -56,7 +66,7 @@ public class GlobalExceptionHandler {
             mav.addObject("exception", pringExceptionInfo(e));
             logger.error("系统500Error： 请求链接：{}，错误信息：{}", req.getRequestURL(), e.getMessage());
         }
-        mav.addObject("url", req.getServletPath());
+        mav.addObject("url", req.getRequestURI());
         // 设定状态为成功，避免浏览器提示错误
         mav.setStatus(HttpStatus.OK);
         mav.setViewName(viewName);
@@ -64,7 +74,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 自定义异常
+     * 自定义异常错误返回
      * @param req
      * @param e
      * @return
@@ -79,7 +89,7 @@ public class GlobalExceptionHandler {
         error.setStatus(status.value());
         error.setMessage(e.getMessage());
         error.setTimestamp(new Date().getTime());
-        error.setPath(req.getServletPath());
+        error.setPath(req.getRequestURI());
         return error;
     }
 
@@ -96,7 +106,7 @@ public class GlobalExceptionHandler {
         return;
     }
     /**
-     *
+     * 异常信息以字符串输出
      * @param e
      * @return
      */

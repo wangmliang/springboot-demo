@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>KIT ADMIN</title>
-    <link rel="stylesheet" href="../plugins/layui/css/layui.css" media="all" />
-    <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css" media="all" />
-    <link rel="stylesheet" href="../src/css/app.css" media="all" />
-    <link rel="stylesheet" href="../src/css/themes/default.css" media="all" id="skin" kit-skin />
+    <title>SpringBoot 2.0</title>
+    <link rel="stylesheet" th:href="@{/plugins/layui/css/layui.css}" media="all" />
+    <link rel="stylesheet" th:href="@{/plugins/font-awesome/css/font-awesome.min.css}" media="all" />
+    <link rel="stylesheet" th:href="@{/src/css/app.css}" media="all" />
+    <link rel="stylesheet" th:href="@{/src/css/themes/default.css}" media="all" id="skin" kit-skin />
 </head>
 
 <body class="kit-theme">
@@ -80,12 +80,10 @@
                         </dd>
                     </dl>
                 </li>
-                <li class="layui-nav-item layui-nav-itemed">
-                    <a href="javascript:;"><i class="fa fa-plug" aria-hidden="true"></i><span> 系统管理</span></a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="javascript:;" kit-target data-options="{url:'/auth/department',icon:'&#xe658;',title:'组织管理',id:'1001'}"><i class="layui-icon">&#xe658;</i><span> 组织管理</span></a></dd>
-                        <dd><a href="javascript:;" kit-target data-options="{url:'tab.html',icon:'&#xe658;',title:'成员管理',id:'1002'}"><i class="layui-icon">&#xe658;</i><span> 成员管理</span></a></dd>
-                        <dd><a href="javascript:;" kit-target data-options="{url:'onelevel.html',icon:'&#xe658;',title:'角色管理',id:'1003'}"><i class="layui-icon">&#xe658;</i><span> 角色管理</span></a></dd>
+                <li class="layui-nav-item layui-nav-itemed" th:each="menu : ${menuTree}">
+                    <a href="javascript:;"><i class="fa fa-plug" aria-hidden="true"></i><span th:text="${menu.text}"> 系统管理</span></a>
+                    <dl class="layui-nav-child" th:if="${menu.children != null}">
+                        <dd th:each="tree: ${menu.children}"><a href="javascript:;" kit-target th:data-options="|{'url:'${tree.url}',icon:'&#xe658;',title:'${tree.text}',id:'${tree.id}'}|"><i class="layui-icon">&#xe658;</i><span th:text="${tree.text}"> 组织管理</span></a></dd>
                     </dl>
                 </li>
             </ul>
@@ -96,21 +94,13 @@
         <div style="padding: 15px;"><i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop">&#xe63e;</i> 请稍等...</div>
     </div>
 
-    <shiro:hasPermission name="userInfo:add">
-        有权限就显示，没有则不显示...
-    </shiro:hasPermission>
-
     <div class="layui-footer">
         <!-- 底部固定区域 -->
         2017 &copy;
         <a href="http://kit.zhengjinfan.cn/">kit.zhengjinfan.cn/</a> MIT license
     </div>
 </div>
-<!-- <script type="text/javascript">
-      var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
-      document.write(unescape("%3Cspan id='cnzz_stat_icon_1264021086'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/z_stat.php%3Fid%3D1264021086%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
-  </script> -->
-<script src="./plugins/layui/layui.js"></script>
+<script th:src="@{/plugins/layui/layui.js}"></script>
 <script>
     var message;
     layui.config({

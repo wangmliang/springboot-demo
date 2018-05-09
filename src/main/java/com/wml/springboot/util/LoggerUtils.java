@@ -5,12 +5,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ÈÕÖ¾¼ÇÂ¼¹¤¾ßÀà
+ * æ—¥å¿—è®°å½•å·¥å…·ç±»
  * <pre>
- * <b>@ClassName£º</b>LoggerUtils.java<br/>
- * <b>@author£º</b>Miles<br/>
- * <b>@E-mail£º</b>miles@lan360.com<br/>
- * <b>@date£º</b>2018Äê4ÔÂ19ÈÕ - ÏÂÎç4:24:48<br/>
+ * <b>@ClassNameï¼š</b>LoggerUtils.java<br/>
+ * <b>@authorï¼š</b>Miles<br/>
+ * <b>@E-mailï¼š</b>miles@lan360.com<br/>
+ * <b>@dateï¼š</b>2018å¹´4æœˆ19æ—¥ - ä¸‹åˆ4:24:48<br/>
  * <b>@version V1.0</b></br/>
  * <b>Copyright (c) 2018 ASPire Tech.</b>
  * </pre>
@@ -18,14 +18,14 @@ import org.slf4j.LoggerFactory;
 public class LoggerUtils {
 
 	/**
-	 * ÊÇ·ñ¿ªÆôDebug
+	 * æ˜¯å¦å¼€å¯Debug
 	 */
 	public static boolean isDebug =  LoggerFactory.getLogger(LoggerUtils.class).isDebugEnabled();
 
 	/**
-	 * Debug Êä³ö
-	 * @param clazz  	Ä¿±ê.Class
-	 * @param message	Êä³öĞÅÏ¢
+	 * Debug è¾“å‡º
+	 * @param clazz  	ç›®æ ‡.Class
+	 * @param message	è¾“å‡ºä¿¡æ¯
 	 */
 	public static void debug(Class<? extends Object> clazz ,String message){
 		if(!isDebug)return ;
@@ -33,10 +33,10 @@ public class LoggerUtils {
 		logger.debug(message);
 	}
 	/**
-	 * Debug Êä³ö
-	 * @param clazz  	Ä¿±ê.Class
-	 * @param fmtString Êä³öĞÅÏ¢key
-	 * @param value		Êä³öĞÅÏ¢value
+	 * Debug è¾“å‡º
+	 * @param clazz  	ç›®æ ‡.Class
+	 * @param fmtString è¾“å‡ºä¿¡æ¯key
+	 * @param value		è¾“å‡ºä¿¡æ¯value
 	 */
 	public static void fmtDebug(Class<? extends Object> clazz,String fmtString,Object...value){
 		if(!isDebug)return ;
@@ -49,10 +49,10 @@ public class LoggerUtils {
 		debug(clazz, fmtString);
 	}
 	/**
-	 * Error Êä³ö
-	 * @param clazz  	Ä¿±ê.Class
-	 * @param message	Êä³öĞÅÏ¢
-	 * @param e			Òì³£Àà
+	 * Error è¾“å‡º
+	 * @param clazz  	ç›®æ ‡.Class
+	 * @param message	è¾“å‡ºä¿¡æ¯
+	 * @param e			å¼‚å¸¸ç±»
 	 */
 	public static void error(Class<? extends Object> clazz ,String message,Exception e){
 		Logger logger = LoggerFactory.getLogger(clazz);
@@ -63,19 +63,19 @@ public class LoggerUtils {
 		logger.error(message, e);
 	}
 	/**
-	 * Error Êä³ö
-	 * @param clazz  	Ä¿±ê.Class
-	 * @param message	Êä³öĞÅÏ¢
+	 * Error è¾“å‡º
+	 * @param clazz  	ç›®æ ‡.Class
+	 * @param message	è¾“å‡ºä¿¡æ¯
 	 */
 	public static void error(Class<? extends Object> clazz ,String message){
 		error(clazz, message, null);
 	}
 	/**
-	 * Òì³£Ìî³äÖµÊä³ö
-	 * @param clazz 	Ä¿±ê.Class
-	 * @param fmtString	Êä³öĞÅÏ¢key
-	 * @param e			Òì³£Àà
-	 * @param value		Êä³öĞÅÏ¢value
+	 * å¼‚å¸¸å¡«å……å€¼è¾“å‡º
+	 * @param clazz 	ç›®æ ‡.Class
+	 * @param fmtString	è¾“å‡ºä¿¡æ¯key
+	 * @param e			å¼‚å¸¸ç±»
+	 * @param value		è¾“å‡ºä¿¡æ¯value
 	 */
 	public static void fmtError(Class<? extends Object> clazz,Exception e,String fmtString,Object...value){
 		if(StringUtils.isBlank(fmtString)){
@@ -87,10 +87,10 @@ public class LoggerUtils {
 		error(clazz, fmtString, e);
 	}
 	/**
-	 * Òì³£Ìî³äÖµÊä³ö
-	 * @param clazz		Ä¿±ê.Class
-	 * @param fmtString Êä³öĞÅÏ¢key
-	 * @param value		Êä³öĞÅÏ¢value
+	 * å¼‚å¸¸å¡«å……å€¼è¾“å‡º
+	 * @param clazz		ç›®æ ‡.Class
+	 * @param fmtString è¾“å‡ºä¿¡æ¯key
+	 * @param value		è¾“å‡ºä¿¡æ¯value
 	 */
 	public static void fmtError(Class<? extends Object> clazz, String fmtString, Object...value) {
 		if(StringUtils.isBlank(fmtString)){

@@ -7,11 +7,15 @@ import com.wml.springboot.auth.entity.*;
 import com.wml.springboot.auth.mapper.DepartmentMapper;
 import com.wml.springboot.auth.mapper.RoleDao;
 import com.wml.springboot.auth.mapper.StaffDao;
+import com.wml.springboot.util.RSAUtil;
 import com.wml.springboot.util.StringTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
+import org.springside.modules.security.utils.Digests;
+import org.springside.modules.utils.Encodes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,11 +52,41 @@ public class StaffService {
 		_createStaff(staff);
 	}
 
+	/**
+	 * 用户密码加密
+	 * @param user
+	 */
+	public static void entryptPassword(Staff user)
+	{
+		byte[] salt = Digests.generateSalt(8);
+		user.setSalt(Encodes.encodeHex(salt));
+		byte[] hashPassword = Digests.sha1(user.getPassword().getBytes(), salt, 1024);
+		user.setPassword(Encodes.encodeHex(hashPassword));
+	}
+
+	public static void main(String[] args) {
+		Staff staff = new Staff();
+		staff.setLoginName("admin");
+		staff.setPassword("123456");
+		staff.setStaffId(1L);
+		entryptPassword(staff);
+		System.out.println("mima:" + staff.getPassword() + "=" + staff.getSalt());
+		/*PasswordAdapter pa = new PasswordAdapter(staff);
+		System.out.println("mima:" + pa.encryptPassword());
+		System.out.println("mima:" + ClassUtils.getDefaultClassLoader().getResource("").getPath());*/
+
+		/*String pwd = RSAUtil.decryptString("123456");
+		staff.setPassword(pwd);
+		pa = new PasswordAdapter(staff);
+		System.out.println("mima:" + pa.encryptPassword());*/
+	}
+
 	private void _createStaff(Staff staff) throws Exception {
 		if (this.staffDao.findStaffByLoginName(staff.getLoginName()) != null) {
 			throw new Exception("此帐号已注册，系统不允许重复注册!");
 		}
 
+		entryptPassword(staff);
 		this.staffDao.insertStaff(staff);
 
 		PasswordAdapter pa = new PasswordAdapter(staff);
@@ -250,10 +284,10 @@ public class StaffService {
 
 		staff.setPassword(buildStaffPassword(staff, newPassword));
 
-		if ((staff.getStatus() == Staff.Status.INITIAL)
+		/*if ((staff.getStatus() == Staff.Status.INITIAL)
 				|| (staff.getStatus() == Staff.Status.PASSWORD_EXPIRED)) {
 			staff.setStatus(Staff.Status.NORMAL);
-		}
+		}*/
 
 		this.staffDao.updateStaffPassword(staff);
 	}
@@ -272,7 +306,7 @@ public class StaffService {
 
 		staff.setPassword(buildStaffPassword(staff, newPassword));
 
-		staff.setStatus(Staff.Status.INITIAL);
+		//staff.setStatus(Staff.Status.INITIAL);
 
 		this.staffDao.updateStaffPassword(staff);
 	}
@@ -283,10 +317,10 @@ public class StaffService {
 		if (staff == null) {
 			throw new Exception("用户[" + staffId + "]没有找到");
 		}
-
-		if ((staff.getStatus() == Staff.Status.INITIAL)
+		if(true) {
+		/*if ((staff.getStatus() == Staff.Status.INITIAL)
 				|| (staff.getStatus() == Staff.Status.NORMAL)) {
-			staff.setStatus(Staff.Status.LOCKED);
+			staff.setStatus(Staff.Status.LOCKED);*/
 
 			this.staffDao.updateStaff(staff);
 		} else {
@@ -301,7 +335,7 @@ public class StaffService {
 			throw new Exception("用户[" + staffId + "]没有找到");
 		}
 
-		staff.setStatus(Staff.Status.NORMAL);
+		//staff.setStatus(Staff.Status.NORMAL);
 
 		this.staffDao.updateStaff(staff);
 	}

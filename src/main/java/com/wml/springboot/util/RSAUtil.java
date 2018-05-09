@@ -32,6 +32,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ClassUtils;
 
 @SuppressWarnings("unused")
 public class RSAUtil {
@@ -63,6 +64,10 @@ public class RSAUtil {
 
 	private static String getRSAPairFilePath() {
 		String urlPath = "";//ConfigurationHelper.getBasePath();
+		//File path = new File(ResourceUtils.getURL("classpath:").getPath());
+		/*if(!path.exists()) path = new File("");
+		System.out.println("path:"+path.getAbsolutePath());*/
+		urlPath = ClassUtils.getDefaultClassLoader().getResource("").getPath();
 		return urlPath + "/__RSA_PAIR.txt";
 	}
 

@@ -62,11 +62,24 @@ public class UserService {
         user.setPassword(Encodes.encodeHex(hashPassword));
     }
 
+    /**
+     *
+     * @param password
+     * @param salt
+     * @return
+     */
+    public static String entryptPassword(String password, String salt)
+    {
+        byte[] hashPassword = Digests.sha1(password.getBytes(), salt.getBytes(), 1024);
+        return Encodes.encodeHex(hashPassword);
+    }
     public static void main( String[] args ) throws IOException {
         User user = new User();
         user.setUserName("admin");
         user.setPassword("123456");
         entryptPassword(user);
+        System.out.println(user.toString());
+        entryptPassword("123456", user.getSalt());
         System.out.println(user.toString());
     }
 

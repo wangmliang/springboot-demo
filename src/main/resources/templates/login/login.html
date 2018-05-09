@@ -55,18 +55,36 @@
 <script src="../plugins/polyfill.min.js"></script>
 <script src="../plugins/layui/layui.js"></script>
 <script>
-    layui.use(['layer', 'form'], function() {
-        var form = layui.form, $ = layui.jquery;
-
+    layui.config({
+        base: '../build/js/',
+        version: '1.0.1'
+    }).use(['layer', 'form', 'common'], function() {
+        var form = layui.form, common = layui.common, $ = layui.jquery;
         $('#forgot').on('click', function() {
             layer.msg('请联系管理员.');
         });
         //监听提交
         form.on('submit(login_hash)', function(data) {
-            layer.msg(JSON.stringify(data.field));
-            setTimeout(function(){
-                location.href='/index';
-            },1000);
+            $.ajax({
+                "url": "/login",
+                "type": "post",
+                "data": data.field,
+                "dataType": "json",
+                success: function(d) {
+                    console.log("d:" + d);
+                    if(d.success) {
+                        common.layerMsg("登陆成功");
+                        setTimeout(function(){
+                            location.href='/index';
+                        }, 1000);
+                    } else {
+                        common.layerMsg(d.message);
+                    }
+                },
+                error: function(e) {
+                    common.layerMsg("请求失败.");
+                }
+            });
             return false;
         });
     });

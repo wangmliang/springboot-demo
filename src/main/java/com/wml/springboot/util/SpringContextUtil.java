@@ -6,12 +6,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
- * ¾²Ì¬»ñÈ¡Bean¹¤¾ßÀà
+ * é™æ€è·å–Beanå·¥å…·ç±»
  * <pre>
- * <b>@ClassName£º</b>LoggerUtils.java<br/>
- * <b>@author£º</b>Miles<br/>
- * <b>@E-mail£º</b>miles@lan360.com<br/>
- * <b>@date£º</b>2018Äê4ÔÂ19ÈÕ - ÏÂÎç4:24:48<br/>
+ * <b>@ClassNameï¼š</b>LoggerUtils.java<br/>
+ * <b>@authorï¼š</b>Miles<br/>
+ * <b>@E-mailï¼š</b>miles@lan360.com<br/>
+ * <b>@dateï¼š</b>2018å¹´4æœˆ19æ—¥ - ä¸‹åˆ4:24:48<br/>
  * <b>@version V1.0</b></br/>
  * <b>Copyright (c) 2018 ASPire Tech.</b>
  * </pre>
@@ -20,7 +20,7 @@ public class SpringContextUtil implements ApplicationContextAware {
 
 	private static ApplicationContext applicationContext;
 
-	// ÊµÏÖ
+	// å®ç°
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		SpringContextUtil.applicationContext = applicationContext;
@@ -34,7 +34,7 @@ public class SpringContextUtil implements ApplicationContextAware {
 		try {
 			return applicationContext.getBean(name);
 		} catch (Exception e) {
-			throw new RuntimeException("»ñÈ¡µÄBean²»´æÔÚ£¡");
+			throw new RuntimeException("è·å–çš„Beanä¸å­˜åœ¨ï¼");
 		}
 	}
 

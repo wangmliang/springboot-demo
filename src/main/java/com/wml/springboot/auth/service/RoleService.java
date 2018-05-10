@@ -76,8 +76,7 @@ public class RoleService {
 	}
 
 	@Transactional(rollbackFor={Exception.class})
-	public void deleteRole(Long roleId)
-			throws Exception
+	public void deleteRole(Long roleId) throws Exception
 	{
 		if (roleId == null) {
 			throw new Exception("没有指定要删除的角色[roleId=" + roleId + "]");

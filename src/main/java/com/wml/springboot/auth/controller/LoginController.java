@@ -35,7 +35,7 @@ import java.util.Map;
  * </pre>
  */
 @Controller("portalLogin")
-@RequestMapping({ "/portal" })
+@RequestMapping({ "/auth/portal" })
 public class LoginController extends BaseController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LoginController.class);

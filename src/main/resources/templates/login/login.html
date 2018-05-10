@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Login</title>
-    <link rel="stylesheet" href="../plugins/layui/css/layui.css">
-    <link rel="stylesheet" href="../src/css/login.css">
+    <title>登录</title>
+    <link rel="stylesheet" th:href="@{/plugins/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/src/css/login.css}">
 </head>
 
 <body>
@@ -52,8 +52,8 @@
     </div>
 </div>
 
-<script src="../plugins/polyfill.min.js"></script>
-<script src="../plugins/layui/layui.js"></script>
+<script th:src="@{/plugins/polyfill.min.js}"></script>
+<script th:src="@{/plugins/layui/layui.js}"></script>
 <script>
     layui.config({
         base: '../build/js/',
@@ -71,7 +71,6 @@
                 "data": data.field,
                 "dataType": "json",
                 success: function(d) {
-                    console.log("d:" + d);
                     if(d.success) {
                         common.layerMsg("登陆成功");
                         setTimeout(function(){

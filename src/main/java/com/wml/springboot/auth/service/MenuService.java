@@ -38,7 +38,6 @@ public class MenuService {
 			} else if (this.authService.authorizeSuccess(m.getUrl(), urlMap)) {
 				targetMenus.add(m);
 			}
-
 		}
 
 		List<MenuTreeNode> list = new ArrayList<MenuTreeNode>();

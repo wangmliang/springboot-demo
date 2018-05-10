@@ -15,7 +15,7 @@
                     "text": "修改帐号信息",
                     "menuOrder": "10000",
                     "leaf": "true",
-                    "url": "/pages/auth/individual/modifyInfo.shtml",
+                    "url": "/auth/individual/modifyInfo",
                     "id": "sys9999931",
 		    "icon":"icon-user",
                     "menuKey": "auth_sysmgt_admin_sysmgtall_indiv_modifyinfo"
@@ -24,7 +24,7 @@
                     "text": "修改密码",
                     "menuOrder": "20000",
                     "leaf": "true",
-                    "url": "/pages/auth/individual/modifyPwd.shtml",
+                    "url": "/auth/individual/modifyPwd",
                     "id": "sys9999932",
 		    "icon":"icon-lock",
                     "menuKey": "auth_sysmgt_admin_sysmgtall_indiv_modifypwd"
@@ -33,7 +33,7 @@
                     "text": "设置个性化参数",
                     "menuOrder": "30000",
                     "leaf": "true",
-                    "url": "/pages/auth/individual/selfConfigSetting.shtml",
+                    "url": "/auth/individual/selfConfigSetting",
                     "id": "sys9999933",
 		    "icon":" icon-magnet",
                     "menuKey": "auth_sysmgt_admin_sysmgtall_indiv_setting"
@@ -42,7 +42,7 @@
                     "text": "组织管理",
                     "menuOrder": "40000",
                     "leaf": "true",
-                    "url": "/pages/auth/dept.shtml",
+                    "url": "/auth/dept",
                     "id": "sys99999121",
 		    "icon":"icon-sitemap",
                     "menuKey": "auth_sysmgt_admin_sysmgtall_dept_deptmsg"
@@ -51,7 +51,7 @@
                     "text": "成员管理",
                     "menuOrder": "50000",
                     "leaf": "true",
-                    "url": "/pages/auth/staff.shtml",
+                    "url": "/auth/staff",
                     "id": "sys99999122",
 		    "icon":"icon-user-md",
                     "menuKey": "auth_sysmgt_admin_sysmgtall_dept_staffmgt"
@@ -60,7 +60,7 @@
                     "text": "角色管理",
                     "menuOrder": "60000",
                     "leaf": "true",
-                    "url": "/pages/auth/role.shtml",
+                    "url": "/auth/role/page",
                     "id": "sys99999123",
 		    "icon":"icon-group",
                     "menuKey": "auth_sysmgt_admin_sysmgtall_dept_rolemgt"
@@ -69,7 +69,7 @@
                     "text": "组织管理日志",
                     "menuOrder": "70000",
                     "leaf": "true",
-                    "url": "/pages/auth/log/queryAccountLog.jsp",
+                    "url": "/auth/log/queryAccountLog",
                     "id": "sys199999125",
 		    "icon":"icon-table",
                     "menuKey": "auth_sysmgt_admin_sysmgtall_orgoperationlog"

@@ -11,11 +11,13 @@ import com.wml.springboot.auth.service.RoleService;
 import com.wml.springboot.auth.tree.TreeNode;
 import com.wml.springboot.util.LayerPage;
 import com.wml.springboot.util.StaffUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -34,7 +36,7 @@ import javax.servlet.http.HttpServletRequest;
  * </pre>
  */
 @Controller
-@RequestMapping({ "/role" })
+@RequestMapping({ "/auth/role" })
 public class RoleController extends BaseController {
 
 	private static final Logger logger = LoggerFactory.getLogger(RoleController.class);
@@ -50,7 +52,7 @@ public class RoleController extends BaseController {
 	 * @author WML
 	 * 2016年11月8日 - 上午8:51:23
 	 */
-	@RequestMapping(value = { "/updateRole.ajax" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
+	@RequestMapping(value = { "/updateRole" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
 	public Map<String, ? extends Object> updateRole(Role role) {
 		try {
@@ -58,6 +60,15 @@ public class RoleController extends BaseController {
 			if (role == null) {
 				throw new Exception("空对象错误");
 			}
+			// 判断Key是否存在
+			/*Role dbRrole = this.roleService.findRoleByKey(role.getRoleKey());
+			if (dbRrole != null) {
+				if (isNotEmpty(role.getRoleId())) {
+					if (role.getRoleId() != dbRrole.getRoleId() || !role.getRoleId().equals(role.getRoleId())) {
+						return fail("角色助记码已存在");
+					}
+				}
+			}*/
 			if (isEmpty(role.getRoleId())) {
 				if ((role != null) && (role.getCanModify() == null)) {
 					role.setCanModify(Integer.valueOf(1));
@@ -87,7 +98,7 @@ public class RoleController extends BaseController {
 	 * @author WML
 	 * 2016年11月8日 - 上午8:51:44
 	 */
-	@RequestMapping(value = { "/deleteRole.ajax" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
+	@RequestMapping(value = { "/deleteRole" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
 	public Map<String, ? extends Object> deleteRole(Long roleId) {
 		try {
@@ -100,13 +111,42 @@ public class RoleController extends BaseController {
 	}
 
 	/**
+	 * 列表页
+	 * @param id 主键id
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/page")
+	public String page() throws Exception{
+		return "admin/auth/role/page";
+	}
+
+	/**
+	 * 编辑页
+	 * @param id 角色id
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/edit")
+	public String edit(Long id, Model model) throws Exception{
+		Role role = new Role();
+		if(null != id) {
+			role = roleService.findRole(id);
+		}
+		model.addAttribute("record", role);
+		return "admin/auth/role/edit";
+	}
+
+	/**
 	 * 角色列表
 	 * @param
 	 * @return
 	 * @author WML
 	 * 2016年11月8日 - 上午8:51:53
 	 */
-	@RequestMapping({ "/listRoles.ajax" })
+	@RequestMapping({ "/listRoles" })
 	@ResponseBody
 	public LayerPage<Role> listRoles(HttpServletRequest request) {
 		LayerPage layerPage = null;
@@ -185,7 +225,7 @@ public class RoleController extends BaseController {
 	 * @author WML
 	 * 2016年11月8日 - 上午8:50:27
 	 */
-	@RequestMapping({ "/listRoleResource.ajax" })
+	@RequestMapping({ "/listRoleResource" })
 	@ResponseBody
 	public Map<String, ? extends Object> listRoleResource(Long roleId) {
 		try {

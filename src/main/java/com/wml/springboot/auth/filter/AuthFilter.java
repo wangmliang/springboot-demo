@@ -1,11 +1,14 @@
 package com.wml.springboot.auth.filter;
 
+import com.wml.SpringContextHolder;
 import com.wml.springboot.auth.SessionContext;
 import com.wml.springboot.auth.entity.Staff;
 import com.wml.springboot.auth.service.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.core.annotation.Order;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -58,12 +61,15 @@ public class AuthFilter implements Filter {
 
         servletPath = servletPath.replaceAll("\\//", "/");
 
-        //this.authService = ((AuthService) SpringContextHolder.getBean(AuthServiceImpl.class));
 
+        // this.authService = ((AuthService) SpringContextHolder.getBean(AuthService.class));
+        BeanFactory factory = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext());
+        this.authService = factory.getBean(AuthService.class);
         /**
          * 过滤例外鉴权操作
          */
-        if (servletPath.equals("/login")) {
+        if (servletPath.contains("plugins") || servletPath.contains("src") || servletPath.contains("build")
+                || this.authService.authExclude(servletPath) || servletPath.equals("/login")) {
             chain.doFilter(request, response);
             return;
         }
@@ -89,25 +95,25 @@ public class AuthFilter implements Filter {
             return;
         }
         System.out.println(new StringBuilder().append("是否从session获得用户：").append(staff != null).toString());
-        /*if (this.authService.notNeedAuthAfterLogin(servletPath)) {
+        if (this.authService.notNeedAuthAfterLogin(servletPath)) {
             System.out.println(new StringBuilder().append("url[").append(servletPath).append("]属于登录后不鉴权。").toString());
             chain.doFilter(request, response);
             return;
-        }*/
+        }
         System.out.println(new StringBuilder().append("***********用户[").append(staff.getStaffId()).append("]已登录*************").toString());
         /**
          * 鉴权拦截
          */
-        /*if (!this.authService.authorize(staff.getStaffId(), servletPath)) {
-            System.out.println(new StringBuilder().append("***用户[").append(staff.getStaffId()).append("]鉴权失败*****").toString());
+        if (!this.authService.authorize(staff.getStaffId(), servletPath)) {
+            System.out.println(new StringBuilder().append("***用户[").append(staff.getStaffId()).append("]鉴权失败*****").append(", 请求地址：" + servletPath).toString());
             if (isAjaxRequest(httpRequest)) {
-                sendError(httpResponse, new AuthResult(AuthResult.FAIL, "用户没有权限", new StringBuilder().append(contextPath)
-                        .append("/pages/noAuthority.shtml").toString()));
+                //httpResponse.sendRedirect(new StringBuilder().append(contextPath).append("/403").toString());
+                // sendError(httpResponse, new AuthResult(AuthResult.FAIL, "用户没有权限", new StringBuilder().append(contextPath).append("/pages/noAuthority.shtml").toString()));
             } else {
-                httpResponse.sendRedirect(new StringBuilder().append(contextPath).append("/pages/noAuthority.shtml").toString());
+                httpResponse.sendRedirect(new StringBuilder().append(contextPath).append("/403").toString());
             }
             return;
-        }*/
+        }
         chain.doFilter(request, response);
     }
 

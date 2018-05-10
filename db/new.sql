@@ -626,4 +626,12 @@ CREATE TABLE `sub_system` (
  --> 菜单(Menu) --> 资源分类(resource-category) -->  资源(resource) -->  操作(operation) -->  访问Address
  --> 组织架构(department) 					角色(role)								用户(staff) --> 
 			-- 关联(组织拥有某类角色)  		用户是组织架构下成员，拥有自己的角色   	角色拥有哪些资源
-			
+
+1	admin		admin	509ed3482038db08cee1d82e344933103882471b	NORMAL						2018-05-10 15:54:04						0302bc07536bd185
+
+-999	根组织	所有组织的根		xx@xx.com	xx	0	system	2015-08-13 11:31:26	2015-08-13 11:31:26
+-998	一级目录	一级目录	-999	xx@xx.com	xx	1	system	2015-08-13 17:42:47	2015-08-13 17:42:47	SYS_ADMIN
+
+
+1	-998	5
+1	-998	6

@@ -3,32 +3,22 @@ package com.wml.springboot.controller;
 import com.wml.springboot.auth.BaseController;
 import com.wml.springboot.auth.entity.Department;
 import com.wml.springboot.auth.entity.Staff;
-import com.wml.springboot.auth.entity.StaffExtendProperty;
 import com.wml.springboot.auth.service.DepartmentService;
 import com.wml.springboot.auth.service.LoginService;
 import com.wml.springboot.auth.service.MenuService;
 import com.wml.springboot.auth.service.StaffService;
 import com.wml.springboot.auth.tree.MenuTreeNode;
-import com.wml.springboot.entity.User;
 import com.wml.springboot.exception.MyException;
 import com.wml.springboot.services.UserService;
-import com.wml.springboot.util.RSAUtil;
-import com.wml.springboot.util.ShiroUtil;
 import com.wml.springboot.util.StaffUtil;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.*;
-import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +53,7 @@ public class LoginController extends BaseController {
     @Autowired
     public StaffService staffService;
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @GetMapping(value = "/login")
     public String login() {
         return "login/login";
     }
@@ -81,13 +71,7 @@ public class LoginController extends BaseController {
                 department = this.departmentService.findDepartment(staff.getDepartmentId());
                 result.put("department", department);
             }
-            /*List<StaffExtendProperty> list = this.staffService.listStaffExtendProperties(staff.getStaffId());
-            result.put("staffExtendProperty", list);
-            if ((null != department) && ("SP".equals(department.getDomain())) && (!this.loginService.isReadContractAgreement(list))) {
-                getSession().setAttribute("LOGIN_STAFF_TMP", staff);
-                getSession().removeAttribute("LOGIN_STAFF");
-            }*/
-            return success("ok");
+            return success("OK");
         } catch(MyException e) {
             logger.error(e.getMessage(), e);
             return fail(e.getMessage());
@@ -96,23 +80,6 @@ public class LoginController extends BaseController {
             return fail("登录失败");
         }
     }
-
-    /**
-     *
-     * @param request
-     * @param response
-     * @return
-     */
-    @RequestMapping(value = { "/logout" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
-    public Map<String, ? extends Object> logout(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            this.loginService.logout(getSession());
-            return success("�û��˳��ɹ�");
-        } catch (Exception e) {
-            return fail(e.getMessage());
-        }
-    }
-
 
     /*@PostMapping("/login")
     public String login(@Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
@@ -158,15 +125,16 @@ public class LoginController extends BaseController {
             return "redirect:/login";
         }
         //return "redirect:/index";
-    }
-
-    @GetMapping("/logout")
-    public String logout(RedirectAttributes redirectAttributes) {
-        //使用权限管理工具进行用户的退出，跳出登录，给出提示信息
-        SecurityUtils.getSubject().logout();
-        redirectAttributes.addFlashAttribute("message", "您已安全退出");
-        return "redirect:/login";
     }*/
+
+    @RequestMapping("/logout")
+    public String logout(RedirectAttributes redirectAttributes) throws Exception {
+        //使用权限管理工具进行用户的退出，跳出登录，给出提示信息
+        //SecurityUtils.getSubject().logout();
+        //redirectAttributes.addFlashAttribute("message", "您已安全退出");
+        this.loginService.logout(getSession());
+        return "redirect:/login";
+    }
 
     @RequestMapping(value = "/index")
     public String index(Model model) throws Exception {

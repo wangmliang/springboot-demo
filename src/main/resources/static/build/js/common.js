@@ -109,13 +109,13 @@ layui.define(['layer','element'], function (exports) {
 				var layerLoad  = common.layerLoad();
 				$.ajax({
 					url : url,
-					type : 'get',
+					type : 'post',
 					async: true,
 					cache:false,
 					success : function(data) {
 						layer.close(layerLoad);
-						if(data.code == 200){
-							layer.msg(data.message, {icon: 6});
+						if(data.success){
+							layer.msg("操作成功", {icon: 6});
 							if(obj!=null){ //刷新
 								if (obj == "reload") { //刷新当前页
 									setTimeout(function() {
@@ -138,11 +138,9 @@ layui.define(['layer','element'], function (exports) {
 							layer.close(index);
 						}
 					},error:function(data){
-
 						layer.close(layerLoad);
 					}
 				});
-
 			},
 			/**form post ajax 搜索框对象*/
 			fromPostAjax: function (url,data) {
@@ -157,11 +155,9 @@ layui.define(['layer','element'], function (exports) {
 					success : function(data) {
 						//关闭加载
 						layer.close(layerLoad);
-						
-						if(typeof(data.code)=='undefined'){
-							common.layerErrorMsg("处理成功，但是返回的结果未知");
-						} else if (data.code == 200) {
-							common.layerSucMsg(data.message)
+						// 操作成功
+						if(data.success){
+							common.layerSucMsg("操作成功")
 							if(typeof(parent.layer) != 'undefined') {
 								setTimeout(function() {
 									parent.location.reload();  //刷新父页面
@@ -173,12 +169,10 @@ layui.define(['layer','element'], function (exports) {
 							}
 						} else {
 							common.layerErrorMsg(data.message);
-							//var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-							//parent.layer.close(index); //再执行关闭 
 						}
 					},error:function(data){
 						layer.close(layerLoad);
-						common.layerErrorMsg(data);
+						common.layerErrorMsg("请求失败");
 					}
 				});
 			},

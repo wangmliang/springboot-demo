@@ -1,6 +1,5 @@
 package com.wml.springboot.auth.controller;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springside.modules.web.Servlets;
-import sun.plugin.javascript.navig4.Layer;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -41,7 +39,7 @@ import javax.servlet.http.HttpServletRequest;
  * </pre>
  */
 @Controller
-@RequestMapping({ "/staff" })
+@RequestMapping({ "/auth/staff" })
 public class StaffController extends BaseController {
 	private static final Logger logger = LoggerFactory.getLogger(StaffController.class);
 

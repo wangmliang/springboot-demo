@@ -20,4 +20,5 @@ public class App
         SpringApplication app = new SpringApplication(App.class);
         Environment environment = app.run(args).getEnvironment();
     }
+
 }

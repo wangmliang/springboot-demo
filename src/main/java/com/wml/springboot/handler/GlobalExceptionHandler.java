@@ -65,6 +65,7 @@ public class GlobalExceptionHandler {
         } else {
             mav.addObject("exception", pringExceptionInfo(e));
             logger.error("系统500Error： 请求链接：{}，错误信息：{}", req.getRequestURL(), e.getMessage());
+            System.err.println(pringExceptionInfo(e));
         }
         mav.addObject("url", req.getRequestURI());
         // 设定状态为成功，避免浏览器提示错误

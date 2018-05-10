@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * </pre>
  */
 @Controller
-@RequestMapping({ "/portal" })
+@RequestMapping({ "/auth/portal" })
 public class MenuController extends BaseController {
 
 	@Autowired

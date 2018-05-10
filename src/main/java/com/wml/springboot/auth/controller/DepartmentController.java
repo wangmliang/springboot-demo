@@ -34,7 +34,7 @@ import java.util.Map;
  * </pre>
  */
 @Controller
-@RequestMapping({ "/department" })
+@RequestMapping({ "/auth/department" })
 public class DepartmentController extends BaseController {
 
 	private Logger LOGGER = LoggerFactory.getLogger(DepartmentController.class);

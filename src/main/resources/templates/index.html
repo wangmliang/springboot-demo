@@ -50,7 +50,7 @@
                     <dd><a href="javascript:;">安全设置</a></dd>
                 </dl>
             </li>
-            <li class="layui-nav-item"><a href="login.html"><i class="fa fa-sign-out" aria-hidden="true"></i> 注销</a></li>
+            <li class="layui-nav-item"><a href="#" id="logout"><i class="fa fa-sign-out" aria-hidden="true"></i> 注销</a></li>
         </ul>
     </div>
 
@@ -78,12 +78,15 @@
                         <dd>
                             <a href="javascript:;" kit-target data-options="{url:'https://www.baidu.com',icon:'&#xe658;',title:'百度一下',id:'5'}"><i class="layui-icon">&#xe658;</i><span> 百度一下</span></a>
                         </dd>
+                        <dd>
+                            <a href="javascript:;" kit-target data-options="{url:'/auth/role/page',icon:'&#xe658;',title:'百度一下',id:'21'}"><i class="layui-icon">&#xe658;</i><span> 百度一下</span></a>
+                        </dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item layui-nav-itemed" th:each="menu : ${menuTree}">
                     <a href="javascript:;"><i class="fa fa-plug" aria-hidden="true"></i><span th:text="${menu.text}"> 系统管理</span></a>
                     <dl class="layui-nav-child" th:if="${menu.children != null}">
-                        <dd th:each="tree: ${menu.children}"><a href="javascript:;" kit-target th:data-options="|{'url:'${tree.url}',icon:'&#xe658;',title:'${tree.text}',id:'${tree.id}'}|"><i class="layui-icon">&#xe658;</i><span th:text="${tree.text}"> 组织管理</span></a></dd>
+                        <dd th:each="tree: ${menu.children}"><a href="javascript:;" kit-target th:data-options="|{url:'${tree.url}',icon:'&#xe658;',title:'${tree.text}',id:'${tree.id}'}|"><i class="layui-icon">&#xe658;</i><span th:text="${tree.text}"> 组织管理</span></a></dd>
                     </dl>
                 </li>
             </ul>
@@ -104,10 +107,10 @@
 <script>
     var message;
     layui.config({
-        base: '../build/js/',
+        base: './build/js/',
         version: '1.0.1'
-    }).use(['app', 'message'], function() {
-        var app = layui.app, $ = layui.jquery, layer = layui.layer;
+    }).use(['app', 'message', 'common'], function() {
+        var app = layui.app, $ = layui.jquery, layer = layui.layer; common = layui.common;
         //将message设置为全局以便子页面调用
         message = layui.message;
 
@@ -139,6 +142,12 @@
             var skin = getSkinName();
             switchSkin(skin === undefined ? 'default' : skin);
         }();
+
+        //退出
+        $('#logout').on('click', function() {
+            var url = '/logout';
+            common.logOut('退出登陆', '你真的确定要退出系统吗？', url)
+        })
     });
 </script>
 </body>

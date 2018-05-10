@@ -10,6 +10,7 @@ import com.wml.springboot.auth.service.StaffService;
 import com.wml.springboot.auth.tree.MenuTreeNode;
 import com.wml.springboot.exception.MyException;
 import com.wml.springboot.services.UserService;
+import com.wml.springboot.util.SigarUtils;
 import com.wml.springboot.util.StaffUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,7 +146,12 @@ public class LoginController extends BaseController {
     }
 
     @RequestMapping("/main.html")
-    public String main() {
+    public String main(Model model) throws Exception {
+        model.addAttribute("jvm", SigarUtils.getJvmInfos());
+        model.addAttribute("cpu", SigarUtils.getCpuInfos());
+        model.addAttribute("memory", SigarUtils.getMemoryInfos());
+        model.addAttribute("os", SigarUtils.getOsInfos());
+        //model.addAttribute("net", SigarUtils.getNetInfos());
         return "main";
     }
 

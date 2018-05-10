@@ -189,6 +189,13 @@
       <version>2.2.1</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.fusesource/sigar -->
+    <dependency>
+      <groupId>org.fusesource</groupId>
+      <artifactId>sigar</artifactId>
+      <version>1.6.4</version>
+    </dependency>
+
     <!-- https://mvnrepository.com/artifact/io.springside/springside-utils -->
     <dependency>
       <groupId>io.springside</groupId>

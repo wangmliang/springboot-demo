@@ -69,6 +69,56 @@
 
 <body>
 <div class="layui-fluid main">
+    <div class="sysNotice col">
+        <blockquote class="layui-elem-quote title">系统基本参数</blockquote>
+        <table class="layui-table">
+            <colgroup>
+                <col width="150">
+                <col>
+            </colgroup>
+            <tbody>
+            <tr>
+                <td>当前版本</td>
+                <td class="version">1.0.0</td>
+            </tr>
+            <tr>
+                <td>开发作者</td>
+                <td class="author">请叫我马哥</td>
+            </tr>
+            <tr>
+                <td>网站首页</td>
+                <td class="homePage">page/index.html</td>
+            </tr>
+            <tr>
+                <td>服务器环境</td>
+                <td class="server">windows</td>
+            </tr>
+            <tr>
+                <td>数据库版本</td>
+                <td class="dataBase">8.00.2039</td>
+            </tr>
+            <tr>
+                <td>最大上传限制</td>
+                <td class="maxUpload">2M</td>
+            </tr>
+            <tr>
+                <td>当前用户权限</td>
+                <td class="userRights">总管理员</td>
+            </tr>
+            </tbody>
+        </table>
+        <blockquote class="layui-elem-quote title">最新文章<i class="iconfont icon-new1"></i></blockquote>
+        <table class="layui-table" lay-skin="line">
+            <colgroup>
+                <col>
+                <col width="110">
+            </colgroup>
+            <tbody class="hot_news"><tr><td align="left">css3用transition实现边框动画效果</td><td>2017-04-14</td></tr><tr><td align="left">自定义的模块名称可以包含/吗</td><td>2017-04-14</td></tr><tr><td align="left">layui.tree如何ajax加载二级菜单</td><td>2017-04-14</td></tr><tr><td align="left">layui.upload如何带参数？像jq的data:{}那样</td><td>2017-04-14</td></tr><tr><td align="left">表单元素长度应该怎么调整才美观</td><td>2017-04-14</td></tr></tbody>
+        </table>
+    </div>
+    <th:block th:each="j: ${jvm}">
+        <span th:text="${j.name}"></span><span th:text="${j.value}"></span>
+    </th:block>
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md3">
             <div class="info-box">

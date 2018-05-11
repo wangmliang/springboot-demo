@@ -1,6 +1,7 @@
 package com.wml.springboot.auth.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +53,7 @@ public class RoleController extends BaseController {
 	 * @author WML
 	 * 2016年11月8日 - 上午8:51:23
 	 */
-	@RequestMapping(value = { "/updateRole" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
+	@RequestMapping(value = { "/updateRole.json" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
 	public Map<String, ? extends Object> updateRole(Role role) {
 		try {
@@ -98,7 +99,7 @@ public class RoleController extends BaseController {
 	 * @author WML
 	 * 2016年11月8日 - 上午8:51:44
 	 */
-	@RequestMapping(value = { "/deleteRole" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
+	@RequestMapping(value = { "/deleteRole.json" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
 	public Map<String, ? extends Object> deleteRole(Long roleId) {
 		try {
@@ -117,7 +118,7 @@ public class RoleController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/page")
+	@RequestMapping(value = "/page.html")
 	public String page() throws Exception{
 		return "admin/auth/role/page";
 	}
@@ -129,7 +130,7 @@ public class RoleController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/edit")
+	@RequestMapping(value = {"/add.html", "/edit.html"})
 	public String edit(Long id, Model model) throws Exception{
 		Role role = new Role();
 		if(null != id) {
@@ -146,7 +147,7 @@ public class RoleController extends BaseController {
 	 * @author WML
 	 * 2016年11月8日 - 上午8:51:53
 	 */
-	@RequestMapping({ "/listRoles" })
+	@RequestMapping({ "/listRoles.json" })
 	@ResponseBody
 	public LayerPage<Role> listRoles(HttpServletRequest request) {
 		LayerPage layerPage = null;
@@ -225,20 +226,18 @@ public class RoleController extends BaseController {
 	 * @author WML
 	 * 2016年11月8日 - 上午8:50:27
 	 */
-	@RequestMapping({ "/listRoleResource" })
-	@ResponseBody
-	public Map<String, ? extends Object> listRoleResource(Long roleId) {
-		try {
-			List<TreeNode> tree = null;
-			if (roleId == null)
-				tree = this.roleService.buildRoleResourceTree();
-			else {
-				tree = this.roleService.buildRoleResourceTree(roleId);
-			}
-			return success(tree);
-		} catch (Exception e) {
-			return fail(e.getMessage());
+	@RequestMapping({ "/listRoleResource.html" })
+	public String listRoleResource(Long roleId, Model model) throws Exception {
+		Map<String, Object> map = new HashMap<>();
+		List<TreeNode> tree = null;
+		if (roleId == null)
+			tree = this.roleService.buildRoleResourceTree();
+		else {
+			tree = this.roleService.buildRoleResourceTree(roleId);
 		}
+		model.addAttribute("role", roleService.findRole(roleId));
+		model.addAttribute("tree", tree);
+		return "admin/auth/role/roleResource";
 	}
 
 	/**
@@ -249,7 +248,7 @@ public class RoleController extends BaseController {
 	 * @author WML
 	 * 2016年11月8日 - 上午8:53:48
 	 */
-	@RequestMapping(value = { "/updateRoleResource.ajax" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
+	@RequestMapping(value = { "/updateRoleResource.json" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
 	public Map<String, ? extends Object> updateRoleResource(
 			@RequestParam Long roleId,

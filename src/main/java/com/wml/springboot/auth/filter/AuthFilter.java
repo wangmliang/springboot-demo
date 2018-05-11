@@ -1,5 +1,8 @@
 package com.wml.springboot.auth.filter;
 
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wml.SpringContextHolder;
 import com.wml.springboot.auth.SessionContext;
 import com.wml.springboot.auth.entity.Staff;
@@ -16,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <pre>
@@ -61,14 +66,13 @@ public class AuthFilter implements Filter {
 
         servletPath = servletPath.replaceAll("\\//", "/");
 
-
-        // this.authService = ((AuthService) SpringContextHolder.getBean(AuthService.class));
         BeanFactory factory = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext());
         this.authService = factory.getBean(AuthService.class);
+
         /**
          * 过滤例外鉴权操作
          */
-        if (servletPath.contains("plugins") || servletPath.contains("src") || servletPath.contains("build")
+        if (servletPath.contains("plugins") || servletPath.contains("src") || servletPath.contains("build") || servletPath.contains("css")
                 || this.authService.authExclude(servletPath) || servletPath.equals("/login")) {
             chain.doFilter(request, response);
             return;
@@ -107,8 +111,11 @@ public class AuthFilter implements Filter {
         if (!this.authService.authorize(staff.getStaffId(), servletPath)) {
             System.out.println(new StringBuilder().append("***用户[").append(staff.getStaffId()).append("]鉴权失败*****").append(", 请求地址：" + servletPath).toString());
             if (isAjaxRequest(httpRequest)) {
-                //httpResponse.sendRedirect(new StringBuilder().append(contextPath).append("/403").toString());
-                // sendError(httpResponse, new AuthResult(AuthResult.FAIL, "用户没有权限", new StringBuilder().append(contextPath).append("/pages/noAuthority.shtml").toString()));
+                Map<String, Object> result = new HashMap<>();
+                result.put("code", 1);
+                result.put("message", "用户没有权限");
+                result.put("redirectUrl", new StringBuilder().append(contextPath).append("/403").toString());
+                sendError(httpResponse, result);
             } else {
                 httpResponse.sendRedirect(new StringBuilder().append(contextPath).append("/403").toString());
             }
@@ -137,7 +144,11 @@ public class AuthFilter implements Filter {
             throws IOException {
         System.out.println("forceToLogin....");
         if (isAjaxRequest(request)) {
-            //sendError(response, new AuthResult(AuthResult.NOT_LOGIN, "用户未登录", new StringBuilder().append(contextPath).append("/pages/login.shtml").toString()));
+            Map<String, Object> result = new HashMap<>();
+            result.put("code", 3);
+            result.put("message", "用户未登录");
+            result.put("redirectUrl", new StringBuilder().append(contextPath).append("/login").toString());
+            sendError(response, result);
         } else {
             System.out.println("************重定向到登录页面*****************");
             response.sendRedirect(new StringBuilder().append(contextPath).append("/login").toString());
@@ -151,8 +162,8 @@ public class AuthFilter implements Filter {
      * @author WML
      * 2016年11月8日 - 下午5:55:32
      */
-    /*@SuppressWarnings("deprecation")
-    private void sendError(HttpServletResponse response, AuthResult result) {
+    @SuppressWarnings("deprecation")
+    private void sendError(HttpServletResponse response, Map<String, Object> result) {
         try {
             JsonGenerator jsonGenerator = null;
             ObjectMapper objectMapper = new ObjectMapper();
@@ -161,7 +172,7 @@ public class AuthFilter implements Filter {
         } catch (IOException e) {
             LOG.error(e.getMessage(), e);
         }
-    }*/
+    }
 
     /**
      * 是否Ajax请求

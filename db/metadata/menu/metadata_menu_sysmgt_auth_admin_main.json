@@ -42,7 +42,7 @@
                     "text": "组织管理",
                     "menuOrder": "40000",
                     "leaf": "true",
-                    "url": "/auth/dept",
+                    "url": "/auth/dept/page",
                     "id": "sys99999121",
 		    "icon":"icon-sitemap",
                     "menuKey": "auth_sysmgt_admin_sysmgtall_dept_deptmsg"
@@ -51,7 +51,7 @@
                     "text": "成员管理",
                     "menuOrder": "50000",
                     "leaf": "true",
-                    "url": "/auth/staff",
+                    "url": "/auth/staff/page",
                     "id": "sys99999122",
 		    "icon":"icon-user-md",
                     "menuKey": "auth_sysmgt_admin_sysmgtall_dept_staffmgt"

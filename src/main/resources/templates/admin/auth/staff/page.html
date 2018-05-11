@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-    <title>角色列表页</title>
+    <title>用户列表页</title>
     <link rel="stylesheet" th:href="@{/plugins/layui/css/layui.css}" media="all" />
     <link rel="stylesheet" th:href="@{/plugins/font-awesome/css/font-awesome.min.css}" media="all" />
     <link rel="stylesheet" th:href="@{/src/css/app.css}" media="all" />
@@ -23,9 +23,9 @@
         <div class="layui-col-md4">
             <div class="layui-inline">
                 <a href="javascript:;" class="layui-btn layui-btn-normal layui-btn-small" data-operation
-                   data-options="{'type':'edit','url':'edit','icon':'&#xe608;','title':' 增加角色','width':'600px','height':'400px','maxmin':true}">
+                   data-options="{'type':'edit','url':'add','icon':'&#xe608;','title':' 增加成员','width':'600px','height':'400px','maxmin':true}">
                     <i class="layui-icon">&#xe608;</i>
-                    增加角色
+                    增加成员
                 </a>
                 <!--<a href="javascript:;" class="layui-btn layui-btn-danger layui-btn-small" id="batchDeleteBtn">
                     <i class="layui-icon">&#xe640;</i>
@@ -35,7 +35,7 @@
         </div>
         <div id="searchDiv" class="layui-col-md8" style="text-align: right;">
             <div class="layui-inline">
-                <input class="layui-input" name="roleName" placeholder="角色名称" id="search_title">
+                <input class="layui-input" name="roleName" placeholder="成员名称" id="search_title">
             </div>
             <button class="layui-btn" id="searchBtn">搜索</button>
         </div>
@@ -47,15 +47,19 @@
 <!-- 操作按钮 -->
 <script type="text/html" id="operateBtns">
     <a class="layui-btn layui-btn-xs" data-operation
-       data-options="{'type':'edit','url':'add?id={{d.roleId}}','icon':'&#xe642;','title':' 修改角色','width':'600px','height':'400px','maxmin':true}">
+       data-options="{'type':'edit','url':'edit?id={{d.staffId}}','icon':'&#xe642;','title':' 修改成员','width':'600px','height':'400px','maxmin':true}">
         <i class="layui-icon">&#xe642;</i>
     </a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-operation
-       data-options="{'type':'delete','url':'deleteRole?roleId={{d.roleId}}','object':'reload','remind':'确认删除吗？删除后不可恢复'}">
+       data-options="{'type':'delete','url':'staffId?staffId={{d.staffId}}','object':'reload','remind':'确认删除吗？删除后不可恢复'}">
         <i class="layui-icon">&#xe640;</i>
     </a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" data-operation
+       data-options="{'type':'delete','url':'staffId?staffId={{d.staffId}}','object':'reload','remind':'确认删除吗？删除后不可恢复'}">
+        <i class="layui-icon">&#xe658;</i>
+    </a>
     <a class="layui-btn layui-bg-blue layui-btn-xs" data-operation
-       data-options="{'type':'edit','url':'listRoleResource?roleId={{d.roleId}}','icon':'&#xe614;','title':' 权限分配','width':'100%','height':'100%','maxmin':false}">
+       data-options="{'type':'edit','url':'listRoleResource?staffId={{d.staffId}}','icon':'&#xe614;','title':' 分配角色','width':'100%','height':'100%','maxmin':false}">
         <i class="layui-icon">&#xe614;</i>
     </a>
 </script>
@@ -72,31 +76,46 @@
         table.render({
             elem : '#dataTable',
             id: 'dataTable',
-            url : '/auth/role/listRoles?t='+new Date(), //数据接口
+            url : '/auth/staff/listStaff?t='+new Date(), //数据接口
             page : true, //开启分页
             loading: true,	// 加载中...
             limit: 10,		// 初始分页条数，默认30
-            height: 'auto', //'full-130', //容器高度
+            height: 'auto', //容器高度
             cols : [ [ //表头
                 {
                    /* type:'checkbox',
                     width : "5%",
                     fixed : "left"
                 },{*/
-                    field : 'roleKey',
-                    title : '角色标记码',
-                    width: "15%",
+                    field : 'loginName',
+                    title : '用户名',
+                    width: "10%",
                     sort : true
                 },{
-                    field : 'roleName',
-                    title : '角色名称',
+                    field : 'realName',
+                    title : '昵称',
+                    align:'center',
+                    width: "10%",
+                    sort : true
+                },{
+                    field : 'sexStr',
+                    title : '性别',
+                    width: "10%",
+                    sort : true,
+                }, {field : 'mobile',
+                    title : '手机',
+                    width: "20%",
+                    sort : true
+                },{
+                    field : 'email',
+                    title : '邮箱',
                     align:'center',
                     width: "20%",
                     sort : true
                 },{
-                    field : 'roleDesc',
-                    title : '角色描述',
-                    width: "45%",
+                    field : 'statusStr',
+                    title : '状态',
+                    width: "10%",
                     sort : true,
                 }, {
                     fixed : 'right',
@@ -111,7 +130,7 @@
         });
         var reload = function() {
             table.reload('dataTable', {
-                url : '/auth/role/listRoles?t=' + new Date(), //数据接口
+                url : '/auth/staff/listStaff?t=' + new Date(), //数据接口
                 page : {
                     page : 1
                     //重新从第 1 页开始
@@ -146,7 +165,7 @@
                 return d.roleId;
             });
             if (ids !== null && ids !== undefined && ids.length >= 1) {
-                var url = "delete?flag=false&roleId=" + ids;
+                var url = "delete?flag=false&staffId=" + ids;
                 common.ajaxConfirm(url, "#searchBtn", "确认删除吗？删除后不可恢复");
             } else {
                 common.layerMsg("请先勾选数据");

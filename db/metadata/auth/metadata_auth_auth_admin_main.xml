@@ -34,7 +34,7 @@
 				<resource key="auth_admin_sys_dept_deptManage" name="组织管理" desc="组织管理">
 					<!-- 资源操作-->
 					<operation key="QUERY" name="组织查询" desc="组织查询">
-						<address name="组织管理页面" url="/auth/dept"/>
+						<address name="组织管理页面" url="/auth/dept/page"/>
 						<address name="组织树查询" url="/auth/department/listDepartmentTree"/>
 						<address name="组织查询" url="/auth/department/findDepartment"/>
 						<address name="组织详情查询" url="/auth/department/findDepartmentInfo"/>
@@ -66,31 +66,26 @@
 			<resource key="auth_admin_sys_staff_staffManage" name="成员管理" desc="成员管理">
 				<!-- 资源操作-->
 				<operation key="QUERY" name="查询" desc="查询">
-					<address name="成员管理页面" url="/auth/staff"/>
-					<address name="查询请求" url="/auth/staff/listStaff"/>
+					<address name="成员管理页面" url="/auth/staff/page.html"/>
+					<address name="查询请求" url="/auth/staff/listStaff.json"/>
 				</operation>
 				<operation key="ADD" name="创建" desc="创建用户">
-					<address name="查询用户是否存在" url="/auth/staff/checkStaffLoginName"/>
-					<address name="查询用户是否存在" url="/auth/staff/checkStaffMobile"/>
-					<address name="查询用户是否存在" url="/auth/staff/checkStaffEmail"/>
-					<address name="创建请求" url="/auth/staff/createStaff"/>
-					<address name="查询个人扩展属性" url="/auth/staff/findStaffExtendProperties"/>
+					<address name="添加页面" url="/auth/staff/add.html"/>
+					<address name="创建请求" url="/auth/staff/createStaff.html"/>
 				</operation>
 				
 				<operation key="UPDATE" name="修改" desc="更新用户">
-					<address name="查询用户是否存在" url="/auth/staff/checkStaffLoginName"/>
-					<address name="获取用户详情" url="/auth/staff/findStaff"/>
-					<address name="更新" url="/auth/staff/updateStaff"/>
-					<address name="查询个人扩展属性" url="/auth/staff/findStaffExtendProperties"/>
+					<address name="修改页面" url="/auth/staff/edit.html"/>
+					<address name="更新" url="/auth/staff/updateStaff.json"/>
 				</operation>
 				<operation key="DELETE" name="删除" desc="删除用户">
-					<address name="删除请求" url="/auth/staff/deleteStaff"/>
+					<address name="删除请求" url="/auth/staff/deleteStaff.json"/>
 				</operation>
 				<operation key="LOCKSTAFF" name="锁定" desc="查询">
-					<address name="锁定请求" url="/auth/staff/lockStaff"/>
+					<address name="锁定请求" url="/auth/staff/lockStaff.json"/>
 				</operation>
 				<operation key="RESETPWD" name="重置密码" desc="重置密码">
-					<address name="重置密码请求" url="/auth/staff/resetPwd"/>
+					<address name="重置密码请求" url="/auth/staff/resetPwd.json"/>
 				</operation>
 				<operation key="AUTHSTAFF" name="授权" desc="用户授权">
 					<address name="获取用户详情" url="/auth/staff/findStaff"/>
@@ -98,32 +93,27 @@
 					<address name="更新用户角色" url="/auth/staff/updateStaffRole"/>
 				</operation>
 			</resource>
-
 		</resource-category>
 		<resource-category key="auth_admin_sys_role" name="角色管理" desc="角色管理">
 			<resource key="auth_admin_sys_role_roleManage" name="角色管理" desc="角色管理">
 				<operation key="QUERY" name="查询" desc="查询">
-					<address name="浏览角色页面" url="/auth/role/page"/>
-					<address name="查看" url="/auth/role/listRoles"/>
+					<address name="浏览角色页面" url="/auth/role/page.html"/>
+					<address name="查看" url="/auth/role/listRoles.json"/>
 				</operation>
 				<operation key="ADD" name="新增角色" desc="新增角色" depend="QUERY">
-					<address name="新增角色页面" url="/auth/role/edit"/>
-					<address name="查询角色助记码是否存在" url="/auth/role/checkRoleKey"/>
-					<address name="添加" url="/auth/role/updateRole"/>
+					<address name="新增角色页面" url="/auth/role/add.html"/>
+					<address name="添加" url="/auth/role/updateRole.json"/>
 				</operation>
 				<operation key="MODIFY" name="修改角色" desc="修改角色" depend="QUERY">
-					<address name="编辑角色页面" url="/auth/role/edit"/>
-					<address name="查询角色助记码是否存在" url="/auth/role/checkRoleKey"/>
-					<address name="查询角色详情" url="/auth/role/findRole"/>
-					<address name="修改" url="/auth/role/updateRole"/>
+					<address name="编辑角色页面" url="/auth/role/edit.html"/>
+					<address name="修改" url="/auth/role/updateRole.json"/>
 				</operation>
 				<operation key="DELETE" name="删除角色" desc="删除角色" depend="QUERY">
-					<address name="删除角色" url="/auth/role/deleteRole"/>
+					<address name="删除角色" url="/auth/role/deleteRole.json"/>
 				</operation>
 				<operation key="AUTHROLE" name="角色关联权限" desc="角色关联权限">
-					<address name="浏览角色页面" url="/auth/roleSetting"/>
-					<address name="权限列表" url="/auth/role/listRoleResource"/>
-					<address name="关联角色权限" url="/auth/role/updateRoleResource"/>
+					<address name="权限列表" url="/auth/role/listRoleResource.html"/>
+					<address name="关联角色权限" url="/auth/role/updateRoleResource.json"/>
 				</operation>
 			</resource>
 		</resource-category>

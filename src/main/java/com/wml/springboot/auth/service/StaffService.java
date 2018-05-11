@@ -7,6 +7,7 @@ import com.wml.springboot.auth.entity.*;
 import com.wml.springboot.auth.mapper.DepartmentMapper;
 import com.wml.springboot.auth.mapper.RoleDao;
 import com.wml.springboot.auth.mapper.StaffDao;
+import com.wml.springboot.exception.MyException;
 import com.wml.springboot.util.RSAUtil;
 import com.wml.springboot.util.StringTools;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,10 +82,33 @@ public class StaffService {
 		System.out.println("mima:" + pa.encryptPassword());*/
 	}
 
+	/**
+	 * 验证手机号码和邮箱是否存在
+	 * @param staff
+	 */
+	public void checkStaffInfo(Staff staff) throws Exception {
+		if(staff.getStaffId() != null) {
+			Staff staff_login = findStaffByLoginName(staff.getLoginName());
+			if(null != staff_login) {
+				throw new MyException("用户名 " + staff.getLoginName() + " 已存在");
+			}
+		}
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("email", staff.getEmail());
+		Staff staff_email = findStaffByMap(params);
+		if (staff_email != null)
+			throw new MyException("邮箱已存在");
+		params.put("mobile", staff.getMobile());
+		Staff staff_mobile = findStaffByMap(params);
+		if (staff_mobile != null)
+			throw new MyException("手机号码已存在");
+	}
+
 	private void _createStaff(Staff staff) throws Exception {
 		if (this.staffDao.findStaffByLoginName(staff.getLoginName()) != null) {
 			throw new Exception("此帐号已注册，系统不允许重复注册!");
 		}
+		checkStaffInfo(staff);
 
 		entryptPassword(staff);
 		this.staffDao.insertStaff(staff);
@@ -151,9 +175,10 @@ public class StaffService {
 			throw new Exception("修改的用户不存在!");
 		}
 
+		checkStaffInfo(staff);
+
 		this.staffDao.updateStaff(staff);
-		List<StaffExtendProperty> staffExtendProperties = this.staffDao
-				.listStaffExtendProperties(staff.getStaffId());
+		/*List<StaffExtendProperty> staffExtendProperties = this.staffDao.listStaffExtendProperties(staff.getStaffId());
 
 		for (Entry<String, String> entry : staff.getExtendProperties()
 				.entrySet()) {
@@ -168,7 +193,7 @@ public class StaffService {
 				this.staffDao.updateStaffExtendProperties(property);
 			else
 				this.staffDao.insertStaffExtendProperties(property);
-		}
+		}*/
 	}
 
 	private boolean isStaffExtendPropertyExsitProperty(

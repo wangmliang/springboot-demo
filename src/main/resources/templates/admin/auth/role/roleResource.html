@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-siteapp,no-cache,no-store">
+    <meta http-equiv="Expires" content="0">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <title>角色资源</title>
+    <link rel="stylesheet" th:href="@{/plugins/layui/css/layui.css}" media="all" />
+    <link rel="stylesheet" th:href="@{/css/main.css}" media="all" />
+</head>
+<body>
+<div class="layui-main">
+    <!-- 权限列表 -->
+    <div class="sysNotice col">
+        <div th:each="t1 : ${tree}">
+            <div th:text="${t1.text}"></div>
+            <div th:if="${t1.children != null}">
+                <div th:each="t2 : ${t1.children}">
+                    <div style="margin-left: 10px;" th:text="${t2.text}"></div>
+                    <div th:each="t3: ${t2.children}">
+                        <div style="margin-left: 30px;" th:text="${t3.text}"></div>
+                        <input name="all" style="margin-left: 60px;"type="checkbox" value="全选"/>全选
+                        <div>
+                            <th:block th:each="t4: ${t3.children}">
+                                <input name="" style="margin-left: 60px;" type="checkbox" th:checked="${t4.checked}" th:value="${t4.id}"/><label th:text="${t4.text}"></label>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 角色信息 -->
+    <div class="sysNotice col">
+        <fieldset class="layui-elem-field site-demo-button" style="margin-top: 30px;">
+            <legend>角色信息</legend>
+            <div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">角色标记码:</label>
+                    <div class="layui-input-block">
+                        <div th:text="${role.roleKey}"></div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">角色名称:</label>
+                    <div class="layui-input-block">
+                        <label th:text="${role.roleName}"></label>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">角色描述:</label>
+                    <div class="layui-input-block">
+                        <label th:text="${role.roleDesc}"></label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+<form class="layui-form" method="POST">
+    <input type="hidden" name="roleId" th:value="${role.roleId}"/>
+    <input type="hidden" name="resourceIdAndOperationKey"/>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="save">立即提交</button>
+            <button type="button" class="layui-btn layui-btn-primary" id="back">返回</button>
+        </div>
+    </div>
+</form>
+<script th:src="@{/plugins/layui/layui.js}"></script>
+<script>
+    layui.config({
+        base : '../../build/js/',
+        version : '1.0.1'
+    }).use([ 'table', 'common'], function() {
+        var table = layui.table, $ = layui.$, common = layui.common, form = layui.form;
+
+        // 全选反选
+        $("input[name='all']").bind('click', function() {
+            var that = this;
+            $(this).next().find("input:checkbox[name!='all']").each(function() {
+                this.checked = that.checked;
+            });
+        });
+
+        // 关闭弹窗
+        $("#back").on('click', function() {
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        });
+
+        /**保存*/
+        form.on("submit(save)", function(data) {
+            var url = "/auth/role/updateRoleResource";
+            var values = [];
+            $("input[name!='all']:checked").each(function() {
+                values.push($(this).val());
+            });
+            // 填充权限参数
+            data.field.resourceIdAndOperationKey = values.join(',');
+            // common.layerMsg(JSON.stringify(data.field));
+            //异步表单提交
+            common.fromPostAjax(url, data.field);
+            return false;
+        });
+    });
+
+</script>
+</body>
+</html>

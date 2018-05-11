@@ -1,4 +1,5 @@
-<html><head>
+<html>
+<head xmlns:th="http://www.thymeleaf.org">
     <meta charset="utf-8">
     <title>404--页面不存在或资源已删除</title>
     <meta name="renderer" content="webkit">
@@ -7,8 +8,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-    <link rel="stylesheet" href="../plugins/layui/css/layui.css" media="all" />
-    <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css" media="all" />
+    <link rel="stylesheet" th:href="@{/plugins/layui/css/layui.css}" media="all" />
+    <link rel="stylesheet" th:href="@{/plugins/font-awesome/css/font-awesome.min.css}" media="all" />
 </head>
 <body class="childrenBody">
     <div style="text-align: center; padding:11% 0;">

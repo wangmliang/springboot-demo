@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,6 +55,35 @@ public class StaffController extends BaseController {
 	@Autowired
 	@Qualifier("roleService")
 	private RoleService roleService;
+
+	/**
+	 * 列表页
+	 * @param id 主键id
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/page.html")
+	public String page() throws Exception{
+		return "admin/auth/staff/page";
+	}
+
+	/**
+	 * 编辑页
+	 * @param id 角色id
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = {"/add.html", "/edit.html"})
+	public String edit(Long id, Model model) throws Exception{
+		Staff staff = new Staff();
+		if(null != id) {
+			staff = staffService.findStaff(id);
+		}
+		model.addAttribute("staff", staff);
+		return "admin/auth/staff/edit";
+	}
 
 	/**
 	 * 添加员工信息
@@ -145,7 +175,7 @@ public class StaffController extends BaseController {
 	 * @author WML
 	 * 2016年11月8日 - 上午8:58:08
 	 */
-	@RequestMapping(value = { "/deleteStaff.ajax" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
+	@RequestMapping(value = { "/deleteStaff.json" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
 	public Map<String, ? extends Object> deleteStaff(Long staffId) {
 		try {
@@ -168,7 +198,7 @@ public class StaffController extends BaseController {
 	 * @author WML
 	 * 2016年11月8日 - 上午9:01:26
 	 */
-	@RequestMapping({ "/listStaff.ajax" })
+	@RequestMapping({ "/listStaff.json" })
 	@ResponseBody
 	public LayerPage<Staff> listStaff(HttpServletRequest request) {
 		LayerPage<Staff> layerPage = null;
@@ -466,7 +496,7 @@ public class StaffController extends BaseController {
 	 * @author WML
 	 * 2016年11月8日 - 上午9:08:01
 	 */
-	@RequestMapping({ "/resetPwd.ajax" })
+	@RequestMapping({ "/resetPwd.json" })
 	@ResponseBody
 	public Map<String, ? extends Object> resetPwd(String loginName,
 												  String password) throws Exception {
@@ -491,7 +521,7 @@ public class StaffController extends BaseController {
 	 * @author WML
 	 * 2016年11月8日 - 上午9:08:11
 	 */
-	@RequestMapping(value = { "/updateStaff.ajax" }, method = {RequestMethod.POST })
+	@RequestMapping(value = { "/updateStaff.json" }, method = {RequestMethod.POST })
 	@ResponseBody
 	public Map<String, ? extends Object> updateStaff(Staff staff)
 			throws Exception {

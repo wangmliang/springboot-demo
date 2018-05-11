@@ -5,6 +5,17 @@ layui.define(['layer','element'], function (exports) {
 	_doc = $(document),
 	element = layui.element;
 
+    $(document).ajaxComplete(function(event, xhr, settings){
+        try{
+            var result = jQuery.parseJSON(xhr.responseText);
+            console.log("ajax pring:" + result);
+            /* 用户会话失效或为登录，重定向至登录页面 */
+            if(result && result['returnCode'] && result['returnCode']  != '0' && result['redirectUrl']) {
+                window.location.replace(result['redirectUrl']);
+            }
+        }catch(e){}
+    });
+
 	var common = {
 			/**
 			 * 绑定特定的点击事件

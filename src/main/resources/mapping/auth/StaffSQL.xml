@@ -251,7 +251,9 @@
 					and STATUS != 'DELETED'
 				]]>
 			</if>
-			
+			<if test="realName != null and realName != ''">
+				and REAL_NAME like  CONCAT(CONCAT('%', TRIM(#{realName})), '%')
+			</if>
 		    <!--  
 			<if test="loginName != null and loginName != ''">
 				 and LOGIN_NAME like CONCAT(CONCAT('%', TRIM(#{loginName})),'%')  

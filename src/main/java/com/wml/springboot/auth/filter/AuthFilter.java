@@ -72,8 +72,8 @@ public class AuthFilter implements Filter {
         /**
          * 过滤例外鉴权操作
          */
-        if (servletPath.contains("plugins") || servletPath.contains("src") || servletPath.contains("build") || servletPath.contains("css")
-                || this.authService.authExclude(servletPath) || servletPath.equals("/login")) {
+        if (servletPath.equals("/favicon.ico") || servletPath.contains("plugins") || servletPath.contains("src") || servletPath.contains("build") || servletPath.contains("css")
+                || this.authService.authExclude(servletPath) || servletPath.equals("/login.html")) {
             chain.doFilter(request, response);
             return;
         }
@@ -82,12 +82,12 @@ public class AuthFilter implements Filter {
         /**
          * 结尾以"/"或者servletPath为""则跳转拦截登录
          */
-        if (("/".equals(servletPath)) || ("".equals(servletPath)) || (servletPath.equals("/login"))) {
+        if (("/".equals(servletPath)) || ("".equals(servletPath)) || (servletPath.equals("/login.html"))) {
             /**
              * 已登录后误操作直接跳转主页面
              */
             if (null != staff) {
-                httpResponse.sendRedirect(new StringBuilder().append(contextPath).append("/index").toString());
+                httpResponse.sendRedirect(new StringBuilder().append(contextPath).append("/index.html").toString());
                 return;
             }
         }
@@ -114,10 +114,10 @@ public class AuthFilter implements Filter {
                 Map<String, Object> result = new HashMap<>();
                 result.put("code", 1);
                 result.put("message", "用户没有权限");
-                result.put("redirectUrl", new StringBuilder().append(contextPath).append("/403").toString());
+                result.put("redirectUrl", new StringBuilder().append(contextPath).append("/403.html").toString());
                 sendError(httpResponse, result);
             } else {
-                httpResponse.sendRedirect(new StringBuilder().append(contextPath).append("/403").toString());
+                httpResponse.sendRedirect(new StringBuilder().append(contextPath).append("/403.html").toString());
             }
             return;
         }
@@ -147,11 +147,11 @@ public class AuthFilter implements Filter {
             Map<String, Object> result = new HashMap<>();
             result.put("code", 3);
             result.put("message", "用户未登录");
-            result.put("redirectUrl", new StringBuilder().append(contextPath).append("/login").toString());
+            result.put("redirectUrl", new StringBuilder().append(contextPath).append("/login.html").toString());
             sendError(response, result);
         } else {
             System.out.println("************重定向到登录页面*****************");
-            response.sendRedirect(new StringBuilder().append(contextPath).append("/login").toString());
+            response.sendRedirect(new StringBuilder().append(contextPath).append("/login.html").toString());
         }
     }
 

@@ -1,15 +1,13 @@
 package com.wml.springboot.auth.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.wml.springboot.auth.BaseController;
 import com.wml.springboot.auth.entity.Role;
 import com.wml.springboot.auth.entity.RoleResourceOperation;
 import com.wml.springboot.auth.service.RoleService;
 import com.wml.springboot.auth.tree.TreeNode;
+import com.wml.springboot.util.DateUtil;
 import com.wml.springboot.util.LayerPage;
 import com.wml.springboot.util.StaffUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -61,15 +59,7 @@ public class RoleController extends BaseController {
 			if (role == null) {
 				throw new Exception("空对象错误");
 			}
-			// 判断Key是否存在
-			/*Role dbRrole = this.roleService.findRoleByKey(role.getRoleKey());
-			if (dbRrole != null) {
-				if (isNotEmpty(role.getRoleId())) {
-					if (role.getRoleId() != dbRrole.getRoleId() || !role.getRoleId().equals(role.getRoleId())) {
-						return fail("角色助记码已存在");
-					}
-				}
-			}*/
+			role.setLastUpdateDate(new Date());
 			if (isEmpty(role.getRoleId())) {
 				if ((role != null) && (role.getCanModify() == null)) {
 					role.setCanModify(Integer.valueOf(1));

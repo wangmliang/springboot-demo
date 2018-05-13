@@ -81,7 +81,7 @@ public class StaffController extends BaseController {
 		if(null != id) {
 			staff = staffService.findStaff(id);
 		}
-		model.addAttribute("staff", staff);
+		model.addAttribute("record", staff);
 		return "admin/auth/staff/edit";
 	}
 
@@ -93,7 +93,7 @@ public class StaffController extends BaseController {
 	 * @author WML
 	 * 2016年11月8日 - 上午8:55:56
 	 */
-	@RequestMapping(value = { "/createStaff.ajax" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
+	@RequestMapping(value = { "/createStaff.json" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
 	public Map<String, ? extends Object> createStaff(Staff staff)
 			throws Exception {
@@ -102,9 +102,9 @@ public class StaffController extends BaseController {
 				staff.setLastUpdateDate(new Date());
 				this.staffService.updateStaff(staff);
 			} else {
-				/*if (staff.getStatus() == null) {
-					staff.setStatus(Staff.Status.INITIAL);
-				}*/
+				if (staff.getStatus() == null) {
+					staff.setStatus("INITIAL");
+				}
 				if (staff.getCreateUser() == null) {
 					if (StaffUtil.getLoginStaff() == null) {
 						staff.setCreateUser("nouser");
@@ -119,6 +119,37 @@ public class StaffController extends BaseController {
 			return fail(e.getMessage());
 		}
 		return success("创建用户成功。");
+	}
+
+	/**
+	 * 更新用户信息
+	 * @param staff
+	 * @return
+	 * @throws Exception
+	 * @author WML
+	 * 2016年11月8日 - 上午9:08:11
+	 */
+	@RequestMapping(value = { "/updateStaff.json" }, method = {RequestMethod.POST })
+	@ResponseBody
+	public Map<String, ? extends Object> updateStaff(Staff staff) throws Exception {
+		try {
+			if (isEmpty(staff.getLoginName())) {
+				throw new Exception("参数错误");
+			}
+			Staff staff2 = this.staffService.findStaffByLoginName(staff.getLoginName());
+			staff2.setRealName(staff.getRealName());
+			staff2.setSex(staff.getSex());
+			staff2.setMobile(staff.getMobile());
+			staff2.setTelephone(staff.getTelephone());
+			staff2.setEmail(staff.getEmail());
+			staff2.setExtendProperties(staff.getExtendProperties());
+			this.staffService.updateStaff(staff2);
+			StaffUtil.updateLoginStaff(staff2);
+			return success("修改成功");
+		} catch (Exception e) {
+			logger.error("获取登录用户信息出错=>", e);
+			return fail(e.getMessage());
+		}
 	}
 
 	/**
@@ -277,7 +308,7 @@ public class StaffController extends BaseController {
 	 * @author WML
 	 * 2016年11月8日 - 上午9:05:44
 	 */
-	@RequestMapping(value = { "/lockStaff.ajax" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
+	@RequestMapping(value = { "/lockStaff.json" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
 	public Map<String, ? extends Object> lockStaff(
 			@RequestParam String operation, @RequestParam Long staffId) {
@@ -498,8 +529,7 @@ public class StaffController extends BaseController {
 	 */
 	@RequestMapping({ "/resetPwd.json" })
 	@ResponseBody
-	public Map<String, ? extends Object> resetPwd(String loginName,
-												  String password) throws Exception {
+	public Map<String, ? extends Object> resetPwd(String loginName, String password) throws Exception {
 		try {
 			if (isEmpty(password)) {
 				throw new IllegalArgumentException("新密码没有设置！");
@@ -507,38 +537,6 @@ public class StaffController extends BaseController {
 			String passwordDecrypt = RSAUtil.decryptString(password);
 			this.staffService.resetPassword(loginName, passwordDecrypt);
 			return success("重置成功");
-		} catch (Exception e) {
-			logger.error("获取登录用户信息出错=>", e);
-			return fail(e.getMessage());
-		}
-	}
-
-	/**
-	 * 更新用户信息
-	 * @param staff
-	 * @return
-	 * @throws Exception
-	 * @author WML
-	 * 2016年11月8日 - 上午9:08:11
-	 */
-	@RequestMapping(value = { "/updateStaff.json" }, method = {RequestMethod.POST })
-	@ResponseBody
-	public Map<String, ? extends Object> updateStaff(Staff staff)
-			throws Exception {
-		try {
-			if (isEmpty(staff.getLoginName())) {
-				throw new Exception("参数错误");
-			}
-			Staff staff2 = this.staffService.findStaffByLoginName(staff.getLoginName());
-			staff2.setRealName(staff.getRealName());
-			//staff2.setSex(staff.getSex());
-			staff2.setMobile(staff.getMobile());
-			staff2.setTelephone(staff.getTelephone());
-			staff2.setEmail(staff.getEmail());
-			staff2.setExtendProperties(staff.getExtendProperties());
-			this.staffService.updateStaff(staff2);
-			StaffUtil.updateLoginStaff(staff2);
-			return success("修改成功");
 		} catch (Exception e) {
 			logger.error("获取登录用户信息出错=>", e);
 			return fail(e.getMessage());

@@ -10,6 +10,7 @@ import com.wml.springboot.auth.service.StaffService;
 import com.wml.springboot.auth.tree.MenuTreeNode;
 import com.wml.springboot.exception.MyException;
 import com.wml.springboot.services.UserService;
+import com.wml.springboot.util.RSAUtil;
 import com.wml.springboot.util.SigarUtils;
 import com.wml.springboot.util.StaffUtil;
 import org.slf4j.Logger;
@@ -54,16 +55,16 @@ public class LoginController extends BaseController {
     @Autowired
     public StaffService staffService;
 
-    @GetMapping(value = "/login")
+    @GetMapping(value = "/login.html")
     public String login() {
         return "login/login";
     }
 
-    @PostMapping(value = { "/login" })
+    @PostMapping(value = { "/login.json" })
     @ResponseBody
     public Map<String, Object> login(@Valid Staff user) {
         try {
-            //String pwd = RSAUtil.decryptString(user.getPassword());
+            // String pwd = RSAUtil.decryptString(user.getPassword());
             this.loginService.login(user.getLoginName(), user.getPassword(), getSession());
             Map<String, Object> result = new HashMap<String, Object>();
             Staff staff = (Staff) getSession().getAttribute("LOGIN_STAFF");
@@ -128,7 +129,7 @@ public class LoginController extends BaseController {
         //return "redirect:/index";
     }*/
 
-    @RequestMapping("/logout")
+    @RequestMapping("/logout.html")
     public String logout(RedirectAttributes redirectAttributes) throws Exception {
         //使用权限管理工具进行用户的退出，跳出登录，给出提示信息
         //SecurityUtils.getSubject().logout();
@@ -137,7 +138,7 @@ public class LoginController extends BaseController {
         return "redirect:/login";
     }
 
-    @RequestMapping(value = "/index")
+    @RequestMapping(value = "/index.html")
     public String index(Model model) throws Exception {
         // 读取菜单列表
         List<MenuTreeNode> menuTree = menuService.buildMenuTree(StaffUtil.getLoginStaff().getLoginName(), getSession().getId(), getRequest().getContextPath());
@@ -155,7 +156,7 @@ public class LoginController extends BaseController {
         return "main";
     }
 
-    @RequestMapping("/403")
+    @RequestMapping("/403.html")
     public String no() {
         return "403";
     }

@@ -71,7 +71,7 @@
 				</operation>
 				<operation key="ADD" name="创建" desc="创建用户">
 					<address name="添加页面" url="/auth/staff/add.html"/>
-					<address name="创建请求" url="/auth/staff/createStaff.html"/>
+					<address name="创建请求" url="/auth/staff/createStaff.json"/>
 				</operation>
 				
 				<operation key="UPDATE" name="修改" desc="更新用户">
@@ -88,7 +88,7 @@
 					<address name="重置密码请求" url="/auth/staff/resetPwd.json"/>
 				</operation>
 				<operation key="AUTHSTAFF" name="授权" desc="用户授权">
-					<address name="获取用户详情" url="/auth/staff/findStaff"/>
+					<address name="获取用户详情" url="/auth/staff/findStaff.html"/>
 					<address name="查询用户角色列表" url="/auth/staff/listStaffRoles"/>
 					<address name="更新用户角色" url="/auth/staff/updateStaffRole"/>
 				</operation>

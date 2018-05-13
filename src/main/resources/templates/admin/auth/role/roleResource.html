@@ -14,54 +14,65 @@
     <title>角色资源</title>
     <link rel="stylesheet" th:href="@{/plugins/layui/css/layui.css}" media="all" />
     <link rel="stylesheet" th:href="@{/css/main.css}" media="all" />
+
+    <style>
+        .div-blod{ font-weight: bold; }
+        .div-break{ line-height: 40px;display:block;word-break: break-all;word-wrap: break-word; }
+
+    </style>
 </head>
 <body>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+    <legend>角色 >>> 权限分配</legend>
+</fieldset>
 <div class="layui-main">
-    <!-- 权限列表 -->
-    <div class="sysNotice col">
-        <div th:each="t1 : ${tree}">
-            <div th:text="${t1.text}"></div>
-            <div th:if="${t1.children != null}">
-                <div th:each="t2 : ${t1.children}">
-                    <div style="margin-left: 10px;" th:text="${t2.text}"></div>
-                    <div th:each="t3: ${t2.children}">
-                        <div style="margin-left: 30px;" th:text="${t3.text}"></div>
-                        <input name="all" style="margin-left: 60px;"type="checkbox" value="全选"/>全选
-                        <div>
-                            <th:block th:each="t4: ${t3.children}">
-                                <input name="" style="margin-left: 60px;" type="checkbox" th:checked="${t4.checked}" th:value="${t4.id}"/><label th:text="${t4.text}"></label>
-                            </th:block>
+    <div class="row">
+        <!-- 权限列表 -->
+        <div class="sysNotice col" style="width: 65%;">
+            <div th:each="t1 : ${tree}">
+                <div th:text="${t1.text}"></div>
+                <div th:if="${t1.children != null}">
+                    <div th:each="t2 : ${t1.children}">
+                        <div style="margin-left: 10px;" th:text="${t2.text}"></div>
+                        <div th:each="t3: ${t2.children}">
+                            <div style="margin-left: 30px;" th:text="${t3.text}"></div>
+                            <input name="all" style="margin-left: 60px;"type="checkbox" value="全选"/>全选
+                            <div>
+                                <th:block th:each="t4: ${t3.children}">
+                                    <input name="" style="margin-left: 60px;" type="checkbox" th:checked="${t4.checked}" th:value="${t4.id}"/><label th:text="${t4.text}"></label>
+                                </th:block>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- 角色信息 -->
-    <div class="sysNotice col">
-        <fieldset class="layui-elem-field site-demo-button" style="margin-top: 30px;">
-            <legend>角色信息</legend>
-            <div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">角色标记码:</label>
-                    <div class="layui-input-block">
-                        <div th:text="${role.roleKey}"></div>
+        <!-- 角色信息 -->
+        <div class="sysNotice col" style="width: 34%;">
+            <fieldset class="layui-elem-field site-demo-button">
+                <legend>角色信息</legend>
+                <div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label div-blod">角色标记码:</label>
+                        <div class="layui-input-block">
+                            <div class="div-break" th:text="${role.roleKey}"></div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label div-blod">角色名称:</label>
+                        <div class="layui-input-block">
+                            <div class="div-break" th:text="${role.roleName}"></div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label div-blod">角色描述:</label>
+                        <div class="layui-input-block">
+                            <div class="div-break" th:text="${role.roleDesc}"></div>
+                        </div>
                     </div>
                 </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">角色名称:</label>
-                    <div class="layui-input-block">
-                        <label th:text="${role.roleName}"></label>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">角色描述:</label>
-                    <div class="layui-input-block">
-                        <label th:text="${role.roleDesc}"></label>
-                    </div>
-                </div>
-            </div>
-        </fieldset>
+            </fieldset>
+        </div>
     </div>
 </div>
 <form class="layui-form" method="POST">
@@ -98,7 +109,7 @@
 
         /**保存*/
         form.on("submit(save)", function(data) {
-            var url = "/auth/role/updateRoleResource";
+            var url = "/auth/role/updateRoleResource.json";
             var values = [];
             $("input[name!='all']:checked").each(function() {
                 values.push($(this).val());

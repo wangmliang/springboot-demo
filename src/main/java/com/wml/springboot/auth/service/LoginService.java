@@ -71,13 +71,14 @@ public class LoginService {
 			throw new MyException("用户状态异常");
 		}
 
-		/*Staff paramStaff = new Staff();
+		Staff paramStaff = new Staff();
 		paramStaff.setStaffId(loginStaff.getStaffId());
 		paramStaff.setLoginName(name);
 		paramStaff.setPassword(password);
 
-		PasswordAdapter loginPwd = new PasswordAdapter(paramStaff);
-
+		/*PasswordAdapter loginPwd = new PasswordAdapter(paramStaff);
+		System.out.println("用户密码：" + loginStaff.getPassword());
+		System.out.println("匹配密码：" + loginPwd.encryptPassword());
 		if (!loginStaff.getPassword().equals(loginPwd.encryptPassword())) {*/
 		String pwd = entryptPassword(password, loginStaff.getSalt());
 		if(!loginStaff.getPassword().equals(pwd)) {

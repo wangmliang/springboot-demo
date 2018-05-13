@@ -86,21 +86,15 @@ public class StaffService {
 	 * 验证手机号码和邮箱是否存在
 	 * @param staff
 	 */
-	public void checkStaffInfo(Staff staff) throws Exception {
-		if(staff.getStaffId() != null) {
-			Staff staff_login = findStaffByLoginName(staff.getLoginName());
-			if(null != staff_login) {
-				throw new MyException("用户名 " + staff.getLoginName() + " 已存在");
-			}
-		}
+	public void checkStaffInfo(Staff staff, Staff oldStaff) throws Exception {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("email", staff.getEmail());
 		Staff staff_email = findStaffByMap(params);
-		if (staff_email != null)
+		if ((staff_email != null && oldStaff == null) || (oldStaff != null && !staff.getEmail().equals(oldStaff.getEmail())))
 			throw new MyException("邮箱已存在");
 		params.put("mobile", staff.getMobile());
 		Staff staff_mobile = findStaffByMap(params);
-		if (staff_mobile != null)
+		if ((staff_mobile != null && oldStaff == null) || (oldStaff != null && !staff.getMobile().equals(oldStaff.getMobile())))
 			throw new MyException("手机号码已存在");
 	}
 
@@ -108,16 +102,16 @@ public class StaffService {
 		if (this.staffDao.findStaffByLoginName(staff.getLoginName()) != null) {
 			throw new Exception("此帐号已注册，系统不允许重复注册!");
 		}
-		checkStaffInfo(staff);
+		checkStaffInfo(staff, null);
 
-		entryptPassword(staff);
+		entryptPassword(staff); // 设置密码
 		this.staffDao.insertStaff(staff);
 
-		PasswordAdapter pa = new PasswordAdapter(staff);
+/*		PasswordAdapter pa = new PasswordAdapter(staff);
 
 		staff.setPassword(pa.encryptPassword());
 
-		this.staffDao.updateStaffPassword(staff);
+		this.staffDao.updateStaffPassword(staff);*/
 		String roles = (String) staff.getOthers().get("roles");
 		if (StringTools.isNotEmptyString(roles)) {
 			Map<String, Object> params = new HashMap<String, Object>();
@@ -131,7 +125,7 @@ public class StaffService {
 				}
 			}
 		}
-		for (Entry<String, String> entry : staff.getExtendProperties()
+		/*for (Entry<String, String> entry : staff.getExtendProperties()
 				.entrySet()) {
 			// for (Map.Entry entry : staff.getExtendProperties().entrySet()) {
 			StaffExtendProperty property = new StaffExtendProperty();
@@ -140,7 +134,7 @@ public class StaffService {
 			property.setValue((String) entry.getValue());
 
 			this.staffDao.insertStaffExtendProperties(property);
-		}
+		}*/
 	}
 
 	@Transactional(rollbackFor = { Exception.class })
@@ -175,7 +169,7 @@ public class StaffService {
 			throw new Exception("修改的用户不存在!");
 		}
 
-		checkStaffInfo(staff);
+		checkStaffInfo(staff, oldStaff);
 
 		this.staffDao.updateStaff(staff);
 		/*List<StaffExtendProperty> staffExtendProperties = this.staffDao.listStaffExtendProperties(staff.getStaffId());
@@ -226,12 +220,12 @@ public class StaffService {
 		Staff staff = this.staffDao.findStaff(staffId);
 
 		if (staff != null) {
-			List<StaffExtendProperty> properties = this.staffDao
+			/*List<StaffExtendProperty> properties = this.staffDao
 					.listStaffExtendProperties(staffId);
 
 			for (StaffExtendProperty p : properties) {
 				staff.addExtendProperty(p.getProperty(), p.getValue());
-			}
+			}*/
 
 			if (staff.getDepartmentId() != null) {
 				staff.setDepartment(this.departmentDao.findDepartment(staff
@@ -251,19 +245,17 @@ public class StaffService {
 		Staff staff = this.staffDao.findStaffByLoginName(loginName);
 
 		if (staff != null) {
-			List<StaffExtendProperty> properties = this.staffDao
+			/*List<StaffExtendProperty> properties = this.staffDao
 					.listStaffExtendProperties(staff.getStaffId());
 
 			for (StaffExtendProperty p : properties) {
 				staff.addExtendProperty(p.getProperty(), p.getValue());
-			}
+			}*/
 
 			if (staff.getDepartmentId() != null) {
-				staff.setDepartment(this.departmentDao.findDepartment(staff
-						.getDepartmentId()));
+				staff.setDepartment(this.departmentDao.findDepartment(staff.getDepartmentId()));
 			}
 		}
-
 		return staff;
 	}
 
@@ -342,10 +334,8 @@ public class StaffService {
 		if (staff == null) {
 			throw new Exception("用户[" + staffId + "]没有找到");
 		}
-		if(true) {
-		/*if ((staff.getStatus() == Staff.Status.INITIAL)
-				|| (staff.getStatus() == Staff.Status.NORMAL)) {
-			staff.setStatus(Staff.Status.LOCKED);*/
+		if ((staff.getStatus().equalsIgnoreCase("INITIAL")) || (staff.getStatus().equalsIgnoreCase("NORMAL"))) {
+			staff.setStatus("LOCKED");
 
 			this.staffDao.updateStaff(staff);
 		} else {
@@ -360,7 +350,7 @@ public class StaffService {
 			throw new Exception("用户[" + staffId + "]没有找到");
 		}
 
-		//staff.setStatus(Staff.Status.NORMAL);
+		staff.setStatus("NORMAL");
 
 		this.staffDao.updateStaff(staff);
 	}

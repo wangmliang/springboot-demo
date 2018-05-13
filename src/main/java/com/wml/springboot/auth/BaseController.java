@@ -87,6 +87,7 @@ public class BaseController {
         response.setHeader("Pragma", "No-cache");
         response.setDateHeader("Expires", 0L);
         response.setHeader("Cache-Control", "no-cache");
+        response.setHeader("Access-Control-Allow-Origin", "*");
     }
 
     protected void outputMatch(HttpServletRequest request, HttpServletResponse response, String obj)

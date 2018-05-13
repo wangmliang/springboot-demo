@@ -58,7 +58,7 @@
 
         /**保存*/
         form.on("submit(save)", function(data) {
-            var url = "/auth/role/updateRole";
+            var url = "/auth/role/updateRole.json";
             //异步表单提交
             common.fromPostAjax(url, data.field);
             return false;

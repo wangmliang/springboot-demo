@@ -23,7 +23,7 @@
         <div class="layui-col-md4">
             <div class="layui-inline">
                 <a href="javascript:;" class="layui-btn layui-btn-normal layui-btn-small" data-operation
-                   data-options="{'type':'edit','url':'edit','icon':'&#xe608;','title':' 增加角色','width':'600px','height':'400px','maxmin':true}">
+                   data-options="{'type':'edit','url':'edit.html','icon':'&#xe608;','title':' 增加角色','width':'600px','height':'400px','maxmin':true}">
                     <i class="layui-icon">&#xe608;</i>
                     增加角色
                 </a>
@@ -35,7 +35,7 @@
         </div>
         <div id="searchDiv" class="layui-col-md8" style="text-align: right;">
             <div class="layui-inline">
-                <input class="layui-input" name="roleName" placeholder="角色名称" id="search_title">
+                <input class="layui-input" name="roleName" placeholder="角色名称" id="roleName">
             </div>
             <button class="layui-btn" id="searchBtn">搜索</button>
         </div>
@@ -47,15 +47,15 @@
 <!-- 操作按钮 -->
 <script type="text/html" id="operateBtns">
     <a class="layui-btn layui-btn-xs" data-operation
-       data-options="{'type':'edit','url':'add?id={{d.roleId}}','icon':'&#xe642;','title':' 修改角色','width':'600px','height':'400px','maxmin':true}">
+       data-options="{'type':'edit','url':'add.html?id={{d.roleId}}','icon':'&#xe642;','title':' 修改角色','width':'600px','height':'400px','maxmin':true}">
         <i class="layui-icon">&#xe642;</i>
     </a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-operation
-       data-options="{'type':'delete','url':'deleteRole?roleId={{d.roleId}}','object':'reload','remind':'确认删除吗？删除后不可恢复'}">
+       data-options="{'type':'delete','url':'deleteStaff.json?roleId={{d.roleId}}','object':'reload','remind':'确认删除吗？删除后不可恢复'}">
         <i class="layui-icon">&#xe640;</i>
     </a>
     <a class="layui-btn layui-bg-blue layui-btn-xs" data-operation
-       data-options="{'type':'edit','url':'listRoleResource?roleId={{d.roleId}}','icon':'&#xe614;','title':' 权限分配','width':'100%','height':'100%','maxmin':false}">
+       data-options="{'type':'edit','url':'listRoleResource.html?roleId={{d.roleId}}','icon':'&#xe614;','title':' 权限分配','width':'100%','height':'100%','maxmin':false}">
         <i class="layui-icon">&#xe614;</i>
     </a>
 </script>
@@ -72,7 +72,7 @@
         table.render({
             elem : '#dataTable',
             id: 'dataTable',
-            url : '/auth/role/listRoles?t='+new Date(), //数据接口
+            url : '/auth/role/listRoles.json?t='+new Date(), //数据接口
             page : true, //开启分页
             loading: true,	// 加载中...
             limit: 10,		// 初始分页条数，默认30
@@ -111,12 +111,12 @@
         });
         var reload = function() {
             table.reload('dataTable', {
-                url : '/auth/role/listRoles?t=' + new Date(), //数据接口
+                url : '/auth/role/listRoles.json?t=' + new Date(), //数据接口
                 page : {
                     page : 1
                     //重新从第 1 页开始
                 }, where : {
-                    roleName : $('#search_title').val()
+                    roleName : $('#roleName').val()
                 }
             });
         };
@@ -146,7 +146,7 @@
                 return d.roleId;
             });
             if (ids !== null && ids !== undefined && ids.length >= 1) {
-                var url = "delete?flag=false&roleId=" + ids;
+                var url = "delete.json?flag=false&roleId=" + ids;
                 common.ajaxConfirm(url, "#searchBtn", "确认删除吗？删除后不可恢复");
             } else {
                 common.layerMsg("请先勾选数据");

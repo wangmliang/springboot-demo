@@ -66,7 +66,7 @@
         //监听提交
         form.on('submit(login_hash)', function(data) {
             $.ajax({
-                "url": "/login",
+                "url": "/login.json",
                 "type": "post",
                 "data": data.field,
                 "dataType": "json",
@@ -74,7 +74,7 @@
                     if(d.success) {
                         common.layerMsg("登陆成功");
                         setTimeout(function(){
-                            location.href='/index';
+                            location.href='/index.html';
                         }, 1000);
                     } else {
                         common.layerMsg(d.message);

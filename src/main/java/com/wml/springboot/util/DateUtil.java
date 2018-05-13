@@ -22,8 +22,7 @@ import org.slf4j.LoggerFactory;
  * @author sunxing
  */
 public class DateUtil {
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(DateUtil.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DateUtil.class);
 
 	/** 日期格式(yyyy-MM-dd) */
 	public static final String YYYY_MM_DD_EN = "yyyy-MM-dd";

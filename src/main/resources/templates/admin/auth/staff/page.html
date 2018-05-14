@@ -46,19 +46,19 @@
 
 <!-- 操作按钮 -->
 <script type="text/html" id="operateBtns">
-    <a class="layui-btn layui-btn-xs" data-operation
+    <a class="layui-btn layui-btn-xs" data-operation th:title="修改信息"
        data-options="{'type':'edit','url':'edit.html?id={{d.staffId}}','icon':'&#xe642;','title':' 修改成员','width':'700px','height':'370px','maxmin':true}">
         <i class="layui-icon">&#xe642;</i>
     </a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-operation
+    <a class="layui-btn layui-btn-danger layui-btn-xs" data-operation th:title="删除成员"
        data-options="{'type':'delete','url':'/auth/staff/deleteStaff.json?staffId={{d.staffId}}','object':'reload','remind':'确认删除吗？删除后不可恢复'}">
         <i class="layui-icon">&#xe640;</i>
     </a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" data-operation
-       data-options="{'type':'delete','url':'/auth/staff/lockStaff.json?operation={{d.status == 'LOCKED' ? 'unlock' : 'lock'}}&staffId={{d.staffId}}','object':'reload','remind':'确认锁定吗?'}">
-        <i class="layui-icon">&#xe673;</i>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" data-operation title="{{d.status == 'LOCKED' ? '成员解锁' : '锁定成员'}}"
+       data-options="{'type':'delete','url':'/auth/staff/lockStaff.json?operation={{d.status == 'LOCKED' ? 'unlock' : 'lock'}}&staffId={{d.staffId}}','object':'reload','remind':'确认{{d.status == 'LOCKED' ? '解锁' : '锁定'}}吗?'}">
+        <i class="layui-icon layui-icon-password">&#xe770;</i>
     </a>
-    <a class="layui-btn layui-bg-blue layui-btn-xs" data-operation
+    <a class="layui-btn layui-bg-blue layui-btn-xs" data-operation th:title="分配角色"
        data-options="{'type':'edit','url':'listRoleResource.json?staffId={{d.staffId}}','icon':'&#xe614;','title':' 给【{{d.realName}}】分配角色','width':'100%','height':'100%','maxmin':false}">
         <i class="layui-icon">&#xe614;</i>
     </a>

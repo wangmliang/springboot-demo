@@ -3,7 +3,6 @@ package com.wml.springboot.auth.filter;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wml.SpringContextHolder;
 import com.wml.springboot.auth.SessionContext;
 import com.wml.springboot.auth.entity.Staff;
 import com.wml.springboot.auth.service.AuthService;
@@ -72,7 +71,7 @@ public class AuthFilter implements Filter {
         /**
          * 过滤例外鉴权操作
          */
-        if (servletPath.equals("/favicon.ico") || servletPath.contains("plugins") || servletPath.contains("src") || servletPath.contains("build") || servletPath.contains("css")
+        if (servletPath.equals("/favicon.ico") || servletPath.contains("/js") || servletPath.contains("plugins") || servletPath.contains("src") || servletPath.contains("build") || servletPath.contains("css")
                 || this.authService.authExclude(servletPath) || servletPath.equals("/login.html")) {
             chain.doFilter(request, response);
             return;

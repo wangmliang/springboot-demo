@@ -111,7 +111,7 @@
 		       STATUS           = #{status},
 		       PASSWORD         = #{password},
 		       PASSWORD_EXPIRE_DATE = #{passwordExpireDate,jdbcType=DATE},  
-		       
+		       SALT = #{salt, jdbcType=VARCHAR},
 		       LAST_UPDATE_DATE = SYSDATE()
 		WHERE  STAFF_ID         = #{staffId}
 		]]>

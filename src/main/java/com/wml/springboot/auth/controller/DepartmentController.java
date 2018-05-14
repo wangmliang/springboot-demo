@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -50,6 +51,35 @@ public class DepartmentController extends BaseController {
 	@Autowired
 	@Qualifier("staffService")
 	private StaffService staffService;
+
+	/**
+	 * 列表页
+	 * @param id 主键id
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/page.html")
+	public String page() throws Exception{
+		return "admin/auth/department/page";
+	}
+
+	/**
+	 * 编辑页
+	 * @param id 角色id
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = {"/add.html", "/edit.html"})
+	public String edit(Long id, Model model) throws Exception{
+		Role role = new Role();
+		if(null != id) {
+			role = roleService.findRole(id);
+		}
+		model.addAttribute("record", role);
+		return "admin/auth/department/edit";
+	}
 
 	/**
 	 * 根据部门id查询部门信息

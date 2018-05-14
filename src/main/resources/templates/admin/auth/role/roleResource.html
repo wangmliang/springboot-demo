@@ -18,7 +18,9 @@
     <style>
         .div-blod{ font-weight: bold; }
         .div-break{ line-height: 40px;display:block;word-break: break-all;word-wrap: break-word; }
-
+        .layui-colla-item{ margin-bottom: 5px;}
+        .sysNotice-win65 { width: 65%;}
+        .sysNotice-win34 { width: 34%;}
     </style>
 </head>
 <body>
@@ -27,28 +29,36 @@
 </fieldset>
 <div class="layui-main">
     <div class="row">
-        <!-- 权限列表 -->
-        <div class="sysNotice col" style="width: 65%;">
-            <div th:each="t1 : ${tree}">
-                <div th:text="${t1.text}"></div>
-                <div th:if="${t1.children != null}">
-                    <div th:each="t2 : ${t1.children}">
-                        <div style="margin-left: 10px;" th:text="${t2.text}"></div>
-                        <div th:each="t3: ${t2.children}">
-                            <div style="margin-left: 30px;" th:text="${t3.text}"></div>
-                            <input name="all" style="margin-left: 60px;"type="checkbox" value="全选"/>全选
-                            <div>
-                                <th:block th:each="t4: ${t3.children}">
-                                    <input name="" style="margin-left: 60px;" type="checkbox" th:checked="${t4.checked}" th:value="${t4.id}"/><label th:text="${t4.text}"></label>
-                                </th:block>
+        <div class="layui-collapse sysNotice col sysNotice-win65">
+            <form class="layui-form" action="">
+                <!-- 权限列表 -->
+                <div class="layui-colla-item" th:each="t1 : ${tree}">
+                    <h2 class="layui-colla-title" th:text="${t1.text}">为什么JS社区大量采用未发布或者未广泛支持的语言特性？</h2>
+                    <div class="layui-colla-content layui-show" th:if="${t1.children != null}">
+                        <div class="layui-colla-item" th:each="t2 : ${t1.children}">
+                            <h2 class="layui-colla-title" th:text="${t2.text}">为什么前端工程师多不愿意用 Bootstrap 框架？</h2>
+                            <div class="layui-colla-content layui-show" th:if="${t1.children != null}">
+                                <div class="layui-colla-item" th:each="t3: ${t2.children}">
+                                    <h2 class="layui-colla-title" th:text="${t3.text}">为什么前端工程师多不愿意用 Bootstrap 框架？</h2>
+                                    <div class="layui-colla-content layui-show">
+                                        <div class="layui-form-item">
+                                            <input type="checkbox" name="all" lay-skin="primary" lay-filter="allChoose" title="全选">
+                                            <div>
+                                                <th:block th:each="t4: ${t3.children}">
+                                                    <input type="checkbox" name="" lay-skin="primary" lay-filter="itemChoose" th:title="${t4.text}" th:checked="${t4.checked}" th:value="${t4.id}">
+                                                </th:block>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
         <!-- 角色信息 -->
-        <div class="sysNotice col" style="width: 34%;">
+        <div class="sysNotice col sysNotice-win34">
             <fieldset class="layui-elem-field site-demo-button">
                 <legend>角色信息</legend>
                 <div>
@@ -79,7 +89,7 @@
     <input type="hidden" name="roleId" th:value="${role.roleId}"/>
     <input type="hidden" name="resourceIdAndOperationKey"/>
     <div class="layui-form-item">
-        <div class="layui-input-block">
+        <div class="layui-input-block" style="margin: 20px 0 0 200px;">
             <button class="layui-btn" lay-submit="" lay-filter="save">立即提交</button>
             <button type="button" class="layui-btn layui-btn-primary" id="back">返回</button>
         </div>
@@ -93,12 +103,25 @@
     }).use([ 'table', 'common'], function() {
         var table = layui.table, $ = layui.$, common = layui.common, form = layui.form;
 
-        // 全选反选
-        $("input[name='all']").bind('click', function() {
+        form.on('checkbox(itemChoose)',function(data){
+            var sib = $(data.elem).parent().find('input[type="checkbox"]:checked').length; // 选中个数
+            var total = $(data.elem).parent().find('input[type="checkbox"]').length; // 总个数，排除全选
+            if(sib == total){
+                $(this).parent().parent().parent().children().find('input[name="all"]').prop("checked",true);
+                form.render();
+            }else{
+                $(this).parent().parent().parent().children().find('input[name="all"]').prop("checked",false);
+                form.render();
+            }
+        });
+
+        //全选反选
+        form.on('checkbox(allChoose)', function(data){
             var that = this;
-            $(this).next().find("input:checkbox[name!='all']").each(function() {
+            $(this).next().next().find("input:checkbox[name!='all']").each(function(index, item){
                 this.checked = that.checked;
             });
+            form.render('checkbox');
         });
 
         // 关闭弹窗

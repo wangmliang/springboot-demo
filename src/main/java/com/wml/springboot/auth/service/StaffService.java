@@ -65,13 +65,25 @@ public class StaffService {
 		user.setPassword(Encodes.encodeHex(hashPassword));
 	}
 
+	/**
+	 * 修改密码时验证原始密码输入是否正常
+	 * @param oldPassword	现有密码字符串
+	 * @param password		页面输入旧密码
+	 * @param salt			安全码
+	 */
+	public static boolean checkPassword(String oldPassword, String password, String salt)
+	{
+		byte[] hashPassword = Digests.sha1(password.getBytes(), salt.getBytes(), 1024);
+		return !oldPassword.equals(Encodes.encodeHex(hashPassword));
+	}
+
 	public static void main(String[] args) {
-		Staff staff = new Staff();
+		/*Staff staff = new Staff();
 		staff.setLoginName("admin");
 		staff.setPassword("123456");
 		staff.setStaffId(1L);
 		entryptPassword(staff);
-		System.out.println("mima:" + staff.getPassword() + "=" + staff.getSalt());
+		System.out.println("mima:" + staff.getPassword() + "=" + staff.getSalt());*/
 		/*PasswordAdapter pa = new PasswordAdapter(staff);
 		System.out.println("mima:" + pa.encryptPassword());
 		System.out.println("mima:" + ClassUtils.getDefaultClassLoader().getResource("").getPath());*/
@@ -80,6 +92,9 @@ public class StaffService {
 		staff.setPassword(pwd);
 		pa = new PasswordAdapter(staff);
 		System.out.println("mima:" + pa.encryptPassword());*/
+
+		byte[] hashPassword = Digests.sha1("123456".getBytes(), "5095e1d1bad29154".getBytes(), 1024);
+		System.out.println((Encodes.encodeHex(hashPassword)));
 	}
 
 	/**
@@ -278,7 +293,7 @@ public class StaffService {
 		return new PageInfo<Staff>(this.staffDao.listStaff(map));
 	}
 
-	@Transactional(rollbackFor = { Exception.class })
+	/*@Transactional(rollbackFor = { Exception.class })
 	public void changePassword(String loginName, String oldPassword,
 							   String newPassword) throws Exception {
 		if ((loginName == null) || (oldPassword == null)
@@ -301,11 +316,38 @@ public class StaffService {
 
 		staff.setPassword(buildStaffPassword(staff, newPassword));
 
-		/*if ((staff.getStatus() == Staff.Status.INITIAL)
+		*//*if ((staff.getStatus() == Staff.Status.INITIAL)
 				|| (staff.getStatus() == Staff.Status.PASSWORD_EXPIRED)) {
 			staff.setStatus(Staff.Status.NORMAL);
-		}*/
+		}*//*
 
+		this.staffDao.updateStaffPassword(staff);
+	}*/
+
+	@Transactional(rollbackFor = { Exception.class })
+	public void changePassword(String loginName, String oldPassword, String newPassword) throws Exception {
+		if ((loginName == null) || (oldPassword == null) || (newPassword == null)) {
+			throw new IllegalArgumentException("用户名、旧密码或新密码没有设置！");
+		}
+
+		if (oldPassword.equals(newPassword)) {
+			throw new Exception("旧密码和新密码不能相同！");
+		}
+
+		Staff staff = this.staffDao.findStaffByLoginName(loginName);
+		if (staff == null) {
+			throw new Exception("找不到对应的成员【loginName=" + loginName + "】");
+		}
+
+		if (checkPassword(staff.getPassword(), oldPassword, staff.getSalt())) {
+			throw new Exception("旧密码不正确！");
+		}
+		entryptPassword(staff);
+		//staff.setPassword(buildStaffPassword(staff, newPassword));
+
+		if ((staff.getStatus() == "INITIAL") || (staff.getStatus() == "PASSWORD_EXPIRED")) {
+			staff.setStatus("NORMAL");
+		}
 		this.staffDao.updateStaffPassword(staff);
 	}
 
@@ -323,7 +365,7 @@ public class StaffService {
 
 		staff.setPassword(buildStaffPassword(staff, newPassword));
 
-		//staff.setStatus(Staff.Status.INITIAL);
+		staff.setStatus("INITIAL");
 
 		this.staffDao.updateStaffPassword(staff);
 	}

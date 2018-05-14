@@ -12,12 +12,78 @@
 </head>
 <body class="layui-layout-body">
 <ul id="treeDemo" class="ztree"></ul>
+<ul id="tree1"></ul>
 
 <script th:src="@{/plugins/layui/layui.js}"></script>
 <script th:src="@{/js/jquery-1.9.1.min.js}"></script>
 <script th:src="@{/js/zTree/jquery.ztree.core.js}"></script>
 <script th:src="@{/js/zTree/jquery.ztree.excheck.js}"></script>
+<script th:src="@{/js/fuelux.tree.min.js}"></script>
+<script th:src="@{/js/ace-extra.min.js}"></script>
+<script th:src="@{/js/ace-elements.min.js}"></script>
+<script th:src="@{/js/ace.min.js}"></script>
 <script>
+    $(function() {
+        $('#tree1').ace_tree({
+            dataSource: {
+                '刑侦': {
+                    'text': '刑侦',
+                    'type': 'folder',
+                    'additionalParameters': {
+                        'id': '1',
+                        'children': {
+                            '痕迹检验': {
+                                'text': '痕迹检验',
+                                'type': 'item',
+                                'additionalParameters': {
+                                    'id': '10'
+                                }
+                            },
+                            '声像技术': {
+                                'text': '声像技术',
+                                'type': 'item',
+                                'additionalParameters': {
+                                    'id': '9',
+                                    'item-selected': true
+                                }
+                            }
+                        }
+                    }
+                },
+                '交警': {
+                    'text': '交警',
+                    'type': 'folder',
+                    'additionalParameters': {
+                        'id': '32',
+                        'children': {
+                            '交通事故': {
+                                'text': '交通事故',
+                                'type': 'item',
+                                'additionalParameters': {
+                                    'id': '33'
+                                }
+                            },
+                            '交通道理管理': {
+                                'text': '交通道理管理',
+                                'type': 'item',
+                                'additionalParameters': {
+                                    'id': '34'
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            multiSelect: true,
+            cacheItems: true,
+            'open-icon': 'ace-icon tree-minus',
+            'close-icon': 'ace-icon tree-plus',
+            'selectable': true,
+            'selected-icon': 'ace-icon fa fa-check',
+            'unselected-icon': 'ace-icon fa fa-times',
+            loadingHTML: '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>'
+        });
+    })
 
     var setting = {
         check: {
@@ -29,7 +95,6 @@
             }
         }
     };
-
     var zNodes =[
         { id:1, pId:0, name:"随意勾选 1", open:true},
         { id:11, pId:1, name:"随意勾选 1-1", open:true},
@@ -45,7 +110,6 @@
         { id:222, pId:22, name:"随意勾选 2-2-2"},
         { id:23, pId:2, name:"随意勾选 2-3"}
     ];
-
     layui.config({
         base: '../src/js/',
         version: '1.0.1'
@@ -53,7 +117,6 @@
         var $ = layui.jquery;
         $.fn.zTree.init($("#treeDemo"), setting, zNodes);
     });
-
     var setting = {
         check: {
             enable: true
@@ -64,7 +127,6 @@
             }
         }
     };
-
     var zNodes =[
         { id:1, pId:0, name:"随意勾选 1", open:true},
         { id:11, pId:1, name:"随意勾选 1-1", open:true},
@@ -80,11 +142,9 @@
         { id:222, pId:22, name:"随意勾选 2-2-2"},
         { id:23, pId:2, name:"随意勾选 2-3"}
     ];
-
     $(document).ready(function () {
-       // $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+        // $.fn.zTree.init($("#treeDemo"), setting, zNodes);
     })
-
 </script>
 </body>
 </html>

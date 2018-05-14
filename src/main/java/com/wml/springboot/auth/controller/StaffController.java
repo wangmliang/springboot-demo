@@ -488,6 +488,15 @@ public class StaffController extends BaseController {
 	}
 
 	/**
+	 * 修改密码页
+	 * @return
+	 */
+	@RequestMapping(value = "/modifyPwd.html")
+	public String changePwd() {
+		return "admin/auth/staff/modifyPwd";
+	}
+
+	/**
 	 * 修改密码
 	 * @param oldPassword
 	 * @param newPassword
@@ -496,7 +505,7 @@ public class StaffController extends BaseController {
 	 * @author WML
 	 * 2016年11月8日 - 上午9:07:42
 	 */
-	@RequestMapping({ "/changePwd.ajax" })
+	@RequestMapping({ "/changePwd.json" })
 	@ResponseBody
 	public Map<String, ? extends Object> changePwd(String oldPassword, String newPassword) throws Exception {
 		try {
@@ -507,9 +516,9 @@ public class StaffController extends BaseController {
 			if ((isEmpty(oldPassword)) || (isEmpty(newPassword))) {
 				throw new IllegalArgumentException("旧密码或新密码没有设置！");
 			}
-			String oldPasswordDecrypt = RSAUtil.decryptString(oldPassword);
-			String newPasswordDecrypt = RSAUtil.decryptString(newPassword);
-			this.staffService.changePassword(staff.getLoginName(), oldPasswordDecrypt, newPasswordDecrypt);
+			/*String oldPasswordDecrypt = RSAUtil.decryptString(oldPassword);
+			String newPasswordDecrypt = RSAUtil.decryptString(newPassword);*/
+			this.staffService.changePassword(staff.getLoginName(), oldPassword, newPassword);
 
 			return success("修改成功");
 		} catch (Exception e) {

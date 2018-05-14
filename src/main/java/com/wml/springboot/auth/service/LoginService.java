@@ -66,8 +66,7 @@ public class LoginService {
 			throw new MyException("登录名不正确");
 		}
 
-		if ((!"NORMAL".equals(loginStaff.getStatus()))
-				&& (!"INITIAL".equals(loginStaff.getStatus()))) {
+		if ((!"NORMAL".equals(loginStaff.getStatus())) && (!"INITIAL".equals(loginStaff.getStatus()))) {
 			throw new MyException("用户状态异常");
 		}
 

@@ -17,8 +17,8 @@
 			<resource key="auth_admin_sys_individual_modifyPwd" name="修改个人密码" desc="修改个人密码">
 				<!-- 资源操作-DO -->
 				<operation key="QUERY" name="修改" desc="修改">
-					<address name="修改个人密码页面" url="/auth/individual/modifyPwd"/>
-					<address name="修改个人密码" url="/auth/staff/changePwd"/>
+					<address name="修改个人密码页面" url="/auth/staff/modifyPwd.html"/>
+					<address name="修改个人密码" url="/auth/staff/changePwd.json"/>
 				</operation>
 			</resource>
 			<resource key="auth_admin_sys_individual_selfconfig" name="个性化参数设置" desc="个性化参数设置">
@@ -34,9 +34,9 @@
 				<resource key="auth_admin_sys_dept_deptManage" name="组织管理" desc="组织管理">
 					<!-- 资源操作-->
 					<operation key="QUERY" name="组织查询" desc="组织查询">
-						<address name="组织管理页面" url="/auth/dept/page"/>
-						<address name="组织树查询" url="/auth/department/listDepartmentTree"/>
-						<address name="组织查询" url="/auth/department/findDepartment"/>
+						<address name="组织管理页面" url="/auth/department/page.html"/>
+						<address name="组织树查询" url="/auth/department/listDepartmentTree.json"/>
+						<address name="组织查询" url="/auth/department/findDepartmentjson"/>
 						<address name="组织详情查询" url="/auth/department/findDepartmentInfo"/>
 						<address name="更新组织" url="/auth/department/updateDepartment"/>
 						<address name="删除组织" url="/auth/department/delDepartment"/>

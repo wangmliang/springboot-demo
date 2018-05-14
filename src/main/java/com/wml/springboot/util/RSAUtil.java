@@ -1,11 +1,6 @@
 package com.wml.springboot.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.math.BigInteger;
 import java.security.InvalidParameterException;
 import java.security.KeyFactory;
@@ -67,6 +62,7 @@ public class RSAUtil {
 		//File path = new File(ResourceUtils.getURL("classpath:").getPath());
 		/*if(!path.exists()) path = new File("");
 		System.out.println("path:"+path.getAbsolutePath());*/
+		//InputStream input = this.getClass().getResourceAsStream("__RSA_PAIR.txt");
 		urlPath = ClassUtils.getDefaultClassLoader().getResource("").getPath();
 		return urlPath + "/__RSA_PAIR.txt";
 	}

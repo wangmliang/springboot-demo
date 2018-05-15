@@ -36,16 +36,15 @@
 					<operation key="QUERY" name="组织查询" desc="组织查询">
 						<address name="组织管理页面" url="/auth/department/page.html"/>
 						<address name="组织树查询" url="/auth/department/listDepartmentTree.json"/>
-						<address name="组织查询" url="/auth/department/findDepartmentjson"/>
-						<address name="组织详情查询" url="/auth/department/findDepartmentInfo"/>
-						<address name="更新组织" url="/auth/department/updateDepartment"/>
-						<address name="删除组织" url="/auth/department/delDepartment"/>
+						<address name="组织查询" url="/auth/department/findDepartment.json"/>
+						<address name="组织详情查询" url="/auth/department/findDepartmentInfo.json"/>
+						<address name="更新组织" url="/auth/department/updateDepartment.html"/>
 					</operation>
 					<operation key="MODIFY" name="组织修改" desc="组织修改">
-						<address name="更新组织" url="/auth/department/updateDepartment"/>
+						<address name="更新组织" url="/auth/department/updateDepartment.json"/>
 					</operation>
 					<operation key="DELETE" name="组织删除" desc="组织删除">
-						<address name="删除组织" url="/auth/department/delDepartment"/>
+						<address name="删除组织" url="/auth/department/delDepartment.json"/>
 					</operation>
 					<operation key="ROLE2DEPT" name="组织添加角色" desc="组织添加角色">
 						<address name="添加组织角色" url="/auth/department/updateDepartmentRole"/>

@@ -73,9 +73,9 @@ public class DepartmentController extends BaseController {
 	 */
 	@RequestMapping(value = {"/add.html", "/edit.html"})
 	public String edit(Long id, Model model) throws Exception{
-		Role role = new Role();
+		Department role = new Department();
 		if(null != id) {
-			role = roleService.findRole(id);
+			role = departmentService.findDepartment(id);
 		}
 		model.addAttribute("record", role);
 		return "admin/auth/department/edit";
@@ -88,7 +88,7 @@ public class DepartmentController extends BaseController {
 	 * @author WML
 	 * 2016年11月7日 - 下午5:55:21
 	 */
-	@RequestMapping({ "/findDepartment.ajax" })
+	@RequestMapping({ "/findDepartment.json" })
 	@ResponseBody
 	public Map<String, ? extends Object> findRoles(Long departmentId) {
 		try {
@@ -174,7 +174,7 @@ public class DepartmentController extends BaseController {
 	 * @author WML
 	 * 2016年11月7日 - 下午5:56:15
 	 */
-	@RequestMapping({ "/listDepartmentTree.ajax" })
+	@RequestMapping({ "/listDepartmentTree.json" })
 	@ResponseBody
 	public Map<String, ? extends Object> listDepartmentTree() {
 		try {
@@ -192,7 +192,7 @@ public class DepartmentController extends BaseController {
 	 * @author WML
 	 * 2016年11月7日 - 下午5:56:50
 	 */
-	@RequestMapping({ "/findDepartmentInfo.ajax" })
+	@RequestMapping({ "/findDepartmentInfo.json" })
 	@ResponseBody
 	public Map<String, ? extends Object> findDepartmentInfo(Long departmentId) {
 		try {

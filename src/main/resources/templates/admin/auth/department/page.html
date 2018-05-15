@@ -3,148 +3,246 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>组织结构树</title>
+    <title>组织结构管理</title>
     <link rel="stylesheet" th:href="@{/plugins/layui/css/layui.css}" media="all" />
     <link rel="stylesheet" th:href="@{/plugins/font-awesome/css/font-awesome.min.css}" media="all" />
     <link rel="stylesheet" th:href="@{/src/css/app.css}" media="all" />
     <link rel="stylesheet" th:href="@{/src/css/themes/default.css}" media="all" id="skin" kit-skin />
-    <link rel="stylesheet" th:href="@{/js/zTree/zTreeStyle/zTreeStyle.css}" media="all" id="skin" kit-skin />
+    <link rel="stylesheet" th:href="@{/css/main.css}" media="all" id="skin" kit-skin />
+    <style>
+        .layui-tree li>a,.layui-tree li ul li>a {position: relative;}
+    </style>
 </head>
-<body class="layui-layout-body">
-<ul id="treeDemo" class="ztree"></ul>
-<ul id="tree1"></ul>
+<body class="kit-theme layui-layout-body">
+    <div class="row">
+        <div class="sysNotice col" style="width: 40%;">
+            <fieldset class="layui-elem-field site-demo-button" style="margin-top: 30px; height: 600px;">
+                <blockquote class="layui-elem-quote">组织列表</blockquote>
+                <ul id="demo" unselectable="on"></ul>
+            </fieldset>
+        </div>
 
-<script th:src="@{/plugins/layui/layui.js}"></script>
-<script th:src="@{/js/jquery-1.9.1.min.js}"></script>
-<script th:src="@{/js/zTree/jquery.ztree.core.js}"></script>
-<script th:src="@{/js/zTree/jquery.ztree.excheck.js}"></script>
-<script th:src="@{/js/fuelux.tree.min.js}"></script>
-<script th:src="@{/js/ace-extra.min.js}"></script>
-<script th:src="@{/js/ace-elements.min.js}"></script>
-<script th:src="@{/js/ace.min.js}"></script>
+        <div class="sysNotice col" style="width: 58%;">
+            <fieldset class="layui-elem-field site-demo-button" style="margin-top: 30px;">
+                <blockquote class="layui-elem-quote" id="departmentName">根组织</blockquote>
+                <div>
+                    <fieldset class="layui-elem-field" style="margin: 10px 10px 30px 10px; height: 200px;">
+                        <legend>组织角色</legend>
+                        <div class="layui-field-box" disabled="disabled" id="departRoles"></div>
+                    </fieldset>
+                    <fieldset class="layui-elem-field" style="margin: 0px 10px 10px 10px; height: 200px;">
+                        <legend>组织成员</legend>
+                        <div class="layui-field-box" disabled="disabled" id="departStaffs"></div>
+                    </fieldset>
+                    <div style="margin: 30px; text-align: center; display: none;" id="buttonGroup">
+                        <button class="layui-btn">添加角色</button>
+                        <button class="layui-btn layui-btn-normal">添加成员</button>
+                        <button class="layui-btn layui-btn-warm">成员授权</button>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+    <input type="hidden" name="departmentId" id="departmentId"/>
+    <!-- 引用layer基本js -->
+    <script th:src="@{/plugins/layui/layui.js}"></script>
 <script>
-    $(function() {
-        $('#tree1').ace_tree({
-            dataSource: {
-                '刑侦': {
-                    'text': '刑侦',
-                    'type': 'folder',
-                    'additionalParameters': {
-                        'id': '1',
-                        'children': {
-                            '痕迹检验': {
-                                'text': '痕迹检验',
-                                'type': 'item',
-                                'additionalParameters': {
-                                    'id': '10'
-                                }
-                            },
-                            '声像技术': {
-                                'text': '声像技术',
-                                'type': 'item',
-                                'additionalParameters': {
-                                    'id': '9',
-                                    'item-selected': true
-                                }
-                            }
-                        }
-                    }
-                },
-                '交警': {
-                    'text': '交警',
-                    'type': 'folder',
-                    'additionalParameters': {
-                        'id': '32',
-                        'children': {
-                            '交通事故': {
-                                'text': '交通事故',
-                                'type': 'item',
-                                'additionalParameters': {
-                                    'id': '33'
-                                }
-                            },
-                            '交通道理管理': {
-                                'text': '交通道理管理',
-                                'type': 'item',
-                                'additionalParameters': {
-                                    'id': '34'
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            multiSelect: true,
-            cacheItems: true,
-            'open-icon': 'ace-icon tree-minus',
-            'close-icon': 'ace-icon tree-plus',
-            'selectable': true,
-            'selected-icon': 'ace-icon fa fa-check',
-            'unselected-icon': 'ace-icon fa fa-times',
-            loadingHTML: '<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>'
-        });
-    })
 
-    var setting = {
-        check: {
-            enable: true
-        },
-        data: {
-            simpleData: {
-                enable: true
-            }
-        }
-    };
-    var zNodes =[
-        { id:1, pId:0, name:"随意勾选 1", open:true},
-        { id:11, pId:1, name:"随意勾选 1-1", open:true},
-        { id:111, pId:11, name:"随意勾选 1-1-1"},
-        { id:112, pId:11, name:"随意勾选 1-1-2"},
-        { id:12, pId:1, name:"随意勾选 1-2", open:true},
-        { id:121, pId:12, name:"随意勾选 1-2-1"},
-        { id:122, pId:12, name:"随意勾选 1-2-2"},
-        { id:2, pId:0, name:"随意勾选 2", checked:true, open:true},
-        { id:21, pId:2, name:"随意勾选 2-1"},
-        { id:22, pId:2, name:"随意勾选 2-2", open:true},
-        { id:221, pId:22, name:"随意勾选 2-2-1", checked:true},
-        { id:222, pId:22, name:"随意勾选 2-2-2"},
-        { id:23, pId:2, name:"随意勾选 2-3"}
-    ];
     layui.config({
-        base: '../src/js/',
+        base: '../../build/js/',
         version: '1.0.1'
-    }).use([ 'layer'], function() {
-        var $ = layui.jquery;
-        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
-    });
-    var setting = {
-        check: {
-            enable: true
-        },
-        data: {
-            simpleData: {
-                enable: true
+    }).use(['common', 'tree'], function() {
+        var $ = layui.jquery, common = layui.common;
+
+        $.ajax({
+            type: "post",
+            url: '/auth/department/listDepartmentTree.json',
+            dataType: 'json',
+            success: function (d) {
+                if(d.success) {
+                    var treeMap = [];
+                    var appendHtml = function(id) {
+                       var html = '<span class=editGroup data-id=i style=display:none>';
+                        html += '<b data-id=\'' + id + '\' data-options-type=edit data-options-url=../role/edit.html data-options-icon=&#xe608; data-options-title=新增节点><i class=\'fa fa-check-square\' style=margin:4px></i></b>';
+                        html += '<b data-id=\'' + id+ '\'><i class=\'fa fa-pencil\'></i></b>';
+                        if(id != "-999") {
+                            html += '<b data-id=\'' + id+ '\'><i class=\'fa fa-trash-o\'></i></b>';
+                        }
+                        html += '</span>';
+                       return html;
+                    }
+
+                    var subTree = function(nodes) {
+                        var len = nodes.length;
+                        treeMap.push(', "children":[{');
+                        for (var i = 0;i < len; i++) {
+                            treeMap.push('"id":' + nodes[i]['id']);
+                            treeMap.push(', "name":' + '"' + nodes[i]['text'] + appendHtml(nodes[i]['id']) + '"');
+                            if (nodes[i]['children'] && nodes[i]['children'].length > 0) {
+                                subTree(nodes[i]['children']);
+                            }
+                            if (i != len - 1) {
+                                treeMap.push('},');
+                            } else {
+                                treeMap.push('}');
+                            }
+                        }
+                        //treeMap.push("}}");
+                        treeMap.push("]");
+                    };
+                    var transformTree = function(nodes) {
+                        var len = nodes.length;
+                        treeMap.push("[{");
+                        for (var i = 0;i < len; i++) {
+                            treeMap.push('"id":' + nodes[i]['id']);
+                            treeMap.push(', "name":' + '"' + nodes[i]['text'] + appendHtml(nodes[i]['id']) + '"');
+                            if (nodes[i]['children'] && nodes[i]['children'].length > 0) {
+                                subTree(nodes[i]['children']);
+                            }
+                            if (i != len - 1) {
+                                treeMap.push('},');
+                            } else {
+                                treeMap.push('}');
+                            }
+                        }
+                        //treeMap.push("}");
+                        treeMap.push("]");
+                    };
+                    transformTree(d.data);
+                    layui.tree({
+                        elem: '#demo',
+                        nodes: eval(("(" + treeMap.join('') + ")")),
+                        click: function (node, a) {
+                            //console.log(a);
+                            nodeClick(node.id);
+                        }
+                    });
+
+                    $(".layui-tree a").on({ mouseover : function(){
+                            $(this).children('cite').children('span').show();
+                        } , mouseout : function(){
+                            $(this).children('cite').children('span').hide();
+                        }
+                    });
+
+                    add();
+                } else {
+                    common.layerErrorMsg('获取组织结构错误');
+                }
             }
+        })
+
+        /**
+         * 节点点击事件、显示角色和成员
+         * @param departmentId
+         */
+        function nodeClick(departmentId) {
+            if("" == departmentId) {
+                common.layerErrorMsg("获取组织节点信息错误");
+                return;
+            }
+            if(departmentId == "-999") {
+                $('#departmentName').html("根组织");
+                $('#departmentId').val('');
+                $("#buttonGroup").hide();
+            }
+            $.ajax({
+                url : "/auth/department/findDepartmentInfo.json",
+                type : 'post',
+                data : {"departmentId": departmentId},
+                cache:false,
+                success : function(data) {
+                    // 操作成功
+                    if(data.success){
+                        $('#departmentName').html(data.data.departmentName);
+                        $('#departmentId').val(departmentId);
+                        if (data.data.others.roles != 'undefinded') {
+                            var c = [], roles = data.data.others.roles;
+                            $.each(roles, function(i, val) {
+                                c.push(val['roleName']);
+                            });
+                            $('#departRoles').html(c.join(","));
+                        } else {
+                            $('#departRoles').html('');
+                        }
+                        if (data.data.others.staffs != 'undefinded') {
+                            var c = [], staffs = data.data.others.staffs;
+                            $.each(staffs, function(i, val) {
+                                c.push(val['realName']);
+                            });
+                            $('#departStaffs').html(c.join(","));
+                        } else {
+                            $('#departStaffs').html('');
+                        }
+                        // 按钮可点击
+                        if(departmentId != "-999") {
+                            $("#buttonGroup").show()
+                        };
+                    } else {
+                        common.layerErrorMsg(data.message);
+                    }
+                },error:function(data){
+                    common.layerErrorMsg("请求失败");
+                }
+            });
         }
-    };
-    var zNodes =[
-        { id:1, pId:0, name:"随意勾选 1", open:true},
-        { id:11, pId:1, name:"随意勾选 1-1", open:true},
-        { id:111, pId:11, name:"随意勾选 1-1-1"},
-        { id:112, pId:11, name:"随意勾选 1-1-2"},
-        { id:12, pId:1, name:"随意勾选 1-2", open:true},
-        { id:121, pId:12, name:"随意勾选 1-2-1"},
-        { id:122, pId:12, name:"随意勾选 1-2-2"},
-        { id:2, pId:0, name:"随意勾选 2", checked:true, open:true},
-        { id:21, pId:2, name:"随意勾选 2-1"},
-        { id:22, pId:2, name:"随意勾选 2-2", open:true},
-        { id:221, pId:22, name:"随意勾选 2-2-1", checked:true},
-        { id:222, pId:22, name:"随意勾选 2-2-2"},
-        { id:23, pId:2, name:"随意勾选 2-3"}
-    ];
-    $(document).ready(function () {
-        // $.fn.zTree.init($("#treeDemo"), setting, zNodes);
-    })
+
+        function getRoleAndStaff(departmentId) {
+            $.ajax({
+                url : "/auth/department/findDepartment.json",
+                type : 'post',
+                data : {"departmentId": departmentId},
+                cache:false,
+                success : function(data) {
+                    // 操作成功
+                    if(data.success){
+
+                    } else {
+                        common.layerErrorMsg(data.message);
+                    }
+                },error:function(data){
+                    common.layerErrorMsg("请求失败");
+                }
+            });
+        }
+
+        /**
+         * 添加组织节点
+         */
+        function add() {
+            $(".editGroup b").on('click', function() {
+                var type = $(this).attr("data-options-type");
+                var icon = $(this).attr("data-options-icon");
+                var title = $(this).attr("data-options-title");
+                var url = $(this).attr("data-options-url");
+                var data = {
+                    type: type,
+                    icon: icon,
+                    title: title,
+                    url: url,
+                    width: '400px',
+                    height: '500px',
+                    maxmin: true
+                };
+                common.layerOpen2(data);
+            });
+        }
+
+        /**
+         * 添加组织节点
+         */
+        function edit() {
+
+        }
+
+        /**
+         * 删除组织节点
+         */
+        function del() {
+
+        }
+    });
+
 </script>
 </body>
 </html>

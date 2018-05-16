@@ -108,7 +108,7 @@
             regPwd: function(value) {
                 //获取密码
                 var pwd = $("#pwd").val();
-                if(!new RegExp(pwd).test(value)) {
+                if(pwd != value) {
                     return '两次输入的密码不一致';
                 }
             }

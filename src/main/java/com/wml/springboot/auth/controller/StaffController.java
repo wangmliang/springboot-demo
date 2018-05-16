@@ -337,11 +337,9 @@ public class StaffController extends BaseController {
 	 * @author WML
 	 * 2016年11月8日 - 上午9:05:54
 	 */
-	@RequestMapping(value = { "/updateStaffRole.ajax" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
+	@RequestMapping(value = { "/updateStaffRole.json" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
-	public Map<String, ? extends Object> updateStaffRole(
-			@RequestParam String operation, @RequestParam Long staffId,
-			@RequestParam Long roleId) {
+	public Map<String, ? extends Object> updateStaffRole(@RequestParam String operation, @RequestParam Long staffId, @RequestParam Long roleId) {
 		try {
 			if ((isEmpty(operation)) || (isEmpty(staffId)) || (isEmpty(roleId))) {
 				throw new Exception("参数为空");
@@ -370,21 +368,11 @@ public class StaffController extends BaseController {
 	 * @author WML
 	 * 2016年11月8日 - 上午9:06:13
 	 */
-	@RequestMapping({ "/listStaffRoles.ajax" })
-	@ResponseBody
-	public LayerPage<Role> listStaffRoles(HttpServletRequest request) {
-		LayerPage layerPage = null;
-		try {
-			Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "");
-			Integer page = Integer.valueOf(searchParams.get("page").toString());
-			Integer limit = Integer.valueOf(searchParams.get("limit").toString());
-			Long staffId = Long.valueOf(searchParams.get("staffId").toString());
-			layerPage = new LayerPage<Role>(this.staffService.listStaffRoles(staffId));
-		} catch (Exception e) {
-			layerPage.setCode(1);
-			layerPage.setMsg("请求错误");
-		}
-		return layerPage;
+	@RequestMapping({ "/listStaffRoles.html" })
+	public String listStaffRoles(Long staffId, Model model) throws Exception {
+		model.addAttribute("staffId", staffId);
+		model.addAttribute("roles", this.staffService.listStaffRoles(staffId));
+		return "admin/auth/staff/listStaffRoles";
 	}
 
 	/**

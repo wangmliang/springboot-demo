@@ -35,9 +35,11 @@
                         <div class="layui-field-box" disabled="disabled" id="departStaffs"></div>
                     </fieldset>
                     <div style="margin: 30px; text-align: center; display: none;" id="buttonGroup">
-                        <button class="layui-btn">添加角色</button>
-                        <button class="layui-btn layui-btn-normal">添加成员</button>
-                        <button class="layui-btn layui-btn-warm">成员授权</button>
+                        <a class="layui-btn" data-options-type="edit" data-options-url="/auth/department/disRole.html" data-options-icon="&#xe642;" data-options-title="分配角色"
+                           data-options-width="600px" data-options-height="400px">添加角色</a>
+                        <a class="layui-btn layui-btn-normal" data-staff="true" data-options-type="edit" data-options-url="/auth/department/addStaff.html" data-options-icon="&#xe608;" data-options-title="添加成员"
+                           data-options-width="700px" data-options-height="450px">添加成员</a>
+                        <!--<a class="layui-btn layui-btn-warm">成员授权</a>-->
                     </div>
                 </div>
             </fieldset>
@@ -63,10 +65,10 @@
                     var treeMap = [];
                     var appendHtml = function(id) {
                        var html = '<span class=editGroup data-id=i style=display:none>';
-                        html += '<b data-id=\'' + id + '\' data-options-type=edit data-options-url=../role/edit.html data-options-icon=&#xe608; data-options-title=新增节点><i class=\'fa fa-check-square\' style=margin:4px></i></b>';
-                        html += '<b data-id=\'' + id+ '\'><i class=\'fa fa-pencil\'></i></b>';
+                        html += '<b data-id=\'' + id + '\' data-options-type=edit data-options-url=/auth/department/add.html?parentId=' + id + ' data-options-icon=&#xe608; data-options-title=新增组织 ><i class=\'fa fa-check-square\' style=margin:4px ></i></b>';
+                        html += '<b data-id=\'' + id+ '\' data-options-type=edit data-options-url=/auth/department/edit.html?id=' + id + ' data-options-icon=&#xe642; data-options-title=修改组织 ><i class=\'fa fa-pencil\' ></i></b>';
                         if(id != "-999") {
-                            html += '<b data-id=\'' + id+ '\'><i class=\'fa fa-trash-o\'></i></b>';
+                            html += '<b data-id=\'' + id+ '\' data-options-type=delete data-options-url=/auth/department/delDepartment.json?departmentId=' + id + ' data-options-icon=&#xe640; data-options-title=删除组织 ><i class=\'fa fa-trash-o\' ></i></b>';
                         }
                         html += '</span>';
                        return html;
@@ -74,8 +76,9 @@
 
                     var subTree = function(nodes) {
                         var len = nodes.length;
-                        treeMap.push(', "children":[{');
+                        treeMap.push(', "children":[');
                         for (var i = 0;i < len; i++) {
+                            treeMap.push('{');
                             treeMap.push('"id":' + nodes[i]['id']);
                             treeMap.push(', "name":' + '"' + nodes[i]['text'] + appendHtml(nodes[i]['id']) + '"');
                             if (nodes[i]['children'] && nodes[i]['children'].length > 0) {
@@ -87,13 +90,13 @@
                                 treeMap.push('}');
                             }
                         }
-                        //treeMap.push("}}");
                         treeMap.push("]");
                     };
                     var transformTree = function(nodes) {
                         var len = nodes.length;
-                        treeMap.push("[{");
+                        treeMap.push("[");
                         for (var i = 0;i < len; i++) {
+                            treeMap.push("{");
                             treeMap.push('"id":' + nodes[i]['id']);
                             treeMap.push(', "name":' + '"' + nodes[i]['text'] + appendHtml(nodes[i]['id']) + '"');
                             if (nodes[i]['children'] && nodes[i]['children'].length > 0) {
@@ -105,7 +108,6 @@
                                 treeMap.push('}');
                             }
                         }
-                        //treeMap.push("}");
                         treeMap.push("]");
                     };
                     transformTree(d.data);
@@ -113,7 +115,6 @@
                         elem: '#demo',
                         nodes: eval(("(" + treeMap.join('') + ")")),
                         click: function (node, a) {
-                            //console.log(a);
                             nodeClick(node.id);
                         }
                     });
@@ -124,8 +125,11 @@
                             $(this).children('cite').children('span').hide();
                         }
                     });
-
-                    add();
+                    // 组织结构操作项
+                    editGroup();
+                    buttonGroup();
+                    // 绑定点击事件
+                    //common.bind();
                 } else {
                     common.layerErrorMsg('获取组织结构错误');
                 }
@@ -146,6 +150,7 @@
                 $('#departmentId').val('');
                 $("#buttonGroup").hide();
             }
+            $("#departmentId").val(departmentId);
             $.ajax({
                 url : "/auth/department/findDepartmentInfo.json",
                 type : 'post',
@@ -187,29 +192,10 @@
             });
         }
 
-        function getRoleAndStaff(departmentId) {
-            $.ajax({
-                url : "/auth/department/findDepartment.json",
-                type : 'post',
-                data : {"departmentId": departmentId},
-                cache:false,
-                success : function(data) {
-                    // 操作成功
-                    if(data.success){
-
-                    } else {
-                        common.layerErrorMsg(data.message);
-                    }
-                },error:function(data){
-                    common.layerErrorMsg("请求失败");
-                }
-            });
-        }
-
         /**
-         * 添加组织节点
+         * 组织节点操作组
          */
-        function add() {
+        function editGroup() {
             $(".editGroup b").on('click', function() {
                 var type = $(this).attr("data-options-type");
                 var icon = $(this).attr("data-options-icon");
@@ -220,7 +206,7 @@
                     icon: icon,
                     title: title,
                     url: url,
-                    width: '400px',
+                    width: '500px',
                     height: '500px',
                     maxmin: true
                 };
@@ -229,17 +215,36 @@
         }
 
         /**
-         * 添加组织节点
+         * 组织按钮操作组
          */
-        function edit() {
-
-        }
-
-        /**
-         * 删除组织节点
-         */
-        function del() {
-
+        function buttonGroup() {
+            $("#buttonGroup a").on('click', function() {
+                var departmentId = $("#departmentId").val();
+                if("" == departmentId) {
+                    common.layerErrorMsg("请先选择组织节点");
+                    return;
+                }
+                if ($(this).attr('data-staff') == "true" && $("#departRoles").text() == "") {
+                    common.layerErrorMsg('当前组织无角色，请先为该组织添加角色。');
+                    return;
+                }
+                var type = $(this).attr("data-options-type");
+                var icon = $(this).attr("data-options-icon");
+                var title = $(this).attr("data-options-title");
+                var url = $(this).attr("data-options-url");
+                var width = $(this).attr("data-options-width");
+                var height = $(this).attr("data-options-height");
+                var data = {
+                    type: type,
+                    icon: icon,
+                    title: title,
+                    url: url + "?departmentId=" + departmentId,
+                    width: width,
+                    height: height,
+                    maxmin: true
+                };
+                common.layerOpen2(data);
+            });
         }
     });
 

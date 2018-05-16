@@ -38,21 +38,25 @@
 						<address name="组织树查询" url="/auth/department/listDepartmentTree.json"/>
 						<address name="组织查询" url="/auth/department/findDepartment.json"/>
 						<address name="组织详情查询" url="/auth/department/findDepartmentInfo.json"/>
-						<address name="更新组织" url="/auth/department/updateDepartment.html"/>
+						<address name="更新组织" url="/auth/department/updateDepartment.json"/>
+						<address name="添加组织页面" url="/auth/department/add.html"/>
 					</operation>
 					<operation key="MODIFY" name="组织修改" desc="组织修改">
+						<address name="更新组织页面" url="/auth/department/edit.html"/>
 						<address name="更新组织" url="/auth/department/updateDepartment.json"/>
 					</operation>
 					<operation key="DELETE" name="组织删除" desc="组织删除">
 						<address name="删除组织" url="/auth/department/delDepartment.json"/>
 					</operation>
 					<operation key="ROLE2DEPT" name="组织添加角色" desc="组织添加角色">
-						<address name="添加组织角色" url="/auth/department/updateDepartmentRole"/>
-						<address name="查询组织角色列表" url="/auth/department/listDepartmentRoles"/>
+						<address name="添加组织角色" url="/auth/department/disRole.html"/>
+						<address name="添加组织角色" url="/auth/department/updateDepartmentRole.json"/>
+						<address name="查询组织角色列表" url="/auth/department/listDepartmentRoles.json"/>
 					</operation>
 					<operation key="STAFF2DEPT" name="组织添加用户" desc="组织添加用户">
-						<address name="查询组织用户列表" url="/auth/staff/listStaff"/>
-						<address name="添加组织用户" url="/auth/staff/updateStaffDepartment"/>
+						<address name="添加组织角色" url="/auth/department/addStaff.html"/>
+						<address name="查询组织用户列表" url="/auth/staff/listStaff.json"/>
+						<address name="添加组织用户" url="/auth/staff/updateStaffDepartment.json"/>
 					</operation>
 					<operation key="AUTH2STAFF" name="组织成员授权" desc="组织成员授权">
 						<address name="查询角色关联下用户列表" url="/auth/staff/listRoleByStaffIds"/>
@@ -88,8 +92,8 @@
 				</operation>
 				<operation key="AUTHSTAFF" name="授权" desc="用户授权">
 					<address name="获取用户详情" url="/auth/staff/findStaff.html"/>
-					<address name="查询用户角色列表" url="/auth/staff/listStaffRoles"/>
-					<address name="更新用户角色" url="/auth/staff/updateStaffRole"/>
+					<address name="查询用户角色列表" url="/auth/staff/listStaffRoles.html"/>
+					<address name="更新用户角色" url="/auth/staff/updateStaffRole.json"/>
 				</operation>
 			</resource>
 		</resource-category>

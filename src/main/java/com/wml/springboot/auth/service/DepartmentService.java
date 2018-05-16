@@ -41,8 +41,7 @@ public class DepartmentService {
 		if (StringUtils.isNotEmpty(role)) {
 			String[] roles = role.split(",");
 			for (String r : roles)
-				insertDepartmentRole(department.getDepartmentId(),
-						Long.valueOf(r));
+				insertDepartmentRole(department.getDepartmentId(), Long.valueOf(r));
 		}
 	}
 
@@ -52,12 +51,10 @@ public class DepartmentService {
 			throw new Exception("不能更新空部门");
 		}
 
-		Department d = this.departmentDao.findDepartment(department
-				.getDepartmentId());
+		Department d = this.departmentDao.findDepartment(department.getDepartmentId());
 
 		if (d == null) {
-			throw new Exception("找不到对应的部门[id=" + department.getDepartmentId()
-					+ "]");
+			throw new Exception("找不到对应的部门[id=" + department.getDepartmentId() + "]");
 		}
 
 		d.setDepartmentName(department.getDepartmentName());
@@ -67,8 +64,7 @@ public class DepartmentService {
 
 		this.departmentDao.updateDepartment(department);
 
-		List<Role> oldDepartmentRoles = this.roleDao
-				.listDepartmentRoles(department.getDepartmentId());
+		List<Role> oldDepartmentRoles = this.roleDao.listDepartmentRoles(department.getDepartmentId());
 		List<Long> roles2Long = new ArrayList<Long>();
 		Map<String, Object> others = department.getOthers();
 		String role = null != others ? (String) others.get("roles") : "";
@@ -218,18 +214,15 @@ public class DepartmentService {
 		return result;
 	}
 
-	private void transferTreeNodes2DeptIds(List<TreeNode> treeNodes,
-										   List<String> departmentIds) {
+	private void transferTreeNodes2DeptIds(List<TreeNode> treeNodes, List<String> departmentIds) {
 		for (TreeNode node : treeNodes) {
 			departmentIds.add(node.getId());
 			if ((null != node.getChildren()) && (!node.getChildren().isEmpty()))
-				transferTreeNodes2DeptIds(
-						new ArrayList<TreeNode>(node.getChildren()),
-						departmentIds);
+				transferTreeNodes2DeptIds(new ArrayList<TreeNode>(node.getChildren()), departmentIds);
 		}
 	}
 
-	public List<Role> listDepartmentRoles1(Long departmentId) throws Exception {
+	public List<Role> listDepartmentRoles(Long departmentId) throws Exception {
 		/*Page<Role> page = new Page<Role>();
 		page.setRows(Integer.valueOf(99999));*/
 		Map<String, Object> map = new HashMap<>();
@@ -241,8 +234,7 @@ public class DepartmentService {
 		List<Role> allRoles = this.roleDao.listRole(map);
 		Map<Long, Role> roleMap;
 		if (null != departmentId) {
-			roleMap = createRoleMap(this.roleDao
-					.listDepartmentRoles(departmentId));
+			roleMap = createRoleMap(this.roleDao.listDepartmentRoles(departmentId));
 			for (Role r : allRoles) {
 				if (roleMap.containsKey(r.getRoleId()))
 					r.addOtherField("check", "true");
@@ -278,5 +270,20 @@ public class DepartmentService {
 		}
 
 		return value.toString();
+	}
+
+	public void updateDepartRoles(Long departmentId, String roleIds) {
+		// 清除原有的角色
+		departmentDao.deleteDepartmentRoles(departmentId);
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("departmentId", departmentId);
+		String[] list = roleIds.split(",");
+		if(list != null && list.length > 0) {
+			for (String roleId: list) {
+				map.put("roleId", Long.valueOf(roleId));
+				departmentDao.insertDepartmentRoles(map);
+			}
+		}
 	}
 }

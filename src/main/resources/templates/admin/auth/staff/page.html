@@ -47,7 +47,7 @@
 <!-- 操作按钮 -->
 <script type="text/html" id="operateBtns">
     <a class="layui-btn layui-btn-xs" data-operation th:title="修改信息"
-       data-options="{'type':'edit','url':'edit.html?id={{d.staffId}}','icon':'&#xe642;','title':' 修改成员','width':'700px','height':'370px','maxmin':true}">
+       data-options="{'type':'edit','url':'/auth/staff/edit.html?id={{d.staffId}}','icon':'&#xe642;','title':' 修改成员','width':'700px','height':'370px','maxmin':true}">
         <i class="layui-icon">&#xe642;</i>
     </a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" data-operation th:title="删除成员"
@@ -59,7 +59,7 @@
         <i class="layui-icon layui-icon-password">&#xe770;</i>
     </a>
     <a class="layui-btn layui-bg-blue layui-btn-xs" data-operation th:title="分配角色"
-       data-options="{'type':'edit','url':'listRoleResource.json?staffId={{d.staffId}}','icon':'&#xe614;','title':' 给【{{d.realName}}】分配角色','width':'100%','height':'100%','maxmin':false}">
+       data-options="{'type':'edit','url':'/auth/staff/listStaffRoles.html?staffId={{d.staffId}}','icon':'&#xe642;','title':' 给成员【{{d.realName}}】分配角色','width':'600px','height':'400px','maxmin':true}">
         <i class="layui-icon">&#xe614;</i>
     </a>
 </script>

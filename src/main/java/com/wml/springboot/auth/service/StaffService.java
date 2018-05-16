@@ -534,7 +534,7 @@ public class StaffService {
 		return pa.encryptPassword();
 	}
 
-	public PageInfo<Role> listStaffRoles(Long staffId) throws Exception {
+	public List<Role> listStaffRoles(Long staffId) throws Exception {
 		Map<String, Object> map = new HashMap<>();
 		Staff staff = this.staffDao.findStaff(staffId);
 		if ((null != staff) && (staff.getDepartmentId() != null)) {
@@ -549,7 +549,7 @@ public class StaffService {
 				r.addOtherField("check", "false");
 			}
 		}
-		return new PageInfo<Role>(allRoles);
+		return allRoles;
 	}
 
 	private Map<Long, Role> createRoleMap(List<Role> list) {
@@ -586,17 +586,15 @@ public class StaffService {
 	}
 
 	@Transactional(rollbackFor = { Exception.class })
-	public void updateStaffRolesDepartment(Long departmentId, String staffIds,
-			String staffIdRoles) throws Exception {
+	public void updateStaffRolesDepartment(Long departmentId, String staffIds, String staffIdRoles) throws Exception {
 		String[] staffIdArr = staffIds.split(",");
 		for (String staffId : staffIdArr) {
-			this.staffDao
-					.deleteStaffRoles(Long.valueOf(Long.parseLong(staffId)));
+			this.staffDao.deleteStaffRoles(Long.valueOf(Long.parseLong(staffId)));
 		}
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("departmentId", departmentId);
 		String[] staffIdRoleArr = staffIdRoles.split(",");
-		for (String staffIdRole : staffIdRoleArr)
+		for (String staffIdRole : staffIdRoleArr) {
 			if (!StringUtils.isEmpty(staffIdRole)) {
 				String[] roles = staffIdRole.split("\\|");
 				if (roles.length == 2) {
@@ -605,6 +603,7 @@ public class StaffService {
 					this.staffDao.insertStaffRoles(params);
 				}
 			}
+		}
 	}
 
 	/*public List<Staff> listStaffs(Long departmentId, String keyword) throws Exception {

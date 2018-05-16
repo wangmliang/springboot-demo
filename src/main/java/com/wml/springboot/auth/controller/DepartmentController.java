@@ -1,5 +1,6 @@
 package com.wml.springboot.auth.controller;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import com.wml.springboot.auth.BaseController;
 import com.wml.springboot.auth.entity.Department;
 import com.wml.springboot.auth.entity.Role;
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * ����Controller
+ * 组织管理Controller
  * <pre>
  * <b>Title��</b>DepartmentController.java<br/>
  * <b>@author��</b>WML<br/>
@@ -65,6 +66,31 @@ public class DepartmentController extends BaseController {
 	}
 
 	/**
+	 * 分配角色页
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/disRole.html")
+	public String disRole(Long departmentId, Model model) throws Exception{
+		model.addAttribute("departmentId", departmentId);
+		model.addAttribute("roles", this.departmentService.listDepartmentRoles(departmentId));
+		return "admin/auth/department/disRole";
+	}
+
+	/**
+	 * 添加成员页
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/addStaff.html")
+	public String addStaff(Long departmentId, Model model) throws Exception{
+		model.addAttribute("departmentId", departmentId);
+		model.addAttribute("roles", this.departmentService.listDepartmentRoles(departmentId));
+		return "admin/auth/department/addStaff";
+	}
+
+
+	/**
 	 * 编辑页
 	 * @param id 角色id
 	 * @param model
@@ -72,12 +98,14 @@ public class DepartmentController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = {"/add.html", "/edit.html"})
-	public String edit(Long id, Model model) throws Exception{
+	public String edit(Long id, Long parentId, Model model) throws Exception{
 		Department role = new Department();
 		if(null != id) {
 			role = departmentService.findDepartment(id);
 		}
+		model.addAttribute("departRoles", this.departmentService.listDepartmentRoles(id));
 		model.addAttribute("record", role);
+		model.addAttribute("parentId", parentId);
 		return "admin/auth/department/edit";
 	}
 
@@ -113,7 +141,7 @@ public class DepartmentController extends BaseController {
 	 * @author WML
 	 * 2016年11月7日 - 下午5:55:46
 	 */
-	@RequestMapping(value = { "/updateDepartment.ajax" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
+	@RequestMapping(value = { "/updateDepartment.json" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
 	public Map<String, ? extends Object> updateDepartment(Department department) {
 		try {
@@ -149,7 +177,7 @@ public class DepartmentController extends BaseController {
 	 * @author WML
 	 * 2016年11月7日 - 下午5:56:05
 	 */
-	@RequestMapping({ "/delDepartment.ajax" })
+	@RequestMapping({ "/delDepartment.json" })
 	@ResponseBody
 	public Map<String, ? extends Object> delDepartment(Long departmentId) {
 		try {
@@ -221,49 +249,39 @@ public class DepartmentController extends BaseController {
 	 * @author WML
 	 * 2016年11月7日 - 下午5:57:15
 	 */
-	@RequestMapping({ "/listDepartmentRoles.ajax" })
+	@RequestMapping({ "/listDepartmentRoles.json" })
 	@ResponseBody
-	public LayerPage<Role> listDepartmentRoles(HttpServletRequest request) {
-		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "");
-		LayerPage<Role> layerPage = null;
-		Long departmentId = Long.valueOf(searchParams.get("departmentId").toString());
+	public Map<String, ? extends Object> listDepartmentRoles(Long departmentId) {
 		try {
-			Integer page = Integer.valueOf(searchParams.get("page").toString());
-			Integer limit = Integer.valueOf(searchParams.get("limit").toString());
-			//layerPage = new LayerPage<Role>(this.departmentService.listDepartmentRoles(departmentId));
+			return success(this.departmentService.listDepartmentRoles(departmentId));
 		} catch (Exception e) {
 			LOGGER.error("根据[departmentId]=" + departmentId + ",查询角色出错", e);
-			layerPage.setCode(1);
-			layerPage.setMsg("请求错误");
+			return fail(e.getMessage());
 		}
-		return layerPage;
 	}
 
 	/**
 	 * 添加或删除角色信息
-	 * @param operation
 	 * @param departmentId
-	 * @param roleId
+	 * @param roleIds
 	 * @return
 	 * @author WML
 	 * 2016年11月7日 - 下午5:58:08
 	 */
-	@RequestMapping(value = { "/updateDepartmentRole.ajax" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
+	@RequestMapping(value = { "/updateDepartmentRole.json" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
-	public Map<String, ? extends Object> updateStaffRole(
-			@RequestParam String operation, @RequestParam Long departmentId,
-			@RequestParam Long roleId) {
+	public Map<String, ? extends Object> updateStaffRole(@RequestParam Long departmentId, @RequestParam String roleIds) {
 		try {
-			if ((isEmpty(operation)) || (isEmpty(departmentId))
-					|| (isEmpty(roleId))) {
+			if ((isEmpty(departmentId)) || (isEmpty(roleIds))) {
 				throw new Exception("参数为空");
 			}
-			if ("add".equalsIgnoreCase(operation)) {
+			departmentService.updateDepartRoles(departmentId, roleIds);
+			/*if ("add".equalsIgnoreCase(operation)) {
 				this.departmentService.insertDepartmentRole(departmentId, roleId);
 				return success("添加角色成功。");
 			}
-			this.departmentService.deleteDepartmentRoleByRoleIdAndDeptId(departmentId, roleId);
-			return success("删除角色成功。");
+			this.departmentService.deleteDepartmentRoleByRoleIdAndDeptId(departmentId, roleId);*/
+			return success("角色更新成功。");
 		} catch (Exception e) {
 			LOGGER.error("根据[][departmentId]=" + departmentId + ",查询角色出错", e);
 			return fail(e.getMessage());

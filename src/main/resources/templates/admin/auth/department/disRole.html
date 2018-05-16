@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>分配角色</title>
+    <link rel="stylesheet" th:href="@{/plugins/layui/css/layui.css}" media="all" />
+</head>
+<body>
+<div class="row">
+    <form class="layui-form" method="POST">
+        <table class="layui-table">
+            <thead>
+                <tr>
+                    <th lay-data="{field:'roleName', width:300}">角色名称</th>
+                    <th lay-data="{fixed: 'right', width: 60, align: 'center', toolbar: '#barDemo'}">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="" th:each="role : ${roles}">
+                    <td data-field="username">
+                        <div class="layui-table-cell laytable-cell-1-username" th:text="${role.roleName}">
+                            user-1
+                        </div>
+                    </td>
+                    <td data-field="sex">
+                        <div class="layui-table-cell laytable-cell-1-sex">
+                            <div class="layui-form-item" pane="">
+                                <div class="layui-input-block">
+                                    <input type="checkbox" name="roleId" lay-skin="primary" th:checked="${role.others.check}" th:value="${role.roleId}">
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <input type="hidden" name="departmentId" th:value="${departmentId}">
+        <input type="hidden" name="roleIds">
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="save" style="margin-left: 140px;">立即提交</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- 引用layer基本js -->
+<script th:src="@{/plugins/layui/layui.js}"></script>
+<script>
+    layui.config({
+        base: '../../build/js/',
+        version: '1.0.1'
+    }).use(['common', 'form'], function() {
+        var $ = layui.jquery, common = layui.common, form = layui.form;
+
+        /**保存*/
+        form.on("submit(save)", function(data) {
+            var url = "/auth/department/updateDepartmentRole.json";
+
+            var values = [];
+            $("input[name='roleId']:checked").each(function() {
+                values.push($(this).val());
+            });
+            data.field.roleIds = values.join(",");
+
+            //异步表单提交
+            common.fromPostAjax(url, data.field);
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

@@ -43,11 +43,9 @@
                                     <div class="layui-colla-content layui-show">
                                         <div class="layui-form-item">
                                             <input type="checkbox" name="all" lay-skin="primary" lay-filter="allChoose" title="全选">
-                                            <div>
-                                                <th:block th:each="t4: ${t3.children}">
-                                                    <input type="checkbox" name="" lay-skin="primary" lay-filter="itemChoose" th:title="${t4.text}" th:checked="${t4.checked}" th:value="${t4.id}">
-                                                </th:block>
-                                            </div>
+                                            <th:block th:each="t4: ${t3.children}">
+                                                <input type="checkbox" name="" lay-skin="primary" lay-filter="itemChoose" th:title="${t4.text}" th:checked="${t4.checked}" th:value="${t4.id}">
+                                            </th:block>
                                         </div>
                                     </div>
                                 </div>
@@ -105,12 +103,16 @@
 
         form.on('checkbox(itemChoose)',function(data){
             var sib = $(data.elem).parent().find('input[type="checkbox"]:checked').length; // 选中个数
-            var total = $(data.elem).parent().find('input[type="checkbox"]').length; // 总个数，排除全选
+            var total = $(data.elem).parent().find('input[type="checkbox"]').length - 1; // 总个数，排除全选
+            // 全选选择则选中数-1
+            if($(this).parent().find('input[name="all"]').prop("checked")) {
+                sib = sib - 1;
+            }
             if(sib == total){
-                $(this).parent().parent().parent().children().find('input[name="all"]').prop("checked",true);
+                $(this).parent().find('input[name="all"]').prop("checked",true);
                 form.render();
             }else{
-                $(this).parent().parent().parent().children().find('input[name="all"]').prop("checked",false);
+                $(this).parent().find('input[name="all"]').prop("checked",false);
                 form.render();
             }
         });

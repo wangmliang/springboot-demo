@@ -196,6 +196,12 @@
       <version>1.6.4</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.t-io</groupId>
+      <artifactId>tio-websocket-server</artifactId>
+      <version>0.0.5-tio-websocket</version>
+    </dependency>
+
     <!-- https://mvnrepository.com/artifact/io.springside/springside-utils -->
     <dependency>
       <groupId>io.springside</groupId>

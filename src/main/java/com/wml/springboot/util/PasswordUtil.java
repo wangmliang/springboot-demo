@@ -18,6 +18,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
 import com.wml.springboot.auth.PasswordException;
+import com.wml.springboot.exception.MyException;
 import org.apache.commons.validator.GenericValidator;
 
 import sun.misc.BASE64Encoder;
@@ -100,7 +101,7 @@ public final class PasswordUtil {
 		} catch (NoSuchAlgorithmException e) {
 			throw new PasswordException("加密算法：PBEWithMD5AndDES不存在！", e);
 		} catch (InvalidKeySpecException e) {
-			throw new PasswordException("公钥" + publicKey.toString() + "不正确！", e);
+			throw new PasswordException("公钥" + (null != publicKey ? publicKey.toString() : "") + "不正确！", e);
 		} catch (NoSuchPaddingException e) {
 			throw new PasswordException("不支持PBEWithMD5AndDES加密算法的Padding！", e);
 		} catch (InvalidKeyException e) {
@@ -182,7 +183,7 @@ public final class PasswordUtil {
 				break;
 			case 1:
 				if (passwordMinLength < 2) {
-					throw new RuntimeException("简单强度的密码最小长度应该大于等于2。当前设置" + passwordMinLength);
+					throw new MyException("简单强度的密码最小长度应该大于等于2。当前设置" + passwordMinLength);
 				}
 				r = getRandom(0, "0123456789".length() - 1);
 				chars[0] = "0123456789".charAt(r);
@@ -195,7 +196,7 @@ public final class PasswordUtil {
 				break;
 			case 2:
 				if (passwordMinLength < 2) {
-					throw new RuntimeException("复杂强度的密码最小长度应该大于等于2。当前设置" + passwordMinLength);
+					throw new MyException("复杂强度的密码最小长度应该大于等于2。当前设置" + passwordMinLength);
 				}
 				r = getRandom(0, "0123456789".length() - 1);
 				chars[0] = "0123456789".charAt(r);
@@ -208,7 +209,7 @@ public final class PasswordUtil {
 				break;
 			case 3:
 				if (passwordMinLength < 3) {
-					throw new RuntimeException("非常复杂强度的密码最小长度应该大于等于3。当前设置" + passwordMinLength);
+					throw new MyException("非常复杂强度的密码最小长度应该大于等于3。当前设置" + passwordMinLength);
 				}
 				r = getRandom(0, "0123456789".length() - 1);
 				chars[0] = "0123456789".charAt(r);

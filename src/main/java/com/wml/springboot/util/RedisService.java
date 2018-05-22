@@ -7,10 +7,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -34,11 +32,6 @@ public class RedisService<T> {
 
     @Autowired
     private RedisTemplate redisTemplate;
-
-    /**
-     * 一天有多少分钟，默认时间是一天
-     */
-    private static final long MINUTES_OF_ONE_DAY = 24 * 60;
 
     /**
      * 判断 key 是否在 redis 数据库中
@@ -111,16 +104,16 @@ public class RedisService<T> {
     }
 
     public Map<String, String> getMulti(Collection<String> keys) {
-        Map<String,String> map = new HashMap<String, String>();
-        if (keys==null||keys.size()==0){
-            return  map;
+        Map<String,String> map = new HashMap<>();
+        if (keys == null || keys.isEmpty()){
+            return map;
         }
         try {
             List<String> valueList = redisTemplate.opsForValue().multiGet(keys);
             List<String> keyList = (List<String>)keys;
             String key = null;
             String value = null;
-            if (valueList != null && valueList.size() > 0){
+            if (valueList != null && !valueList.isEmpty()){
                 for (int i=0;i<valueList.size();i++){
                     key = keyList.get(i);
                     value = valueList.get(i);
@@ -129,9 +122,8 @@ public class RedisService<T> {
             }
         }catch (Exception e){
             logger.error("批量获取redis值失败,keys=[{}]",keys,e);
-        }finally {
-            return  map;
         }
+        return  map;
     }
 
     public void clear() {
@@ -149,12 +141,12 @@ public class RedisService<T> {
             return redisTemplate.opsForValue().increment(key,incrBy);
         }catch (Exception e){
             logger.error("redis key=[{}],incrBy=[{}]自增长失败,将返回0",key,incrBy,e);
-            return 0l;
+            return 0L;
         }
     }
 
     public long incrExpir(final String key, final int incrBy, final int timeOut) {
-        Long incrResult = 0l;
+        Long incrResult = 0L;
         try {
             List<Object> list = redisTemplate.executePipelined(new RedisCallback<List<Object>>() {
                 @Override
@@ -164,7 +156,7 @@ public class RedisService<T> {
                     return null;
                 }
             });
-            if (list!=null&&list.size()>0){
+            if (list!=null && !list.isEmpty()){
                 incrResult = (Long) list.get(0);
             }
         }catch (Exception e){
@@ -202,7 +194,7 @@ public class RedisService<T> {
             });
         }catch (Exception e){
             logger.error("redis key=[{}],decrBy=[{}]自减少失败,将返回0",key,decrBy,e);
-            return 0l;
+            return 0L;
         }
     }
 
@@ -225,9 +217,10 @@ public class RedisService<T> {
         redisTemplate.execute(new RedisCallback<Boolean>() {
             @Override
             public Boolean doInRedis(RedisConnection conn) throws DataAccessException {
-                for (String kv : kvMap.keySet()) {
-                    conn.hIncrBy(key.getBytes(), kv.getBytes(), kvMap.get(kv).longValue());
-                    if (expire > 0) conn.expire(kv.getBytes(), expire);
+                for (Map.Entry<String, Integer> entry : kvMap.entrySet()) {
+                    conn.hIncrBy(key.getBytes(), entry.getKey().getBytes(), kvMap.get(entry.getKey()).longValue());
+                    if (expire > 0)
+                        conn.expire(entry.getKey().getBytes(), expire);
                 }
                 return false;
             }

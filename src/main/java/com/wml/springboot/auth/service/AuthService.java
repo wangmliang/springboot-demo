@@ -23,16 +23,11 @@ public class AuthService{
 	@Autowired
 	private OperationAddressDao operationAddressDao;
 
-	// @Autowired
-	// private ResourceDao resourceDao;
-
 	@SuppressWarnings("unused")
 	private static final String REG_SEP = "{*}";
 
-	public Map<String, String> listAddressUrlByLoginName(String loginName)
-			throws Exception {
+	public Map<String, String> listAddressUrlByLoginName(String loginName) {
 		List<OperationAddress> list = this.operationAddressDao.listOperationAddressByLoginName(loginName);
-
 		return createMap(list);
 	}
 
@@ -92,8 +87,7 @@ public class AuthService{
 		String addressUrl = strs[0];
 		String addressParam = strs.length > 1 ? strs[1] : null;
 
-		Map<String, List<OperationAddress>> authMap = AuthCache.getCache()
-				.getAuthMap();
+		Map<String, List<OperationAddress>> authMap = AuthCache.getCache().getAuthMap();
 
 		StringBuilder sb = new StringBuilder();
 		if (!isContains(authMap.keySet(), addressUrl, sb)) {
@@ -105,33 +99,26 @@ public class AuthService{
 
 		Set<String> userOperationList = getResourceAndOperationKey(staffId);
 		String addressUrlTmp = addressUrl;
-		if ((null != sb) && (!"".equals(sb.toString()))) {
+		if ((null != sb) && StringUtils.isNotBlank (sb.toString())) {
 			addressUrlTmp = sb.toString();
 		}
-		List<OperationAddress> neededAuthList = (List<OperationAddress>) authMap
-				.get(addressUrlTmp);
+		List<OperationAddress> neededAuthList = (List<OperationAddress>) authMap.get(addressUrlTmp);
 
-		if ((neededAuthList == null) || (neededAuthList.size() == 0)) {
+		if ((neededAuthList == null) || (neededAuthList.isEmpty())) {
 			return false;
 		}
 
 		for (OperationAddress address : neededAuthList) {
-			logger.debug(new StringBuilder().append(address.getResourceId())
-					.append("-").append(address.getOperationKey()).toString());
-
-			if (userOperationList.contains(new StringBuilder()
-					.append(address.getResourceId()).append("-")
-					.append(address.getOperationKey()).toString())) {
-				if ((addressParam == null) || ("".equals(addressParam))) {
+			logger.debug(new StringBuilder().append(address.getResourceId()).append("-").append(address.getOperationKey()).toString());
+			if (userOperationList.contains(new StringBuilder().append(address.getResourceId()).append("-").append(address.getOperationKey()).toString())) {
+				if ((addressParam == null) || StringUtils.isBlank(addressParam)) {
 					return true;
 				}
-
 				if (containsAuthParam(addressParam, buildParamString(address))) {
 					return true;
 				}
 			}
 		}
-
 		return false;
 	}
 
@@ -179,7 +166,7 @@ public class AuthService{
 		List<Operation> list = this.operationDao
 				.listResourceOperationByStaffId(staffId);
 
-		Set<String> set = new HashSet<String>();
+		Set<String> set = new HashSet<>();
 
 		for (Operation record : list) {
 			set.add(new StringBuilder().append(record.getResourceId())
@@ -193,7 +180,7 @@ public class AuthService{
 		List<Operation> list = this.operationDao
 				.listResourceKeyAndOperationKeyStaffId(staffId);
 
-		Set<String> set = new HashSet<String>();
+		Set<String> set = new HashSet<>();
 
 		for (Operation record : list) {
 			set.add(new StringBuilder().append(record.getResourceKey())
@@ -203,7 +190,7 @@ public class AuthService{
 	}
 
 	private Map<String, String> createMap(List<OperationAddress> list) {
-		Map<String, String> urlMap = new HashMap<String, String>();
+		Map<String, String> urlMap = new HashMap<>();
 
 		for (OperationAddress address : list) {
 			urlMap.put(address.getOperationAddressUrl(),
@@ -215,7 +202,7 @@ public class AuthService{
 
 	private Map<String, List<OperationAddress>> createAuthMap(
 			List<OperationAddress> list) {
-		Map<String, List<OperationAddress>> authMap = new HashMap<String, List<OperationAddress>>();
+		Map<String, List<OperationAddress>> authMap = new HashMap<>();
 
 		List<OperationAddress> tempList = null;
 		for (OperationAddress address : list) {
@@ -225,7 +212,7 @@ public class AuthService{
 
 				tempList.add(address);
 			} else {
-				tempList = new ArrayList<OperationAddress>();
+				tempList = new ArrayList<>();
 
 				tempList.add(address);
 				authMap.put(address.getOperationAddressUrl(), tempList);
@@ -258,11 +245,11 @@ public class AuthService{
 
 	public List<Map<String, Boolean>> authorize(Long staffId, String[] resKeys,
 			String[] operKeys) {
-		List<Map<String, Boolean>> results = new ArrayList<Map<String, Boolean>>();
+		List<Map<String, Boolean>> results = new ArrayList<>();
 
 		Set<String> userOperationList = getResourceKeyAndOperationKey(staffId);
 		for (int i = 0; i < resKeys.length; i++) {
-			Map<String, Boolean> result = new HashMap<String, Boolean>();
+			Map<String, Boolean> result = new HashMap<>();
 			if (userOperationList.contains(new StringBuilder()
 					.append(resKeys[i]).append("-").append(operKeys[i])
 					.toString()))

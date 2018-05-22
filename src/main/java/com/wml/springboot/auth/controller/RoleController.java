@@ -7,10 +7,9 @@ import com.wml.springboot.auth.entity.Role;
 import com.wml.springboot.auth.entity.RoleResourceOperation;
 import com.wml.springboot.auth.service.RoleService;
 import com.wml.springboot.auth.tree.TreeNode;
-import com.wml.springboot.util.DateUtil;
+import com.wml.springboot.exception.MyException;
 import com.wml.springboot.util.LayerPage;
 import com.wml.springboot.util.StaffUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,15 +52,15 @@ public class RoleController extends BaseController {
 	 */
 	@RequestMapping(value = { "/updateRole.json" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
-	public Map<String, ? extends Object> updateRole(Role role) {
+	public Map<String, Object> updateRole(Role role) {
 		try {
 			String text = "";
 			if (role == null) {
-				throw new Exception("空对象错误");
+				throw new MyException("空对象错误");
 			}
 			role.setLastUpdateDate(new Date());
 			if (isEmpty(role.getRoleId())) {
-				if ((role != null) && (role.getCanModify() == null)) {
+				if (role != null && role.getCanModify() == null) {
 					role.setCanModify(Integer.valueOf(1));
 				}
 				if (StaffUtil.getLoginStaff() == null)
@@ -91,7 +90,7 @@ public class RoleController extends BaseController {
 	 */
 	@RequestMapping(value = { "/deleteRole.json" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
-	public Map<String, ? extends Object> deleteRole(Long roleId) {
+	public Map<String, Object> deleteRole(Long roleId) {
 		try {
 			this.roleService.deleteRole(roleId);
 			return success("删除角色成功");
@@ -103,8 +102,6 @@ public class RoleController extends BaseController {
 
 	/**
 	 * 列表页
-	 * @param id 主键id
-	 * @param model
 	 * @return
 	 * @throws Exception
 	 */
@@ -140,13 +137,14 @@ public class RoleController extends BaseController {
 	@RequestMapping({ "/listRoles.json" })
 	@ResponseBody
 	public LayerPage<Role> listRoles(HttpServletRequest request) {
-		LayerPage layerPage = null;
+		LayerPage<Role> layerPage = new LayerPage<>(null);
 		try {
 			Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "");
 			Integer page = Integer.valueOf(searchParams.get("page").toString());
 			Integer limit = Integer.valueOf(searchParams.get("limit").toString());
 			layerPage = new LayerPage<Role>(this.roleService.listRole(searchParams, page,limit));
 		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 			layerPage.setCode(1);
 			layerPage.setMsg("请求错误");
 		}
@@ -162,17 +160,18 @@ public class RoleController extends BaseController {
 	 */
 	@RequestMapping({ "/findRole.ajax" })
 	@ResponseBody
-	public Map<String, ? extends Object> findRoles(Long roleId) {
+	public Map<String, Object> findRoles(Long roleId) {
 		try {
 			if (roleId == null) {
-				throw new Exception("查询角色ID不能为空");
+				throw new MyException("查询角色ID不能为空");
 			}
 			Role r = this.roleService.findRole(roleId);
 			if (r == null) {
-				throw new Exception("找不到对应的角色[id=" + roleId + "]");
+				throw new MyException("找不到对应的角色[id=" + roleId + "]");
 			}
 			return success(r);
 		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 			return fail(e.getMessage());
 		}
 	}
@@ -196,7 +195,7 @@ public class RoleController extends BaseController {
 			if (role != null) {
 				if (isNotEmpty(roleId)) {
 					Role role2 = this.roleService.findRole(roleId);
-					if ((null != role2) && (role2.getRoleKey().equals(roleKey))) {
+					if (null != role2 && role2.getRoleKey().equals(roleKey)) {
 						return "true";
 					}
 				}
@@ -218,8 +217,7 @@ public class RoleController extends BaseController {
 	 */
 	@RequestMapping({ "/listRoleResource.html" })
 	public String listRoleResource(Long roleId, Model model) throws Exception {
-		Map<String, Object> map = new HashMap<>();
-		List<TreeNode> tree = null;
+		List<TreeNode> tree = new ArrayList<>();
 		if (roleId == null)
 			tree = this.roleService.buildRoleResourceTree();
 		else {
@@ -240,16 +238,17 @@ public class RoleController extends BaseController {
 	 */
 	@RequestMapping(value = { "/updateRoleResource.json" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
-	public Map<String, ? extends Object> updateRoleResource(
+	public Map<String, Object> updateRoleResource(
 			@RequestParam Long roleId,
 			@RequestParam String resourceIdAndOperationKey) {
 		try {
 			if (isEmpty(roleId)) {
-				throw new Exception("角色ID为空");
+				throw new MyException("角色ID为空");
 			}
 			this.roleService.updateRoleResource(roleId, createRoleResourceOperationList(resourceIdAndOperationKey));
 			return success("成功更新角色权限");
 		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 			return fail(e.getMessage());
 		}
 	}
@@ -262,7 +261,7 @@ public class RoleController extends BaseController {
 	 * 2016年11月8日 - 上午8:54:24
 	 */
 	private List<RoleResourceOperation> createRoleResourceOperationList(String idAndKeys) {
-		List<RoleResourceOperation> roleResourceOperations = new ArrayList<RoleResourceOperation>();
+		List<RoleResourceOperation> roleResourceOperations = new ArrayList<>();
 		if (isEmpty(idAndKeys)) {
 			return roleResourceOperations;
 		}

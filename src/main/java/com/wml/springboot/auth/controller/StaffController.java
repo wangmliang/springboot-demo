@@ -12,6 +12,7 @@ import com.wml.springboot.auth.entity.Staff;
 import com.wml.springboot.auth.service.DepartmentService;
 import com.wml.springboot.auth.service.RoleService;
 import com.wml.springboot.auth.service.StaffService;
+import com.wml.springboot.exception.MyException;
 import com.wml.springboot.util.LayerPage;
 import com.wml.springboot.util.RSAUtil;
 import com.wml.springboot.util.StaffUtil;
@@ -58,8 +59,6 @@ public class StaffController extends BaseController {
 
 	/**
 	 * 列表页
-	 * @param id 主键id
-	 * @param model
 	 * @return
 	 * @throws Exception
 	 */
@@ -95,8 +94,7 @@ public class StaffController extends BaseController {
 	 */
 	@RequestMapping(value = { "/createStaff.json" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
-	public Map<String, ? extends Object> createStaff(Staff staff)
-			throws Exception {
+	public Map<String, Object> createStaff(Staff staff) {
 		try {
 			if (isNotEmpty(staff.getStaffId())) {
 				staff.setLastUpdateDate(new Date());
@@ -131,10 +129,10 @@ public class StaffController extends BaseController {
 	 */
 	@RequestMapping(value = { "/updateStaff.json" }, method = {RequestMethod.POST })
 	@ResponseBody
-	public Map<String, ? extends Object> updateStaff(Staff staff) throws Exception {
+	public Map<String, Object> updateStaff(Staff staff) {
 		try {
 			if (isEmpty(staff.getLoginName())) {
-				throw new Exception("参数错误");
+				throw new MyException("参数错误");
 			}
 			Staff staff2 = this.staffService.findStaffByLoginName(staff.getLoginName());
 			staff2.setRealName(staff.getRealName());
@@ -161,10 +159,10 @@ public class StaffController extends BaseController {
 	 */
 	@RequestMapping(value = { "/findStaff.ajax" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
-	public Map<String, ? extends Object> findStaff(Long staffId) {
+	public Map<String, Object> findStaff(Long staffId) {
 		try {
 			if (isEmpty(staffId)) {
-				throw new Exception("用户Id参数不能为空");
+				throw new MyException("用户Id参数不能为空");
 			}
 			Staff staff = this.staffService.findStaff(staffId);
 			if (staff == null) {
@@ -208,10 +206,10 @@ public class StaffController extends BaseController {
 	 */
 	@RequestMapping(value = { "/deleteStaff.json" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
-	public Map<String, ? extends Object> deleteStaff(Long staffId) {
+	public Map<String, Object> deleteStaff(Long staffId) {
 		try {
 			if (isEmpty(staffId)) {
-				throw new Exception("staffId参数为空");
+				throw new MyException("staffId参数为空");
 			}
 			Long[] staffs = { staffId };
 			this.staffService.deleteStaffs(staffs);
@@ -232,7 +230,7 @@ public class StaffController extends BaseController {
 	@RequestMapping({ "/listStaff.json" })
 	@ResponseBody
 	public LayerPage<Staff> listStaff(HttpServletRequest request) {
-		LayerPage<Staff> layerPage = null;
+		LayerPage<Staff> layerPage = new LayerPage<>(null);
 		try {
 			Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "");
 			Integer page = Integer.valueOf(searchParams.get("page").toString());
@@ -274,7 +272,7 @@ public class StaffController extends BaseController {
 	 * 2016年11月8日 - 上午9:01:44
 	 */
 	private Map<String, Object> packStaffOthers(Staff staff) throws Exception {
-		Map<String, Object> others = new HashMap<String, Object>();
+		Map<String, Object> others = new HashMap<>();
 		if (isNotEmpty(staff.getDepartmentId())) {
 			List<Department> list = this.departmentService.listPathFromRootToCurrentDepartmentId(staff.getDepartmentId());
 			if ((null != list) && (list.size() > 0)) {
@@ -310,11 +308,11 @@ public class StaffController extends BaseController {
 	 */
 	@RequestMapping(value = { "/lockStaff.json" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
-	public Map<String, ? extends Object> lockStaff(
+	public Map<String, Object> lockStaff(
 			@RequestParam String operation, @RequestParam Long staffId) {
 		try {
 			if ((isEmpty(operation)) || (isEmpty(staffId))) {
-				throw new Exception("参数为空");
+				throw new MyException("参数为空");
 			}
 			if ("lock".equalsIgnoreCase(operation)) {
 				this.staffService.lockStaff(staffId);
@@ -339,10 +337,10 @@ public class StaffController extends BaseController {
 	 */
 	@RequestMapping(value = { "/updateStaffRole.json" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
-	public Map<String, ? extends Object> updateStaffRole(@RequestParam String operation, @RequestParam Long staffId, @RequestParam Long roleId) {
+	public Map<String, Object> updateStaffRole(@RequestParam String operation, @RequestParam Long staffId, @RequestParam Long roleId) {
 		try {
 			if ((isEmpty(operation)) || (isEmpty(staffId)) || (isEmpty(roleId))) {
-				throw new Exception("参数为空");
+				throw new MyException("参数为空");
 			}
 			if ("add".equalsIgnoreCase(operation)) {
 				this.staffService.insertStaffRole(staffId, roleId);
@@ -413,7 +411,7 @@ public class StaffController extends BaseController {
 			if (isEmpty(mobile)) {
 				return "参数为空";
 			}
-			Map<String, Object> params = new HashMap<String, Object>();
+			Map<String, Object> params = new HashMap<>();
 			params.put("mobile", mobile);
 			Staff staff = this.staffService.findStaffByMap(params);
 			if (staff != null)
@@ -439,7 +437,7 @@ public class StaffController extends BaseController {
 			if (isEmpty(email)) {
 				return "参数为空";
 			}
-			Map<String, Object> params = new HashMap<String, Object>();
+			Map<String, Object> params = new HashMap<>();
 			params.put("email", email);
 			Staff staff = this.staffService.findStaffByMap(params);
 			if (staff != null)
@@ -460,11 +458,11 @@ public class StaffController extends BaseController {
 	 */
 	@RequestMapping({ "/findLoginStaff.ajax" })
 	@ResponseBody
-	public Map<String, ? extends Object> findLoginStaff() throws Exception {
+	public Map<String, Object> findLoginStaff() {
 		try {
 			Staff staff = StaffUtil.getLoginStaff();
 			if (staff == null) {
-				throw new Exception("用户没有登录");
+				throw new MyException("用户没有登录");
 			}
 			Staff staff2 = this.staffService.findStaffByLoginName(staff.getLoginName());
 			staff2.setOthers(packStaffOthers(staff2));
@@ -495,11 +493,11 @@ public class StaffController extends BaseController {
 	 */
 	@RequestMapping({ "/changePwd.json" })
 	@ResponseBody
-	public Map<String, ? extends Object> changePwd(String oldPassword, String newPassword) throws Exception {
+	public Map<String, ? extends Object> changePwd(String oldPassword, String newPassword) {
 		try {
 			Staff staff = StaffUtil.getLoginStaff();
 			if (staff == null) {
-				throw new Exception("用户没有登录");
+				throw new MyException("用户没有登录");
 			}
 			if ((isEmpty(oldPassword)) || (isEmpty(newPassword))) {
 				throw new IllegalArgumentException("旧密码或新密码没有设置！");
@@ -526,7 +524,7 @@ public class StaffController extends BaseController {
 	 */
 	@RequestMapping({ "/resetPwd.json" })
 	@ResponseBody
-	public Map<String, ? extends Object> resetPwd(String loginName, String password) throws Exception {
+	public Map<String, Object> resetPwd(String loginName, String password) {
 		try {
 			if (isEmpty(password)) {
 				throw new IllegalArgumentException("新密码没有设置！");
@@ -551,11 +549,10 @@ public class StaffController extends BaseController {
 	 */
 	@RequestMapping(value = { "/updateStaffDepartment.ajax" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
-	public Map<String, ? extends Object> updateStaffDepartment(
-			Long departmentId, String staffIds) throws Exception {
+	public Map<String, Object> updateStaffDepartment(Long departmentId, String staffIds) {
 		try {
 			if (isEmpty(departmentId)) {
-				throw new Exception("参数错误");
+				throw new MyException("参数错误");
 			}
 			this.staffService.updateStaffDepartment(departmentId, staffIds);
 			return success("添加成功");
@@ -576,7 +573,7 @@ public class StaffController extends BaseController {
 	 */
 	@RequestMapping(value = { "/listRoleByStaffIds.ajax" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
-	public Map<String, ? extends Object> listRoleByStaffIds(Long departmentId, String staffIds) throws Exception {
+	public Map<String, Object> listRoleByStaffIds(Long departmentId, String staffIds) {
 		try {
 			return success(this.staffService.listRoleByStaffIds(departmentId, staffIds));
 		} catch (Exception e) {
@@ -597,11 +594,10 @@ public class StaffController extends BaseController {
 	 */
 	@RequestMapping(value = { "/updateStaffRolesDepartment.ajax" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	@ResponseBody
-	public Map<String, ? extends Object> updateStaffRolesDepartment(Long departmentId, String staffIds, String staffIdRoles)
-			throws Exception {
+	public Map<String, Object> updateStaffRolesDepartment(Long departmentId, String staffIds, String staffIdRoles) {
 		try {
 			if ((isEmpty(departmentId)) || (isEmpty(staffIds))) {
-				throw new Exception("参数错误");
+				throw new MyException("参数错误");
 			}
 			this.staffService.updateStaffRolesDepartment(departmentId, staffIds, staffIdRoles);
 			return success("修改成功");

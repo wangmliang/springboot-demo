@@ -11,11 +11,11 @@ public class PasswordAdapter {
 	}
 
 	public String encryptPassword() {
-		//if (Config.getInstance().isOldPasswordSupport()) {
-		if(true) {
+		boolean flag = true;
+		// if (Config.getInstance().isOldPasswordSupport()) {
+		if(flag) {
 			return PasswordUtil.buildPassword(this.staff.getStaffId().toString(), this.staff.getPassword());
 		}
-
 		return PasswordUtil.buildPassword(this.staff.getLoginName(), this.staff.getPassword());
 	}
 }

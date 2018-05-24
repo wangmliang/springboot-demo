@@ -416,4 +416,9 @@
 			#{item}
 		</foreach>
     </update>
+
+    <select id="getStaffByGroup" parameterType="java.lang.Long" resultMap="StaffMap">
+        select s.* from sec_staff s, im_group_user g
+        where s.staff_id = g.user_id and g.group_id = #{groupId}
+      </select>
 </mapper> 

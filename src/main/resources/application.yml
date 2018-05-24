@@ -6,6 +6,11 @@ server:
   tomcat: # tomcat编码
     uri-encoding: utf-8
 
+layim.websocket:
+    ip: 127.0.0.1
+    port: 8888
+    heartBeatTimeout: 0
+
 spring:
   http:
     encoding:

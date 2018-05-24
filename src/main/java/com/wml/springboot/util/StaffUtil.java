@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 
 import com.wml.springboot.auth.SessionContext;
 import com.wml.springboot.auth.entity.Staff;
+import com.wml.springboot.exception.MyException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -20,7 +21,7 @@ public class StaffUtil {
 		return getRequest().getSession(true);
 	}
 
-	public static String getLoginUserName() throws Exception {
+	public static String getLoginUserName() {
 		Staff staff = getLoginStaff();
 		if (null != staff) {
 			return staff.getLoginName();
@@ -28,17 +29,17 @@ public class StaffUtil {
 		return "";
 	}
 
-	public static Staff getLoginStaff() throws Exception {
+	public static Staff getLoginStaff() {
 		HttpSession session = SessionContext.getContext().getSession(getSession().getId());
 
 		if (session == null) {
-			throw new Exception("会话已失效");
+			throw new MyException("会话已失效");
 		}
 
 		Staff staff = (Staff) session.getAttribute("LOGIN_STAFF");
 
 		if (null == staff) {
-			throw new Exception("获取用户信息错误");
+			throw new MyException("获取用户信息错误");
 		}
 		return staff;
 	}

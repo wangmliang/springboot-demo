@@ -4,7 +4,6 @@ import com.wml.springboot.auth.BaseController;
 import com.wml.springboot.auth.entity.Staff;
 import com.wml.springboot.auth.service.AuthService;
 import com.wml.springboot.util.StaffUtil;
-import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +48,7 @@ public class AuthController extends BaseController {
 	 */
 	@RequestMapping({ "/pageAuth.ajax" })
 	@ResponseBody
-	public void pageAuth(HttpServletRequest request, HttpServletResponse response, String resKeys, String operKeys) throws Exception {
+	public Map<String, Object> pageAuth(HttpServletRequest request, HttpServletResponse response, String resKeys, String operKeys) throws Exception {
 		Map<String, Object> modelMap = new HashMap<String, Object>(2);
 		try {
 			Staff staff = StaffUtil.getLoginStaff();
@@ -64,7 +63,8 @@ public class AuthController extends BaseController {
 			modelMap.put("success", Boolean.valueOf(false));
 			modelMap.put("data", e.getMessage());
 		}
-		super.outputMatch(request, response, JSONObject.fromObject(modelMap).toString());
+		return modelMap;
+		//super.outputMatch(request, response, JSONObject.fromObject(modelMap).toString());
 	}
 
 	/**

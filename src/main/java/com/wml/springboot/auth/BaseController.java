@@ -2,7 +2,6 @@ package com.wml.springboot.auth;
 
 import com.wml.springboot.util.DateUtil;
 import com.wml.springboot.util.StringTools;
-import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -60,7 +59,7 @@ public class BaseController {
         return modelMap;
     }
 
-    protected void fail(HttpServletResponse response, String message)
+    /*protected void fail(HttpServletResponse response, String message)
             throws IOException
     {
         outputString(response, JSONObject.fromObject(fail(message)).toString());
@@ -70,7 +69,7 @@ public class BaseController {
             throws IOException
     {
         outputString(response, JSONObject.fromObject(success(message)).toString());
-    }
+    }*/
 
     protected void output(HttpServletResponse response, String contentType, String characterEncoding, String obj) throws IOException
     {

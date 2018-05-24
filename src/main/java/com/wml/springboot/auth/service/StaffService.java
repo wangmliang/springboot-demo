@@ -8,12 +8,10 @@ import com.wml.springboot.auth.mapper.DepartmentMapper;
 import com.wml.springboot.auth.mapper.RoleDao;
 import com.wml.springboot.auth.mapper.StaffDao;
 import com.wml.springboot.exception.MyException;
-import com.wml.springboot.util.RSAUtil;
 import com.wml.springboot.util.StringTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.springside.modules.security.utils.Digests;
 import org.springside.modules.utils.Encodes;
@@ -22,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 @Service("staffService")
 public class StaffService {
@@ -101,7 +98,7 @@ public class StaffService {
 	 * 验证手机号码和邮箱是否存在
 	 * @param staff
 	 */
-	public void checkStaffInfo(Staff staff, Staff oldStaff) throws Exception {
+	public void checkStaffInfo(Staff staff, Staff oldStaff) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("email", staff.getEmail());
 		Staff staff_email = findStaffByMap(params);
@@ -113,9 +110,9 @@ public class StaffService {
 			throw new MyException("手机号码已存在");
 	}
 
-	private void _createStaff(Staff staff) throws Exception {
+	private void _createStaff(Staff staff) {
 		if (this.staffDao.findStaffByLoginName(staff.getLoginName()) != null) {
-			throw new Exception("此帐号已注册，系统不允许重复注册!");
+			throw new MyException("此帐号已注册，系统不允许重复注册!");
 		}
 		checkStaffInfo(staff, null);
 
@@ -153,7 +150,7 @@ public class StaffService {
 	}
 
 	@Transactional(rollbackFor = { Exception.class })
-	public void createStaff(Staff staff, String roleIds) throws Exception {
+	public void createStaff(Staff staff, String roleIds) {
 		if (staff.getDepartmentId() == null) {
 			throw new IllegalArgumentException("组织ID不能为空。");
 		}
@@ -178,10 +175,10 @@ public class StaffService {
 	}
 
 	@Transactional(rollbackFor = { Exception.class })
-	public void updateStaff(Staff staff) throws Exception {
+	public void updateStaff(Staff staff) {
 		Staff oldStaff = this.staffDao.findStaff(staff.getStaffId());
 		if (null == oldStaff) {
-			throw new Exception("修改的用户不存在!");
+			throw new MyException("修改的用户不存在!");
 		}
 
 		checkStaffInfo(staff, oldStaff);
@@ -219,9 +216,9 @@ public class StaffService {
 	}
 
 	@Transactional(rollbackFor = { Exception.class })
-	public void deleteStaffs(Long[] staffIds) throws Exception {
+	public void deleteStaffs(Long[] staffIds) {
 		if (staffIds == null) {
-			throw new Exception("参数非法，不能为空");
+			throw new MyException("参数非法，不能为空");
 		}
 		for (Long staffId : staffIds) {
 			this.staffDao.deleteStaffRoles(staffId);
@@ -252,9 +249,9 @@ public class StaffService {
 	}
 
 	@Transactional(rollbackFor = { Exception.class })
-	public Staff findStaffByLoginName(String loginName) throws Exception {
+	public Staff findStaffByLoginName(String loginName) {
 		if (loginName == null) {
-			throw new Exception("登录名[" + loginName + "]不能为空.");
+			throw new MyException("登录名[" + loginName + "]不能为空.");
 		}
 
 		Staff staff = this.staffDao.findStaffByLoginName(loginName);
@@ -285,9 +282,9 @@ public class StaffService {
 		return page;
 	}*/
 	@Transactional(rollbackFor = { Exception.class })
-	public PageInfo<Staff> listStaff(Map<String, Object> map, Integer pageNumber, Integer pageSize) throws Exception {
+	public PageInfo<Staff> listStaff(Map<String, Object> map, Integer pageNumber, Integer pageSize) {
 		if (map == null) {
-			throw new Exception("查询参数不能为空");
+			throw new MyException("查询参数不能为空");
 		}
 		PageHelper.startPage(pageNumber, pageSize);
 		return new PageInfo<Staff>(this.staffDao.listStaff(map));
@@ -325,22 +322,22 @@ public class StaffService {
 	}*/
 
 	@Transactional(rollbackFor = { Exception.class })
-	public void changePassword(String loginName, String oldPassword, String newPassword) throws Exception {
+	public void changePassword(String loginName, String oldPassword, String newPassword) {
 		if ((loginName == null) || (oldPassword == null) || (newPassword == null)) {
 			throw new IllegalArgumentException("用户名、旧密码或新密码没有设置！");
 		}
 
 		if (oldPassword.equals(newPassword)) {
-			throw new Exception("旧密码和新密码不能相同！");
+			throw new MyException("旧密码和新密码不能相同！");
 		}
 
 		Staff staff = this.staffDao.findStaffByLoginName(loginName);
 		if (staff == null) {
-			throw new Exception("找不到对应的成员【loginName=" + loginName + "】");
+			throw new MyException("找不到对应的成员【loginName=" + loginName + "】");
 		}
 
 		if (checkPassword(staff.getPassword(), oldPassword, staff.getSalt())) {
-			throw new Exception("旧密码不正确！");
+			throw new MyException("旧密码不正确！");
 		}
 		entryptPassword(staff);
 		//staff.setPassword(buildStaffPassword(staff, newPassword));
@@ -352,15 +349,14 @@ public class StaffService {
 	}
 
 	@Transactional(rollbackFor = { Exception.class })
-	public void resetPassword(String loginName, String newPassword)
-			throws Exception {
+	public void resetPassword(String loginName, String newPassword) {
 		if ((loginName == null) || (newPassword == null)) {
 			throw new IllegalArgumentException("用户名或新密码没有设置！");
 		}
 
 		Staff staff = this.staffDao.findStaffByLoginName(loginName);
 		if (staff == null) {
-			throw new Exception("找不到对应的成员【loginName=" + loginName + "】");
+			throw new MyException("找不到对应的成员【loginName=" + loginName + "】");
 		}
 
 		staff.setPassword(buildStaffPassword(staff, newPassword));
@@ -371,25 +367,25 @@ public class StaffService {
 	}
 
 	@Transactional(rollbackFor = { Exception.class })
-	public void lockStaff(Long staffId) throws Exception {
+	public void lockStaff(Long staffId) {
 		Staff staff = this.staffDao.findStaff(staffId);
 		if (staff == null) {
-			throw new Exception("用户[" + staffId + "]没有找到");
+			throw new MyException("用户[" + staffId + "]没有找到");
 		}
 		if ((staff.getStatus().equalsIgnoreCase("INITIAL")) || (staff.getStatus().equalsIgnoreCase("NORMAL"))) {
 			staff.setStatus("LOCKED");
 
 			this.staffDao.updateStaff(staff);
 		} else {
-			throw new Exception("用户状态不是初创或者正常状态,不允许锁定.");
+			throw new MyException("用户状态不是初创或者正常状态,不允许锁定.");
 		}
 	}
 
 	@Transactional(rollbackFor = { Exception.class })
-	public void unlockStaff(Long staffId) throws Exception {
+	public void unlockStaff(Long staffId) {
 		Staff staff = this.staffDao.findStaff(staffId);
 		if (staff == null) {
-			throw new Exception("用户[" + staffId + "]没有找到");
+			throw new MyException("用户[" + staffId + "]没有找到");
 		}
 
 		staff.setStatus("NORMAL");
@@ -422,10 +418,10 @@ public class StaffService {
 	}
 
 	@Transactional(rollbackFor = { Exception.class })
-	public void insertStaffRole(Long staffId, Long roleId) throws Exception {
+	public void insertStaffRole(Long staffId, Long roleId) {
 		Staff staff = this.staffDao.findStaff(staffId);
 		if (staff == null) {
-			throw new Exception("用户[" + staffId + "]没有找到");
+			throw new MyException("用户[" + staffId + "]没有找到");
 		}
 
 		if (staff.getDepartmentId() == null) {
@@ -441,10 +437,10 @@ public class StaffService {
 	}
 
 	@Transactional(rollbackFor = { Exception.class })
-	public void deleteStaffRole(Long staffId, Long roleId) throws Exception {
+	public void deleteStaffRole(Long staffId, Long roleId){
 		Staff staff = this.staffDao.findStaff(staffId);
 		if (staff == null) {
-			throw new Exception("用户[" + staffId + "]没有找到");
+			throw new MyException("用户[" + staffId + "]没有找到");
 		}
 
 		if (staff.getDepartmentId() == null) {
@@ -458,16 +454,16 @@ public class StaffService {
 		this.staffDao.deleteStaffRolesByStaffIdAndRoleId(param);
 	}
 
-	public List<Staff> listDepartmentStaffs(Long departmentId) throws Exception {
+	public List<Staff> listDepartmentStaffs(Long departmentId) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("departmentId", departmentId.toString());
 		map.put("noAdmin", "1");
 		return this.staffDao.listStaff(map);
 	}
 
-	public List<Staff> listDepartmentAllStaffs(Long departmentId, String keyword, String domain) throws Exception {
+	public List<Staff> listDepartmentAllStaffs(Long departmentId, String keyword, String domain) {
 		if (departmentId == null) {
-			throw new Exception("departmentId不能为空");
+			throw new MyException("departmentId不能为空");
 		}
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("departmentId", departmentId);
@@ -492,9 +488,9 @@ public class StaffService {
 		return this.staffDao.listStaff(param);
 	}
 
-	public List<Staff> listStaffsByDomain(String domain, String keyword) throws Exception {
+	public List<Staff> listStaffsByDomain(String domain, String keyword) {
 		if (domain == null) {
-			throw new Exception("domain不能为空");
+			throw new MyException("domain不能为空");
 		}
 		Department dept = new Department();
 		dept.setDomain(domain);
@@ -509,7 +505,7 @@ public class StaffService {
 		if (ids.length() > 0)
 			ids.delete(ids.length() - 1, ids.length());
 		else {
-			return new ArrayList<Staff>();
+			return new ArrayList<>();
 		}
 
 		Map<String, Object> map = new HashMap<>();
@@ -522,7 +518,7 @@ public class StaffService {
 	}
 
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Staff> listStaffByRole(Long roleId) throws Exception {
+	public List<Staff> listStaffByRole(Long roleId) {
 		return this.staffDao.listStaffByRole(roleId);
 	}
 
@@ -534,7 +530,7 @@ public class StaffService {
 		return pa.encryptPassword();
 	}
 
-	public List<Role> listStaffRoles(Long staffId) throws Exception {
+	public List<Role> listStaffRoles(Long staffId) {
 		Map<String, Object> map = new HashMap<>();
 		Staff staff = this.staffDao.findStaff(staffId);
 		if ((null != staff) && (staff.getDepartmentId() != null)) {
@@ -553,7 +549,7 @@ public class StaffService {
 	}
 
 	private Map<Long, Role> createRoleMap(List<Role> list) {
-		Map<Long, Role> roleMap = new HashMap<Long, Role>();
+		Map<Long, Role> roleMap = new HashMap<>();
 
 		for (Role r : list) {
 			roleMap.put(r.getRoleId(), r);
@@ -563,9 +559,9 @@ public class StaffService {
 	}
 
 	@Transactional(rollbackFor = { Exception.class })
-	public void updateStaffDepartment(Long departmentId, String staffIds) throws Exception {
+	public void updateStaffDepartment(Long departmentId, String staffIds) {
 		this.staffDao.clearStaffDepartment(departmentId);
-		Map<String, Object> params = new HashMap<String, Object>();
+		Map<String, Object> params = new HashMap<>();
 		params.put("departmentId", departmentId);
 		if (!StringUtils.isEmpty(staffIds)) {
 			String[] arr = staffIds.split(",");
@@ -577,16 +573,15 @@ public class StaffService {
 		this.staffDao.deleteStaffRolesByDepartmentIdAndNotInStaffIds(params);
 	}
 
-	public List<SecStaffDepartmentRoleKey> listRoleByStaffIds(
-			Long departmentId, String staffIds) throws Exception {
-		Map<String, Object> params = new HashMap<String, Object>();
+	public List<SecStaffDepartmentRoleKey> listRoleByStaffIds(Long departmentId, String staffIds) {
+		Map<String, Object> params = new HashMap<>();
 		params.put("departmentId", departmentId);
 		params.put("staffIds", staffIds.split(","));
 		return this.staffDao.listRoleByStaffIds(params);
 	}
 
 	@Transactional(rollbackFor = { Exception.class })
-	public void updateStaffRolesDepartment(Long departmentId, String staffIds, String staffIdRoles) throws Exception {
+	public void updateStaffRolesDepartment(Long departmentId, String staffIds, String staffIdRoles) {
 		String[] staffIdArr = staffIds.split(",");
 		for (String staffId : staffIdArr) {
 			this.staffDao.deleteStaffRoles(Long.valueOf(Long.parseLong(staffId)));
@@ -617,7 +612,7 @@ public class StaffService {
 		return this.staffDao.listStaff(page);
 	}*/
 
-	public List<Staff> listStaffs(Long departmentId, String keyword) throws Exception {
+	public List<Staff> listStaffs(Long departmentId, String keyword) {
 		Map<String, Object> map = new HashMap<>();
 		if (null != departmentId) {
 			map.put("departmentId", departmentId.toString());

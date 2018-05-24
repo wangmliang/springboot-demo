@@ -233,4 +233,11 @@ public abstract interface StaffDao {
 	 * 2016年11月9日 - 上午9:07:16
 	 */
 	public abstract void updateStaffExtendProperties(StaffExtendProperty paramStaffExtendProperty);
+
+	/**
+	 * 根据分组id查询用户列表
+	 * @param groupId
+	 * @return
+	 */
+	List<Staff> getStaffByGroup(Long groupId);
 }

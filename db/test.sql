@@ -1374,3 +1374,32 @@ BEGIN
 END
 ;;
 DELIMITER ;
+
+
+DROP TABLE IF EXISTS `im_group`;
+CREATE TABLE `im_group` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `group_name` varchar(255) NOT NULL COMMENT '分组名称',
+  `user_id` bigint(20) NOT NULL COMMENT '用户id',
+  `type` int(11) NOT NULL COMMENT '类型(0:用户分组 1:群组)',
+  `avatar` varchar(255) DEFAULT NULL COMMENT '头像',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `im_group_user`;
+CREATE TABLE `im_group_user` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `group_id` bigint(20) NOT NULL COMMENT '分组id',
+  `user_id` bigint(20) NOT NULL COMMENT '用户id',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `im_history_record`;
+CREATE TABLE `im_history_record` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `to_user_id` bigint(20) NOT NULL COMMENT '分组id',
+  `user_id` bigint(20) NOT NULL COMMENT '用户id',
+  `info` text NOT NULL COMMENT '会话消息',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '会话时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

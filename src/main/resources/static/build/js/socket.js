@@ -57,6 +57,9 @@ layui.define(['jquery','layer'],function (exports) {
           $.get(tool.options.token,function (res) {
               if(res.code>0){
                   layer.msg("未登录");
+                  setTimeout(function(){
+                      parent.location = "/login.html";
+                  }, 500);
               }else{
                   callback(res.data);
               }

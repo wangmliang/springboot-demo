@@ -9,6 +9,7 @@ import com.wml.springboot.auth.service.MenuService;
 import com.wml.springboot.auth.service.StaffService;
 import com.wml.springboot.auth.tree.MenuTreeNode;
 import com.wml.springboot.exception.MyException;
+import com.wml.springboot.im.packet.ContextUser;
 import com.wml.springboot.services.UserService;
 import com.wml.springboot.util.RSAUtil;
 import com.wml.springboot.util.SigarUtils;
@@ -143,6 +144,13 @@ public class LoginController extends BaseController {
         // 读取菜单列表
         List<MenuTreeNode> menuTree = menuService.buildMenuTree(StaffUtil.getLoginStaff().getLoginName(), getSession().getId(), getRequest().getContextPath());
         model.addAttribute("menuTree", menuTree);
+
+        // 保存用户信息
+        ContextUser user = new ContextUser();
+        user.setUserid(StaffUtil.getLoginStaff().getStaffId().toString());
+        user.setUsername(StaffUtil.getLoginStaff().getLoginName());
+        user.setAvatar("666");
+        getSession().setAttribute("user", user);
         return "index";
     }
 

@@ -136,7 +136,7 @@ public class LoginController extends BaseController {
         //SecurityUtils.getSubject().logout();
         //redirectAttributes.addFlashAttribute("message", "您已安全退出");
         this.loginService.logout(getSession());
-        return "redirect:/login";
+        return "redirect:/login.html";
     }
 
     @RequestMapping(value = "/index.html")
@@ -156,10 +156,10 @@ public class LoginController extends BaseController {
 
     @RequestMapping("/main.html")
     public String main(Model model) throws Exception {
-        model.addAttribute("jvm", SigarUtils.getJvmInfos());
+        /*model.addAttribute("jvm", SigarUtils.getJvmInfos());
         model.addAttribute("cpu", SigarUtils.getCpuInfos());
         model.addAttribute("memory", SigarUtils.getMemoryInfos());
-        model.addAttribute("os", SigarUtils.getOsInfos());
+        model.addAttribute("os", SigarUtils.getOsInfos());*/
         //model.addAttribute("net", SigarUtils.getNetInfos());
         return "main";
     }

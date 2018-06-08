@@ -90,7 +90,7 @@ public class StaffService {
 		pa = new PasswordAdapter(staff);
 		System.out.println("mima:" + pa.encryptPassword());*/
 
-		byte[] hashPassword = Digests.sha1("123456".getBytes(), "5095e1d1bad29154".getBytes(), 1024);
+		byte[] hashPassword = Digests.sha1("123456".getBytes(), "78e38a3a3646b257".getBytes(), 1024);
 		System.out.println((Encodes.encodeHex(hashPassword)));
 	}
 

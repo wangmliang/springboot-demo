@@ -44,6 +44,18 @@ public class StaffUtil {
 		return staff;
 	}
 
+	/**
+	 * 获取登录用户id
+	 * @return
+	 */
+	public static Long getLoginStaffId() {
+		Staff staff = getLoginStaff();
+		if (null == staff) {
+			throw new MyException("获取用户信息错误");
+		}
+		return staff.getStaffId();
+	}
+
 	public static void addLoginSatff(HttpSession session, Staff newStaff) {
 		HttpSession se = SessionContext.getContext().getSession(getSession().getId());
 

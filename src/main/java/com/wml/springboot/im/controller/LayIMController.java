@@ -2,16 +2,20 @@ package com.wml.springboot.im.controller;
 
 import com.wml.springboot.im.service.ImService;
 import com.wml.springboot.util.AESUtil;
+import com.wml.springboot.util.FileUtil;
 import com.wml.springboot.util.JsonResult;
 import com.wml.springboot.util.StaffUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * <pre>
@@ -59,5 +63,62 @@ public class LayIMController {
         } catch(Exception e) {
             return JsonResult.fail("请求错误");
         }
+    }
+
+    /**
+     * 上传图片
+     * @param file
+     * @param response
+     * @param request
+     * @return
+     */
+    @PostMapping(value = "/uploadImg")
+    @ResponseBody
+    public Map<String, Object> uploadImg(@RequestParam MultipartFile file, HttpServletResponse response, HttpServletRequest request) {
+        Long staffId = StaffUtil.getLoginStaffId();
+        String path = request.getSession().getServletContext().getRealPath("upload/img/" + staffId + "/");
+        String files = FileUtil.savePicture(file, UUID.randomUUID().toString().replaceAll("-", ""), path);
+        Map<String,Object> map = new HashMap<String,Object>();
+        Map<String,String> submap = new HashMap<String,String>();
+        if(files.length()>0){
+            map.put("code","0");
+            map.put("msg", "上传成功");
+            submap.put("src", request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort() + request.getContextPath() + "/upload/img/" + staffId + "/" + files + "?" + new Date().getTime());
+        }else{
+            submap.put("src", "");
+            map.put("code","1");
+            map.put("msg", "上传过程中出现错误，请重新上传");
+        }
+        map.put("data",submap);
+        return map;
+    }
+
+    /**
+     * 上传文件
+     * @param file
+     * @param response
+     * @param request
+     * @return
+     */
+    @PostMapping(value = "/uploadFile")
+    @ResponseBody
+    public Map<String, Object> uploadFile(@RequestParam MultipartFile  file, HttpServletResponse response, HttpServletRequest request) {
+        Long staffId = StaffUtil.getLoginStaffId();
+        String path=request.getSession().getServletContext().getRealPath("upload/file/" + staffId + "/");
+        String files = FileUtil.saveFiles(file, UUID.randomUUID().toString().replaceAll("-", ""), path);
+        Map<String,Object> map = new HashMap<String,Object>();
+        Map<String,String> submap = new HashMap<String,String>();
+        if(files.length()>0){
+            map.put("code","0");
+            map.put("msg", "上传成功");
+            submap.put("src", request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort() + request.getContextPath() + "/upload/file/" + staffId + "/" + files + "?" + new Date().getTime());
+            submap.put("name", file.getOriginalFilename());
+        }else{
+            submap.put("src", "");
+            map.put("code","1");
+            map.put("msg", "上传过程中出现错误，请重新上传");
+        }
+        map.put("data",submap);
+        return map;
     }
 }

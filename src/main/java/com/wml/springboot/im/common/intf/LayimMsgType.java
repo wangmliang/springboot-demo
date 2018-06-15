@@ -34,4 +34,8 @@ public interface LayimMsgType {
      * 客户端在线状态
      */
     byte CLIENT_ONLINE_STATUS = 7;
+    /**
+     * 客户端消息提示
+     */
+    byte MSG_NUMBER = 8;
 }

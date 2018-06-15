@@ -240,4 +240,11 @@ public abstract interface StaffDao {
 	 * @return
 	 */
 	List<Staff> getStaffByGroup(Long groupId);
+
+	/**
+	 * im查询用户列表
+	 * @param value
+	 * @return
+	 */
+	List<Staff> getStaffByIm(String value);
 }

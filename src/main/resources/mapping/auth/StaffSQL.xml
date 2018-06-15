@@ -22,6 +22,8 @@
         <result property="lastUpdateDate" column="LAST_UPDATE_DATE"/>
         <result property="cityId" column="CITY_ID"/>
         <result property="salt" column="SALT"/>
+        <result property="avatar" column="AVATAR"/>
+        <result property="sign" column="SIGN"/>
 	</resultMap>
 	<resultMap id="SecStaffDepartmentRoleKeyMap" type="com.wml.springboot.auth.entity.SecStaffDepartmentRoleKey" >
     <id column="STAFF_ID" property="staffId" jdbcType="VARCHAR" />
@@ -57,7 +59,7 @@
 		       LOCK_DATE	   ,
                CITY_ID	   ,
 		       LAST_UPDATE_DATE,
-		       SALT)
+		       SALT, AVATAR, SIGN)
 		VALUES(#{staffId},
 		       #{loginName},
 		       #{departmentId,jdbcType=NUMERIC},
@@ -75,7 +77,9 @@
 		       #{lockDate,jdbcType=DATE},
                #{cityId,jdbcType=VARCHAR},  		       
 		       #{lastUpdateDate,jdbcType=DATE},
-		       #{salt,jdbcType=VARCHAR})
+		       #{salt,jdbcType=VARCHAR},
+		       #{avatar,jdbcType=VARCHAR},
+		       #{sign,jdbcType=VARCHAR})
 		]]>
     </insert>
     
@@ -98,7 +102,9 @@
 		       LOCK_DATE		= #{lockDate,jdbcType=DATE},
                CITY_ID          = #{cityId,jdbcType=VARCHAR},
 		       LAST_UPDATE_DATE = SYSDATE(),
-		       SALT = #{salt,jdbcType=VARCHAR}
+		       SALT = #{salt,jdbcType=VARCHAR},
+		       AVATAR = #{avatar,jdbcType=VARCHAR},
+		       DESC = #{desc,jdbcType=VARCHAR}
 		WHERE  STAFF_ID         = #{staffId}
 		]]>
     </update>
@@ -421,4 +427,11 @@
         select s.* from sec_staff s, im_group_user g
         where s.staff_id = g.user_id and g.group_id = #{groupId}
       </select>
+
+    <select id="getStaffByIm" parameterType="java.lang.String" resultMap="StaffMap">
+        select * from sec_staff where `STATUS` = 'NORMAL' and
+        (LOGIN_NAME like CONCAT(CONCAT('%', #{value}),'%')
+        or REAL_NAME like CONCAT(CONCAT('%', #{value}),'%')
+        or EMAIL like CONCAT(CONCAT('%', #{value}),'%'))
+    </select>
 </mapper> 

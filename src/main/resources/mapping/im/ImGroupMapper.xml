@@ -7,11 +7,12 @@
     <result column="type" property="type" jdbcType="INTEGER" />
     <result column="user_id" property="userId" jdbcType="BIGINT" />
     <result column="avatar" property="avatar" jdbcType="VARCHAR" />
+    <result column="desc" property="desc" jdbcType="VARCHAR" />
     <collection property="userList" ofType="com.wml.springboot.auth.entity.Staff"
                 select="com.wml.springboot.auth.mapper.StaffDao.getStaffByGroup" column="id"></collection>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, group_name, user_id, type, avatar
+    id, group_name, user_id, `type`, avatar, `desc`
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -24,8 +25,9 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.wml.springboot.im.entity.ImGroup" >
-    insert into im_group (id, group_name, user_id, type, avatar)
-    values (#{id,jdbcType=BIGINT}, #{groupname,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, #{type,jdbcType=INTEGER}, #{avatar,jdbcType=VARCHAR})
+    insert into im_group (id, group_name, user_id, `type`, avatar, `desc`)
+    values (#{id,jdbcType=BIGINT}, #{groupname,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, #{type,jdbcType=INTEGER},
+     #{avatar,jdbcType=VARCHAR}, #{desc,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.wml.springboot.im.entity.ImGroup" >
     insert into im_group
@@ -40,10 +42,13 @@
         user_id,
       </if>
       <if test="type != null" >
-        type,
+        `type`,
       </if>
       <if test="avatar != null">
         avatar,
+      </if>
+      <if test="desc != null">
+        `desc`,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -62,6 +67,9 @@
       <if test="avatar != null" >
         #{avatar,jdbcType=VARCHAR},
       </if>
+      <if test="desc != null" >
+        #{desc,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.wml.springboot.im.entity.ImGroup" >
@@ -74,10 +82,13 @@
         user_id = #{userId,jdbcType=BIGINT},
       </if>
       <if test="type != null" >
-        type = #{type,jdbcType=INTEGER},
+        `type` = #{type,jdbcType=INTEGER},
       </if>
       <if test="avatar != null" >
         avatar = #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="desc != null" >
+        `desc` = #{desc,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -86,8 +97,9 @@
     update im_group
     set group_name = #{groupname,jdbcType=VARCHAR},
       user_id = #{userId,jdbcType=BIGINT},
-      type = #{type,jdbcType=INTEGER},
-      avatar = #{avatar,jdbcType=VARCHAR}
+      `type` = #{type,jdbcType=INTEGER},
+      avatar = #{avatar,jdbcType=VARCHAR},
+      `desc` = #{desc,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 
@@ -96,5 +108,12 @@
     <include refid="Base_Column_List" />
     from im_group
     where user_id = #{userId} and `type` = #{type}
+  </select>
+
+  <select id="getImGroupByGroupName" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from im_group
+    where user_id not in (#{userId}) and `type` = '1' and group_name like concat(concat('%',#{groupName}),'%')
   </select>
 </mapper>

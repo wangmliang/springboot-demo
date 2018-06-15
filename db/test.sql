@@ -1383,6 +1383,7 @@ CREATE TABLE `im_group` (
   `user_id` bigint(20) NOT NULL COMMENT '用户id',
   `type` int(11) NOT NULL COMMENT '类型(0:用户分组 1:群组)',
   `avatar` varchar(255) DEFAULT NULL COMMENT '头像',
+  `desc` varchar(255) DEFAULT NULL COMMENT '群组描述',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1401,5 +1402,20 @@ CREATE TABLE `im_history_record` (
   `user_id` bigint(20) NOT NULL COMMENT '用户id',
   `info` text NOT NULL COMMENT '会话消息',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '会话时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `im_message`;
+CREATE TABLE `im_message` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `type` varchar(2) NOT NULL COMMENT '消息类型(1、好友申请 2、群组申请 3、拒绝好友申请  4、拒绝群组申请)',
+	`uid` bigint(20) NOT NULL COMMENT '用户id',
+  `from` bigint(20) NOT NULL COMMENT '请求用户id',
+	`from_group` bigint(20) NOT NULL COMMENT '加入群组id',
+	`content` varchar(100) NOT NULL COMMENT '展示信息',
+  `remark` varchar(100) DEFAULT NULL COMMENT '备注信息',
+	`read` varchar(10) NOT NULL DEFAULT '0' COMMENT '是否已读(0:未读  1:已读)',
+  `time` varchar(50) NOT NULL COMMENT '时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

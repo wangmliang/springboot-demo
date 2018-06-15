@@ -20,6 +20,7 @@ public class ImGroup {
     private Long userId;
     private Integer type;
     private String avatar;
+    private String desc;
 
     private List<Staff> userList;
 
@@ -79,5 +80,13 @@ public class ImGroup {
 
     public void setList(List<Map<String, Object>> list) {
         this.list = list;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 }

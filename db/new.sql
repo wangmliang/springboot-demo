@@ -347,6 +347,8 @@ CREATE TABLE `sec_staff` (
   `PASSWORD_EXPIRE_DATE` timestamp NULL DEFAULT NULL COMMENT '密码失效时间',
   `LOCK_DATE` timestamp NULL DEFAULT NULL COMMENT '用户锁定时间',
   `CITY_ID` int(11) DEFAULT NULL COMMENT '成员所在城市（参见CITY表）',
+  `AVATAR` varchar (255) DEFAULT NULL COMMENT '头像',
+  `SIGN` varchar(100) DEFAULT NULL COMMENT '签名',
   PRIMARY KEY (`STAFF_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='成员';
 
@@ -622,6 +624,34 @@ CREATE TABLE `sub_system` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 
+DROP TABLE IF EXISTS `im_group`;
+CREATE TABLE `im_group` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `group_name` varchar(255) NOT NULL COMMENT '分组名称',
+  `user_id` bigint(20) NOT NULL COMMENT '用户id',
+  `type` int(11) NOT NULL COMMENT '类型(0:用户分组 1:群组)',
+  `avatar` varchar(255) DEFAULT NULL COMMENT '头像',
+  `desc` varchar(255) DEFAULT NULL COMMENT '群组描述',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `im_group_user`;
+CREATE TABLE `im_group_user` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `group_id` bigint(20) NOT NULL COMMENT '分组id',
+  `user_id` bigint(20) NOT NULL COMMENT '用户id',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `im_history_record`;
+CREATE TABLE `im_history_record` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `to_user_id` bigint(20) NOT NULL COMMENT '分组id',
+  `user_id` bigint(20) NOT NULL COMMENT '用户id',
+  `info` text NOT NULL COMMENT '会话消息',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '会话时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
  --> 菜单(Menu) --> 资源分类(resource-category) -->  资源(resource) -->  操作(operation) -->  访问Address
  --> 组织架构(department) 					角色(role)								用户(staff) --> 

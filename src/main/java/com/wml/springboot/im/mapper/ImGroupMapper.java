@@ -5,6 +5,7 @@ import com.wml.springboot.im.entity.ImGroup;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <pre>
@@ -17,13 +18,13 @@ import java.util.List;
  */
 public interface ImGroupMapper {
 
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Long id);
 
     int insert(ImGroup record);
 
     int insertSelective(ImGroup record);
 
-    ImGroup selectByPrimaryKey(Integer id);
+    ImGroup selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(ImGroup record);
 
@@ -36,4 +37,10 @@ public interface ImGroupMapper {
      */
     List<ImGroup> getImGroupByUserIdAndType(@Param("userId") Long userId, @Param("type") Integer type);
 
+    /**
+     * 查找页查询群组列表
+     * @param map
+     * @return
+     */
+    List<ImGroup> getImGroupByGroupName(Map<String, Object> map);
 }

@@ -1385,7 +1385,7 @@ CREATE TABLE `im_group` (
   `avatar` varchar(255) DEFAULT NULL COMMENT '头像',
   `desc` varchar(255) DEFAULT NULL COMMENT '群组描述',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'IM分组';
 
 DROP TABLE IF EXISTS `im_group_user`;
 CREATE TABLE `im_group_user` (
@@ -1403,7 +1403,7 @@ CREATE TABLE `im_history_record` (
   `info` text NOT NULL COMMENT '会话消息',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '会话时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '历史会话记录';
 
 
 DROP TABLE IF EXISTS `im_message`;
@@ -1411,11 +1411,53 @@ CREATE TABLE `im_message` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `type` varchar(2) NOT NULL COMMENT '消息类型(1、好友申请 2、群组申请 3、拒绝好友申请  4、拒绝群组申请)',
 	`uid` bigint(20) NOT NULL COMMENT '用户id',
-  `from` bigint(20) NOT NULL COMMENT '请求用户id',
-	`from_group` bigint(20) NOT NULL COMMENT '加入群组id',
+  `from` bigint(20) DEFAULT NULL COMMENT '请求用户id',
+	`from_group` bigint(20) DEFAULT NULL COMMENT '加入群组id',
 	`content` varchar(100) NOT NULL COMMENT '展示信息',
   `remark` varchar(100) DEFAULT NULL COMMENT '备注信息',
 	`read` varchar(10) NOT NULL DEFAULT '0' COMMENT '是否已读(0:未读  1:已读)',
   `time` varchar(50) NOT NULL COMMENT '时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '聊天消息';
+
+DROP TABLE IF EXISTS `activity_info`;
+CREATE TABLE `activity_info` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `activity_name` varchar(32) NOT NULL COMMENT '活动名称',
+  `start_time` timestamp NOT NULL COMMENT '开始时间',
+  `end_time` timestamp NOT NULL COMMENT '结束时间',
+  `state` char(1) NOT NULL COMMENT '状态(0: 正常  1:未开始  2:已结束)',
+  `link_url` varchar(200) NOT NULL COMMENT '活动链接url',
+  `remark` varchar(100) DEFAULT NULL COMMENT '备注信息',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '活动信息';
+
+DROP TABLE IF EXISTS `activity_prize_info`;
+CREATE TABLE `activity_prize_info` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `activity_id` bigint(20) NOT NULL COMMENT '活动id',
+  `prize_id` bigint(20) NOT NULL COMMENT '奖品时间',
+  `number` int(10) NOT NULL COMMENT '奖品数量',
+  `surplus` int(10) NOT NULL COMMENT '剩余数量',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '活动奖品信息';
+
+DROP TABLE IF EXISTS `prize_info`;
+CREATE TABLE `prize_info` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `prize_name` varchar(32) NOT NULL COMMENT '奖品名称',
+  `expiry_time` timestamp NOT NULL COMMENT '过期时间',
+  `remark` varchar(100) DEFAULT NULL COMMENT '备注信息',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '奖品信息';
+
+DROP TABLE IF EXISTS `lottery_record`;
+CREATE TABLE `lottery_record` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `activity_id` bigint(20) NOT NULL COMMENT '活动id',
+  `prize_id` bigint(20) DEFAULT NULL COMMENT '奖品Id',
+  `create_time` timestamp NOT NULL COMMENT '抽奖时间',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '用户id',
+  `is_win` char(1) NOT NULL COMMENT '是否中奖(0:中奖  1:未中奖 2：过期 3：已使用)',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '抽奖记录';
